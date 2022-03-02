@@ -10,7 +10,7 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.4.0/contr
  * @title ERC721B
  * @dev Extends ERC721 Non-Fungible Token Standard basic implementation.
  * Optimized to no longer use ERC721Enumerable , but still provide a totalSupply() and walletOfOwner(address _owner) implementation.
- * @author @FrankPoncelet
+ * @author @FrankNFT.eth
  * 
  */
 
