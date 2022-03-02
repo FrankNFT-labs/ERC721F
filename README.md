@@ -1,5 +1,3 @@
-[![Contributors][contributors-shield]][contributors-url]
-[![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
 # ERC721F
@@ -37,4 +35,5 @@ Don't forget to give the project a star! Thanks again!
 5. Open a Pull Request
 
 
-
+[license-shield]: https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge
+[license-url]: https://github.com/FrankNFT-labs/ERC721F/blob/main/LICENSE
