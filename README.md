@@ -4,7 +4,7 @@ The goal of ERC721F is to provide a simple extension of IERC721 with significant
 
 ERC721F Extends ERC721 Non-Fungible Token Standard basic implementation. No longer uses ERC721Enumerable , but still provide a totalSupply() and walletOfOwner(address _owner) implementation.
 
-The Author is not liable for any outcomes as a result of using ERC721F. DYOR.
+The Author is not liable for any outcomes as a result of using ERC721F. **DYOR!**
 
 <!-- ROADMAP -->
 
