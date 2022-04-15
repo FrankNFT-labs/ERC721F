@@ -35,7 +35,7 @@ contract ERC721F is Ownable, ERC721 {
     function walletOfOwner(address _owner) external view returns (uint256[] memory){
         uint256 ownerTokenCount = balanceOf(_owner);
         uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
-        uint256 currentTokenId = 1;
+        uint256 currentTokenId = _startTokenId();
         uint256 ownedTokenIndex = 0;
 
         while ( ownedTokenIndex < ownerTokenCount && currentTokenId < _tokenSupply.current() ) {
@@ -47,7 +47,13 @@ contract ERC721F is Ownable, ERC721 {
         }
         return ownedTokenIds;
     }
-
+    
+    /**
+     * To change the starting tokenId, override this function.
+     */
+    function _startTokenId() internal view virtual returns (uint256) {
+        return 0;
+    }
 
     /**
      * @dev Base URI for computing {tokenURI}. If set, the resulting URI for each
