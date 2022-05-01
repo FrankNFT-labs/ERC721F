@@ -41,9 +41,9 @@ contract ERC721F is Ownable, ERC721 {
         while ( ownedTokenIndex < ownerTokenCount && currentTokenId < _tokenSupply.current() ) {
             if (ownerOf(currentTokenId) == _owner) {
                 ownedTokenIds[ownedTokenIndex] = currentTokenId;
-                ownedTokenIndex++;
+                unchecked{ ownedTokenIndex++;}
             }
-            currentTokenId++;
+            unchecked{ currentTokenId++;}
         }
         return ownedTokenIds;
     }
