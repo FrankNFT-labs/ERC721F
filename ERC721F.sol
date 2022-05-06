@@ -97,6 +97,5 @@ contract ERC721F is Ownable, ERC721 {
     }
 
     // contract can recieve Ether
-    fallback() external payable { }
     receive() external payable { }
 }
