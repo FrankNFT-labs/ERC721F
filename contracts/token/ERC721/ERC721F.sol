@@ -87,15 +87,4 @@ contract ERC721F is Ownable, ERC721 {
     function totalSupply() public view returns (uint256) {
         return _tokenSupply.current();
     }
-
-    /**
-    * Helper method to allow ETH withdraws.
-    */
-    function _withdraw(address _address, uint256 _amount) internal {
-        (bool success, ) = _address.call{ value: _amount }("");
-        require(success, "Failed to widthdraw Ether");
-    }
-
-    // contract can recieve Ether
-    receive() external payable { }
 }
