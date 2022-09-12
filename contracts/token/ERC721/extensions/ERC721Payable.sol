@@ -7,7 +7,7 @@ abstract contract ERC721Payable {
     */
     function _withdraw(address _address, uint256 _amount) internal {
         (bool success, ) = _address.call{ value: _amount }("");
-        require(success, "Failed to widthdraw Ether");
+        require(success, "Failed to withdraw Ether");
     }
 
     // contract can recieve Ether
