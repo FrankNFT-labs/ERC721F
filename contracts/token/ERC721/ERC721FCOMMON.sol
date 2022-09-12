@@ -7,14 +7,14 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.4.0/contr
 
 
 /**
- * @title ERC721F
+ * @title ERC721FCOMMON
  * @dev Extends ERC721 Non-Fungible Token Standard basic implementation.
  * Optimized to no longer use ERC721Enumerable , but still provide a totalSupply() and walletOfOwner(address _owner) implementation.
  * @author @FrankNFT.eth
  * 
  */
 
-contract ERC721F is Ownable, ERC721 {
+contract ERC721FCOMMON is Ownable, ERC721 {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenSupply;
