@@ -16,32 +16,32 @@ contract ERC721FGasReporterMock is ERC721F {
     /**
      * @notice Mints a single token
      */
-    mintOne(address to) public {
-        mint(to, 1)
+    function mintOne(address to) public {
+        mint(to, 1);
     }
 
     /**
      * @notice Mints ten tokens
      */
-    mintTen(address to) public {
+    function mintTen(address to) public {
         mint(to, 10);
     }
 
     /**
      * @notice Mints a hundred tokens
      */
-    mintHundred(address to) public {
+    function mintHundred(address to) public {
         mint(to, 100);
     }
 
     /**
      * Mints any number of tokens and transfers them to `to`
      */
-    function mint(address to, uint256 numberOfTokens) external {
+    function mint(address to, uint256 numberOfTokens) internal {
         uint256 supply = totalSupply();
-        for (uint256 i = 0; i < numberOfTokens) {
-            _mint(msg.sender, supply + i);
-            unchecked {i++}
+        for (uint256 i = 0; i < numberOfTokens;) {
+            _mint(to, supply + i);
+            unchecked {i++;}
         }
     }
 }
