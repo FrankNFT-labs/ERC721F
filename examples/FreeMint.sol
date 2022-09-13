@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT 
 pragma solidity ^0.8.9 <0.9.0;
 
-import "https://github.com/FrankNFT-labs/ERC721F/blob/v4.7.0/contracts/token/ERC721/ERC721F.sol";
-
+import "../contracts/token/ERC721/ERC721F.sol";
 
 /**
  * @title FreeMint
