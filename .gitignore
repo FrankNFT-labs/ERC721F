@@ -1,4 +1,5 @@
 node_modules/
+remix-compiler.config.js
 
 #Hardhat files
 cache
