@@ -1,7 +1,9 @@
 node_modules/
 remix-compiler.config.js
+.env
 
 #Hardhat files
 cache
 artifacts
 .deps
+gas-report.txt
