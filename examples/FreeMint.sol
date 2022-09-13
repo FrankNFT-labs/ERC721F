@@ -3,6 +3,12 @@ pragma solidity ^0.8.9 <0.9.0;
 
 import "https://github.com/FrankNFT-labs/ERC721F/blob/v4.7.0/contracts/token/ERC721/ERC721F.sol";
 
+
+/**
+ * @title FreeMint
+ * 
+ * @dev Example implementation of [ERC721F]
+ */
 contract FreeMint is ERC721F {
 
     uint256 public constant MAX_TOKENS = 10000;
@@ -14,6 +20,9 @@ contract FreeMint is ERC721F {
         setBaseTokenURI("ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"); 
     }
 
+    /**
+     * Changes the state of saleIsActive from true to false and false to true
+     */
     function flipSaleState() external onlyOwner {
         saleIsActive = !saleIsActive;
     }
