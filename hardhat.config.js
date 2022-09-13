@@ -6,7 +6,7 @@ require('dotenv').config();
 module.exports = {
   solidity: "0.8.9",
   paths: {
-    sources: "./examples",
+    sources: "./contracts",
     tests: "./test",
     cache: "./cache",
     artifacts: "./artifacts"
