@@ -4,7 +4,15 @@ require('dotenv').config();
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  solidity: "0.8.9",
+  solidity: {
+    version: "0.8.9",
+    settings: {
+      optimizer: {
+        enabled: false,
+        runs: 200,
+      },
+    },
+  },
   paths: {
     sources: "./contracts",
     tests: "./test",
@@ -13,7 +21,7 @@ module.exports = {
   },
   gasReporter: {
     enabled: (process.env.REPORT_GAS === "true") ? true : false,
-    outputFile: "gas-report.txt",
+    //outputFile: "gas-report.txt",
     noColors: true,
     currency: "USD",
   },
