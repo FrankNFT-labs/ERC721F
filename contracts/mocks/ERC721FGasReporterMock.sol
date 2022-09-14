@@ -38,7 +38,7 @@ contract ERC721FGasReporterMock is ERC721F {
     }
 
     /**
-     * Mints any number of tokens and transfers them to `to`
+     * @notice Mints any number of tokens and transfers them to `to`
      */
     function mint(address to, uint256 numberOfTokens) internal {
         uint256 supply = totalSupply();
@@ -50,16 +50,26 @@ contract ERC721FGasReporterMock is ERC721F {
         }
     }
 
+    /**
+     * @notice Retrieves the wallet of the sender and transfers the first token stored to `to`
+     */
     function transferOneAsc(address to) public {
         transferFrom(msg.sender, to, this.walletOfOwner(msg.sender)[0]);
     }
 
+    /**
+     * @notice Retrieves the wallet of the sender and transfers the last token stored to `to`
+     */
     function transferOneDesc(address to) public {
         uint256[] memory walletOfOwner = this.walletOfOwner(msg.sender);
         uint walletSize = walletOfOwner.length;
         transferFrom(msg.sender, to, walletOfOwner[walletSize - 1]);
     }
 
+
+    /**
+     * @notice Retrieves the wallet of the sender, retrieves the first stored token and transfers it to `to` this happens ten times
+     */
     function transferTenAsc(address to) public {
         uint256[] memory walletOfOwner = this.walletOfOwner(msg.sender);
         for (uint i = 0; i < 10; ) {
@@ -70,6 +80,9 @@ contract ERC721FGasReporterMock is ERC721F {
         }
     }
 
+    /**
+     * @notice Retrieves the wallet of the sender, retrieves the last stored token and transfers it to `to` this happens ten times
+     */
     function transferTenDesc(address to) public {
         uint256[] memory walletOfOwner = this.walletOfOwner(msg.sender);
         uint walletSize = walletOfOwner.length;
@@ -81,6 +94,9 @@ contract ERC721FGasReporterMock is ERC721F {
         }
     }
 
+    /**
+     * @notice Retrieves the wallet of the sender, retrieves the first stored token and transfers it to `to` this happens fifty times
+     */
     function transferFiftyAsc(address to) public {
         uint256[] memory walletOfOwner = this.walletOfOwner(msg.sender);
         for (uint i = 0; i < 50; ) {
@@ -91,6 +107,9 @@ contract ERC721FGasReporterMock is ERC721F {
         }
     }
 
+    /**
+     * @notice Retrieves the wallet of the sender, retrieves the last stored token and transfers it to `to` this happens fifty times
+     */
     function transferFiftyDesc(address to) public {
         uint256[] memory walletOfOwner = this.walletOfOwner(msg.sender);
         uint walletSize = walletOfOwner.length;
