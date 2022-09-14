@@ -80,4 +80,25 @@ contract ERC721FGasReporterMock is ERC721F {
             }
         }
     }
+
+    function transferFiftyAsc(address to) public {
+        uint256[] memory walletOfOwner = this.walletOfOwner(msg.sender);
+        for (uint i = 0; i < 50; ) {
+            transferFrom(msg.sender, to, walletOfOwner[i]);
+            unchecked {
+                i++;
+            }
+        }
+    }
+
+    function transferFiftyDesc(address to) public {
+        uint256[] memory walletOfOwner = this.walletOfOwner(msg.sender);
+        uint walletSize = walletOfOwner.length;
+        for (uint i = 0; i < 50; ) {
+            transferFrom(msg.sender, to, walletOfOwner[(walletSize - 1) - i]);
+            unchecked {
+                i++;
+            }
+        }
+    }
 }
