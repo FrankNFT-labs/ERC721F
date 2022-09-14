@@ -95,5 +95,21 @@ describe("ERC721F Gas Usage", function () {
                 await hardhatToken.connect(addr1).transferTenDesc(owner.address);
             });
         });
+
+        context("mintHundredTransferTenAsc", async function() {
+            it("Transfer first ten tokens to address1 from owner with walletsize 100", async function() {
+                const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
+                await hardhatToken.mintHundred(owner.address);
+                await hardhatToken.transferTenAsc(addr1.address);
+            });
+        });
+
+        context("mintHundredTransferTenDesc", async function() {
+            it("Transfer last ten tokens to address1 from owner with walletsize 100", async function() {
+                const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
+                await hardhatToken.mintHundred(owner.address);
+                await hardhatToken.transferTenDesc(addr1.address); 
+            });
+        });
     });
 });
