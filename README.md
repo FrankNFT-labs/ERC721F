@@ -38,6 +38,7 @@ contract Example is ERC721FCOMMON {
      * Mint your tokens here.
      */
     function mint(uint256 numberOfTokens) external {
+        require(msg.sender==tx.origin,"No Contracts allowed.");
         uint256 supply = totalSupply();
         for(uint256 i; i < numberOfTokens;){
             _mint( msg.sender, supply + i ); // no need to use safeMint as we don't allow contracts.
@@ -64,6 +65,25 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
+### Running tests locally
+1. Copy .env.example and rename to .env
+2. `npm install`
+3. `npx hardhat compile`
+4. `npx hardhat test`
+   
+> **Warning**
+> Since hardhat only compiles a single path at once, you'll probably fail every single test that's executed on solutions located in /examples. This is because those artifacts haven't been created yet.
+These can be created by changing the the sources path in hardhat.config.js to "./examples" and executing step 2 again.
+
+**Note:** `npx hardhat clean` removes the created artifacts
+
+#### Running a single test
+`npx hardhat test ./test/token/ERC721/GasUsage.test.js`
+
+#### Testing gas consumption
+- Enable the creation of a gas report by setting `REPORT_GAS` to `true` in `.env`
+- Toggle the creation of a gas report file by (un)commenting `outputFile` in `hardhat.config.js` 
+- Change the total runs and toggle the optimizer by changing the `solidity` `optimizer` values in `hardhat.config.js`
 
 [license-shield]: https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge
 [license-url]: https://github.com/FrankNFT-labs/ERC721F/blob/main/LICENSE
