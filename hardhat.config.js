@@ -23,6 +23,8 @@ module.exports = {
     enabled: (process.env.REPORT_GAS === "true") ? true : false,
     //outputFile: "gas-report.txt",
     noColors: true,
-    currency: "USD",
+    currency: "TRX",
+    //coinmarketcap: process.env.COINMARKET_API_KEY,
+    gasPrice: 50,
   },
 };
