@@ -13,6 +13,15 @@ contract ERC721FCOMMON is ERC721F, ERC721Payable, ERC2981 {
     constructor(string memory name_, string memory symbol_) ERC721F(name_, symbol_) {
     }
 
+    /**
+     * @notice Indicates whether this contract supports an interface
+     * @dev Returns true if this contract implements the interface defined by
+     * `interfaceId`. See the corresponding
+     * [EIP section](https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified)
+     * to learn more about how these ids are created.
+     *
+     * @return `true` if the contract implements `interfaceID` or is 0x2a55205a, `false` otherwise
+     */
     function supportsInterface(bytes4 _interfaceId)
         public
         view
@@ -25,6 +34,10 @@ contract ERC721FCOMMON is ERC721F, ERC721Payable, ERC2981 {
             super.supportsInterface(_interfaceId);
     }
 
+    /**
+     * @dev it will update the royalties for token
+     * @param _royalties is new percentage of royalties. It should be more than 0 and least 90
+     */
     function setRoyalties(uint16 _royalties) external onlyOwner {
         require(
             _royalties != 0 && _royalties < 90,
@@ -36,6 +49,11 @@ contract ERC721FCOMMON is ERC721F, ERC721Payable, ERC2981 {
         emit RoyaltiesUpdated(_royalties);
     }
 
+    /**
+     * @notice Returns how much royalty is owed and to whom, based on a sale price that may be denominated in any unit of
+     * exchange. The royalty amount is denominated and should be paid in that same unit of exchange.
+     * @param _tokenId is the token being sold and should exist.
+     */
     function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
         public
         view
