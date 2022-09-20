@@ -13,6 +13,15 @@ contract ERC721FCOMMON is ERC721F, ERC721Payable, ERC2981 {
     constructor(string memory name_, string memory symbol_) ERC721F(name_, symbol_) {
     }
 
+    /**
+     * @notice Indicates whether this contract supports an interface
+     * @dev Returns true if this contract implements the interface defined by
+     * `interfaceId`. See the corresponding
+     * [EIP section](https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified)
+     * to learn more about how these ids are created.
+     *
+     * @return `true` if the contract implements `interfaceID` or is 0x2a55205a, `false` otherwise
+     */
     function supportsInterface(bytes4 _interfaceId)
         public
         view
