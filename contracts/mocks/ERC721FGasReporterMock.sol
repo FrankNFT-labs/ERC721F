@@ -51,29 +51,25 @@ contract ERC721FGasReporterMock is ERC721F {
     }
 
     /**
-     * @notice Retrieves the wallet of the sender and transfers the first token stored to `to`
+     * @notice Transfers the first token owned by the sender to `to`
      */
     function transferOneAsc(address to) public {
-        transferFrom(msg.sender, to, this.walletOfOwner(msg.sender)[0]);
+        transferFrom(msg.sender, to, retrieveFirstToken());
     }
 
     /**
-     * @notice Retrieves the wallet of the sender and transfers the last token stored to `to`
+     * @notice Transfers the last token owned by the sender to `to`
      */
     function transferOneDesc(address to) public {
-        uint256[] memory walletOfOwner = this.walletOfOwner(msg.sender);
-        uint walletSize = walletOfOwner.length;
-        transferFrom(msg.sender, to, walletOfOwner[walletSize - 1]);
+        transferFrom(msg.sender, to, retrieveLastToken());
     }
 
-
     /**
-     * @notice Retrieves the wallet of the sender, retrieves the first stored token and transfers it to `to` this happens ten times
+     * @notice Transfers the first token owned by the sender to `to`, does this ten times
      */
     function transferTenAsc(address to) public {
-        uint256[] memory walletOfOwner = this.walletOfOwner(msg.sender);
         for (uint i = 0; i < 10; ) {
-            transferFrom(msg.sender, to, walletOfOwner[i]);
+            transferFrom(msg.sender, to, retrieveFirstToken());
             unchecked {
                 i++;
             }
@@ -81,26 +77,24 @@ contract ERC721FGasReporterMock is ERC721F {
     }
 
     /**
-     * @notice Retrieves the wallet of the sender, retrieves the last stored token and transfers it to `to` this happens ten times
+     * @notice Transfers the last token owned by the sender to `to`, does this ten times
      */
     function transferTenDesc(address to) public {
-        uint256[] memory walletOfOwner = this.walletOfOwner(msg.sender);
-        uint walletSize = walletOfOwner.length;
         for (uint i = 0; i < 10; ) {
-            transferFrom(msg.sender, to, walletOfOwner[(walletSize - 1) - i]);
+            transferFrom(msg.sender, to, retrieveLastToken());
             unchecked {
                 i++;
             }
         }
     }
 
+
     /**
-     * @notice Retrieves the wallet of the sender, retrieves the first stored token and transfers it to `to` this happens fifty times
+     * @notice Transfers the first token owned by the sender to `to`, does this fifty times
      */
     function transferFiftyAsc(address to) public {
-        uint256[] memory walletOfOwner = this.walletOfOwner(msg.sender);
         for (uint i = 0; i < 50; ) {
-            transferFrom(msg.sender, to, walletOfOwner[i]);
+            transferFrom(msg.sender, to, retrieveFirstToken());
             unchecked {
                 i++;
             }
@@ -108,15 +102,47 @@ contract ERC721FGasReporterMock is ERC721F {
     }
 
     /**
-     * @notice Retrieves the wallet of the sender, retrieves the last stored token and transfers it to `to` this happens fifty times
+     * @notice Transfers the last token owned by the sender to `to`, does this fifty times
      */
     function transferFiftyDesc(address to) public {
-        uint256[] memory walletOfOwner = this.walletOfOwner(msg.sender);
-        uint walletSize = walletOfOwner.length;
         for (uint i = 0; i < 50; ) {
-            transferFrom(msg.sender, to, walletOfOwner[(walletSize - 1) - i]);
+            transferFrom(msg.sender, to, retrieveLastToken());
             unchecked {
                 i++;
+            }
+        }
+    }
+
+    /**
+     * @dev Returns first id that is encountered which is owned by the sender
+     */
+    function retrieveFirstToken()
+        internal
+        view
+        returns (uint firstOwnedTokenId)
+    {
+        uint totalSupply = totalSupply();
+        for (uint i = 0; i < totalSupply; ) {
+            if (ownerOf(i) == msg.sender) {
+                return i;
+            }
+            unchecked {
+                i++;
+            }
+        }
+    }
+
+    /**
+     * @dev Returns last id that is encountered which is owned by the sender
+     */
+    function retrieveLastToken() internal view returns (uint lastOwnedTokenId) {
+        uint totalSupply = totalSupply();
+        for (uint i = totalSupply - 1; i > 0; ) {
+            if (ownerOf(i) == msg.sender) {
+                return i;
+            }
+            unchecked {
+                i--;
             }
         }
     }
