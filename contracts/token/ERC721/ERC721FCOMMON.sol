@@ -3,7 +3,7 @@ pragma solidity ^0.8.9 <0.9.0;
 
 import "./ERC721F.sol";
 import "./extensions/ERC721Payable.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.7.0/contracts/token/common/ERC2981.sol";
+import "@openzeppelin/contracts/token/common/ERC2981.sol";
 
 contract ERC721FCOMMON is ERC721F, ERC721Payable, ERC2981 {
     uint16 private royalties = 500;
