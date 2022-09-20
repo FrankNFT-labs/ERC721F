@@ -48,7 +48,7 @@ contract ERC721FCOMMON is ERC721F, ERC721Payable, ERC2981 {
     /**
      * @notice Returns how much royalty is owed and to whom, based on a sale price that may be denominated in any unit of
      * exchange. The royalty amount is denominated and should be paid in that same unit of exchange.
-     * @dev Requires the existence of the token
+     * @param _tokenId is the token being sold and should exist.
      */
     function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
         public
