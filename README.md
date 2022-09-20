@@ -73,7 +73,7 @@ Don't forget to give the project a star! Thanks again!
    
 > **Warning**
 > Since hardhat only compiles a single path at once, you'll probably fail every single test that's executed on solutions located in /examples. This is because those artifacts haven't been created yet.
-These can be created by changing the the sources path in hardhat.config.js to "./examples" and executing step 2 again.
+These can be created by changing the the sources path in hardhat.config.js to "./examples" and executing step 3 again.
 
 **Note:** `npx hardhat clean` removes the created artifacts
 
