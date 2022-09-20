@@ -24,6 +24,29 @@ See the [open issues](https://github.com/FrankNFT-labs/ERC721F/issues) for a ful
 Just import the file directly from Gitlab like this:
 ![Usage](https://github.com/FrankNFT-labs/ERC721F/blob/main/docs/images/ERC721F_usage.png)
 
+This can then be used in your contract as following:
+```solidity
+// SPDX-License-Identifier: MIT 
+pragma solidity ^0.8.9 <0.9.0;
+
+import "https://github.com/FrankNFT-labs/ERC721F/blob/v4.7.0/contracts/token/ERC721/ERC721FCOMMON.sol";
+
+contract Example is ERC721FCOMMON {
+    constructor() ERC721FCOMMON("Example", "Example") {}
+
+    /**
+     * Mint your tokens here.
+     */
+    function mint(uint256 numberOfTokens) external {
+        uint256 supply = totalSupply();
+        for(uint256 i; i < numberOfTokens;){
+            _mint( msg.sender, supply + i ); // no need to use safeMint as we don't allow contracts.
+            unchecked{ i++;}
+        }
+    }
+}
+```
+
 
 <!-- CONTRIBUTING -->
 
