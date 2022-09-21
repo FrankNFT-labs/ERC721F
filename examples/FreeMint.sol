@@ -11,7 +11,7 @@ import "../contracts/token/ERC721/ERC721F.sol";
 contract FreeMint is ERC721F {
 
     uint256 public constant MAX_TOKENS = 10000;
-    uint public constant MAX_PURCHASE = 31; 
+    uint public constant MAX_PURCHASE = 31; // Theoretical limit 1100
     bool public saleIsActive;
 
     
