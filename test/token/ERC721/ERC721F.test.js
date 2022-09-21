@@ -75,6 +75,7 @@ describe("Token contract", function () {
         });
     });
 
+    // In order to properly run this test the mint restriction of FreeMint.sol should be disabled
     describe.skip("Max tokens minted with ONE TRX", function () {
         let totalMint = 1120; // Lower limit of tokens that'll increase in amount and be minted
         this.retries(10); // Amount of times the test will be attempted after failure
