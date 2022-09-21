@@ -12,7 +12,8 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 contract MerkleRoot is ERC721F {
 
     uint256 public constant MAX_TOKENS = 10000;
-    uint public constant MAX_PURCHASE = 31; 
+    uint public constant MAX_PURCHASE = 31;
+    uint public cost = 1 ether;
     bool public saleIsActive;
     bytes32 public root;
 
@@ -27,13 +28,16 @@ contract MerkleRoot is ERC721F {
         saleIsActive = !saleIsActive;
     }
 
-    function mint(bytes32[] calldata merkleProof) external {
+    function mint(bytes32[] calldata merkleProof) external payable {
         require(msg.sender == tx.origin, "No Contracts allowed.");
         uint256 supply = totalSupply();
         require(supply <= MAX_TOKENS, "Purchase would exceed max supply of Tokens");
+
         if (!saleIsActive) {
             require(checkValidity(merkleProof), "Invalid Merkle Proof");
         }
+
+        require(msg.value >= cost, "Insufficient funds");
         _mint(msg.sender, supply + 1);
     }
 
