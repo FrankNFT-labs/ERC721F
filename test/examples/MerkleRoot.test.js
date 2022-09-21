@@ -41,7 +41,9 @@ describe.only("Token Contract", function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
             const merkleProof = createProof(addr1.address);
-            await expect(hardhatToken.connect(addr1).mint(merkleProof)).to.not.be.reverted;
+            await expect(hardhatToken.connect(addr1).mint(merkleProof, {
+                value: ethers.utils.parseEther("1.0")
+            })).to.not.be.reverted;
         });
 
         it("Shouldn't allow minting by unwhitelisted accounts during inactive sale period", async function () {
@@ -52,7 +54,7 @@ describe.only("Token Contract", function () {
         });
     });
 
-    describe("Minting", function () {
+    describe("During Sale Minting", function () {
         it("Should allow minting by anyone whitelisted or not during active sale period", async function () {
             const { hardhatToken, addr2, addr7 } = await loadFixture(deployTokenFixture);
 
@@ -61,8 +63,43 @@ describe.only("Token Contract", function () {
 
             await hardhatToken.flipSaleState();
 
-            await expect(hardhatToken.connect(addr2).mint(merkleProofAddr2)).to.not.be.reverted;
-            await expect(hardhatToken.connect(addr7).mint(merkleProofAddr7)).to.not.be.reverted;
+            await expect(hardhatToken.connect(addr2).mint(merkleProofAddr2, {
+                value: ethers.utils.parseEther("1.0")
+            })).to.not.be.reverted;
+            await expect(hardhatToken.connect(addr7).mint(merkleProofAddr7, {
+                value: ethers.utils.parseEther("1.0")
+            })).to.not.be.reverted;
+        });
+    });
+
+    describe("Paid Minting", function() {
+        it("Shouldn't allow transactions with less than the asked ether price", async function() {
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+
+            const merkleProof = createProof(addr1.address);
+            await expect(hardhatToken.connect(addr1).mint(merkleProof)).to.be.revertedWith("Insufficient funds");
+        });
+
+        it("Should transfer the paid ether to the contract", async function() {
+            const { hardhatToken, addr7 } = await loadFixture(deployTokenFixture);
+
+            const merkleProof = createProof(addr7.address);
+
+            await hardhatToken.flipSaleState();
+
+            await expect(hardhatToken.connect(addr7).mint(merkleProof, {
+                value: ethers.utils.parseEther("1")
+            })).to.changeTokenBalance(hardhatToken, addr7, 1);
+        });
+
+        it("Shouldn't overcharge the minting account", async function() {
+            const { hardhatToken, addr3 } = await loadFixture(deployTokenFixture);
+
+            const merkleProof = createProof(addr3.address);
+
+            await expect(hardhatToken.connect(addr3).mint(merkleProof, {
+                value: ethers.utils.parseEther("20")
+            })).to.changeTokenBalance(hardhatToken, addr3, 20);
         });
     });
 });
