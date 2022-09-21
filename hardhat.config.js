@@ -25,6 +25,6 @@ module.exports = {
     noColors: true,
     currency: "TRX",
     //coinmarketcap: process.env.COINMARKET_API_KEY,
-    gasPrice: 50,
+    //gasPrice: 50,
   },
 };
