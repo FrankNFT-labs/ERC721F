@@ -57,11 +57,11 @@ describe("Token contract", function () {
 
             expect(Object.keys(walletOfOwner).length).to.equal(totalMintedTokens);
         });
-        
-        it("Shouldn't assign non-owner mints to owner however should increase totalSupply", async function() {
+
+        it("Shouldn't assign non-owner mints to owner however should increase totalSupply", async function () {
             const totalOwnerMints = 3;
             const totalNonOwerMints = 4;
-            const {hardhatToken, owner, addr1} = await loadFixture(deployTokenFixture);
+            const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.flipSaleState();
             await hardhatToken.mint(totalOwnerMints);
@@ -73,5 +73,22 @@ describe("Token contract", function () {
             expect(totalSupply).to.equal(totalOwnerMints + totalNonOwerMints);
             expect(Object.keys(walletOfOwner).length).to.equal(totalSupply - totalNonOwerMints);
         });
+    });
+
+    describe.skip("Max tokens minted with ONE TRX", function () {
+        let totalMint = 1120; // Lower limit of tokens that'll increase in amount and be minted
+        this.retries(10); // Amount of times the test will be attempted after failure
+
+        beforeEach(function () {
+            totalMint = totalMint + 1; // Increase total amount of tokens that are getting minted
+        })
+
+        // Test passes when `totalMint` is high enough to transcend the gas limit, this amount will then be displayed in the console 
+        it("Should eventually fail indicating the total tokens minted", async function () {
+            const { hardhatToken } = await loadFixture(deployTokenFixture);
+            await hardhatToken.flipSaleState();
+            await expect(hardhatToken.mint(totalMint)).to.be.reverted;
+            console.log(totalMint);
+        })
     });
 });
