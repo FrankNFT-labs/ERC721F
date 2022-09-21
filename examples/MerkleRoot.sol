@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 /**
  * @title MerkleRoot
  *
- * @dev Example implementation of [ERC721F]
+ * @dev Example implementation of [ERC721F] with MerkleRoot validation for whitelisted accounts that can take part in the pre-sale
  */
 contract MerkleRoot is ERC721F {
     uint256 public constant MAX_TOKENS = 10000;
@@ -70,7 +70,7 @@ contract MerkleRoot is ERC721F {
      * @notice Mints a certain number of tokens
      * @param numberOfTokens Total tokens to be minted, must be larger than 0 and at most 30
      * @param merkleProof Proof that an address is part of the whitelisted pre-sale addresses
-     * @dev Uses MerkleProof to determine whether an address is allowed to mint during the pre-sale
+     * @dev Uses MerkleProof to determine whether an address is allowed to mint during the pre-sale, non-mint name is due to hardhat being unable to handle function overloading
      */
     function mintPreSale(uint256 numberOfTokens, bytes32[] calldata merkleProof)
         external
