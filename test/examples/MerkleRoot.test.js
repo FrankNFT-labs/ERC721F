@@ -100,6 +100,15 @@ describe.only("Token Contract", function () {
             })).to.be.revertedWith("Insufficient funds");
         });
 
+        it("Shouldn't allow minting by unwhitelisted accounts during inactive sale period", async function () {
+            const { hardhatToken, addr6 } = await loadFixture(deployTokenFixture);
+
+            const merkleProof = createProof(addr6.address);
+            await hardhatToken.flipPreSaleState();
+
+            await expect(hardhatToken.connect(addr6).mintPreSale(1, merkleProof)).to.be.revertedWith("Invalid Merkle Proof");
+        });
+
         it("Should allow minting by whitelisted accounts during active pre-sale period", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
@@ -109,15 +118,6 @@ describe.only("Token Contract", function () {
             await expect(hardhatToken.connect(addr1).mintPreSale(1, merkleProof, {
                 value: ethers.utils.parseEther("1.0")
             })).to.not.be.reverted;
-        });
-
-        it("Shouldn't allow minting by unwhitelisted accounts during inactive sale period", async function () {
-            const { hardhatToken, addr6 } = await loadFixture(deployTokenFixture);
-
-            const merkleProof = createProof(addr6.address);
-            await hardhatToken.flipPreSaleState();
-
-            await expect(hardhatToken.connect(addr6).mintPreSale(1, merkleProof)).to.be.revertedWith("Invalid Merkle Proof");
         });
     });
 
