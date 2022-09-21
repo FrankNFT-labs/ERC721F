@@ -76,7 +76,7 @@ describe("Token contract", function () {
     });
 
     // In order to properly run this test the mint restriction of FreeMint.sol should be disabled
-    describe.skip("Max tokens minted with ONE TRX", function () {
+    describe.skip("Max tokens minted in ONE TRX", function () {
         let totalMint = 1120; // Lower limit of tokens that'll increase in amount and be minted
         this.retries(10); // Amount of times the test will be attempted after failure
 
@@ -84,7 +84,7 @@ describe("Token contract", function () {
             totalMint = totalMint + 1; // Increase total amount of tokens that are getting minted
         })
 
-        // Test passes when `totalMint` is high enough to transcend the gas limit, this amount will then be displayed in the console 
+        // Test passes when `totalMint` is high enough to transcend the gas limit of a single transaction, this amount will then be displayed in the console 
         it("Should eventually fail indicating the total tokens minted", async function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
             await hardhatToken.flipSaleState();
