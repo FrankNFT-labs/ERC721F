@@ -20,6 +20,13 @@ contract MerkleRoot is ERC721F {
         root = _root;
     }
 
+    /**
+     * Changes the state of saleIsActive from true to false and false to true
+     */
+    function flipSaleState() external onlyOwner {
+        saleIsActive = !saleIsActive;
+    }
+
     function mint(bytes32[] calldata merkleProof) external {
         require(msg.sender == tx.origin, "No Contracts allowed.");
         uint256 supply = totalSupply();
@@ -30,7 +37,7 @@ contract MerkleRoot is ERC721F {
         _mint(msg.sender, supply + 1);
     }
 
-    function checkValidity(bytes32[] calldata merkleProof) public view returns (bool) {
+    function checkValidity(bytes32[] calldata merkleProof) internal view returns (bool) {
         bytes32 leafToCheck = keccak256(abi.encodePacked(msg.sender));
         return MerkleProof.verify(merkleProof, root, leafToCheck);
     }
