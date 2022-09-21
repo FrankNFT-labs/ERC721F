@@ -119,6 +119,39 @@ describe.only("Token Contract", function () {
                 value: ethers.utils.parseEther("1.0")
             })).to.not.be.reverted;
         });
+
+        it("Should increase the total cost when requesting more tokens to be minted", async function() {
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+
+            const merkleProof = createProof(addr1.address);
+            await hardhatToken.flipPreSaleState();
+
+            await expect(hardhatToken.connect(addr1).mintPreSale(5, merkleProof, {
+                value: ethers.utils.parseEther("1.0")
+            })).to.be.revertedWith("Insufficient funds");
+        });
+
+        it("Should transfer the transaction cost to the contract", async function() {
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+
+            const merkleProof = createProof(addr1.address);
+            await hardhatToken.flipPreSaleState();
+
+            await expect(hardhatToken.connect(addr1).mintPreSale(5, merkleProof, {
+                value: ethers.utils.parseEther("5.0")
+            })).to.changeTokenBalance(hardhatToken, addr1, 5);
+        }); 
+
+        it("Shouldn't overcharge the account minting", async function() {
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+
+            const merkleProof = createProof(addr1.address);
+            await hardhatToken.flipPreSaleState();
+
+            await expect(hardhatToken.connect(addr1).mintPreSale(5, merkleProof, {
+                value: ethers.utils.parseEther("50.0")
+            })).to.changeTokenBalance(hardhatToken, addr1, 5);
+        });
     });
 
     describe("During Sale Minting", function () { 
