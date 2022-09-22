@@ -24,5 +24,7 @@ module.exports = {
     //outputFile: "gas-report.txt",
     noColors: true,
     currency: "USD",
+    //coinmarketcap: process.env.COINMARKET_API_KEY,
+    //gasPrice: 50,
   },
 };
