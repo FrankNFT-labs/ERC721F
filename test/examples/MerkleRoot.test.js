@@ -143,7 +143,7 @@ describe.only("Token Contract", function () {
             })).to.changeEtherBalance(hardhatToken.address, transferAmount);
         }); 
 
-        it("Shouldn't overcharge the account minting", async function() {
+        it("Should revert when account overcharges transfer costs", async function() {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
             const merkleProof = createProof(addr1.address);
@@ -151,7 +151,7 @@ describe.only("Token Contract", function () {
 
             await expect(hardhatToken.connect(addr1).mintPreSale(5, merkleProof, {
                 value: ethers.utils.parseEther("50.0")
-            })).to.changeTokenBalance(hardhatToken, addr1, 5);
+            })).to.revertedWith("Overpaying not allowed");
         });
 
         it("Should increase the token wallet of the acccount minting", async function() {
@@ -218,14 +218,14 @@ describe.only("Token Contract", function () {
             })).to.changeEtherBalance(hardhatToken, transferAmount);
         }); 
 
-        it("Shouldn't overcharge the account minting", async function() {
+        it("Should revert when account overcharges transfer costs", async function() {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.flipSaleState();
 
             await expect(hardhatToken.connect(addr1).mint(5, {
                 value: ethers.utils.parseEther("50.0")
-            })).to.changeTokenBalance(hardhatToken, addr1, 5);
+            })).to.revertedWith("Overpaying not allowed");
         });
 
         it("Should increase the token wallet of the acccount minting", async function() {

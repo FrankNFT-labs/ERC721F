@@ -18,6 +18,8 @@ contract MerkleRoot is ERC721F, ERC721Payable {
     bool public saleIsActive;
     bytes32 public root;
 
+    error OverCharging(uint256 transferred, uint256 required);
+
     constructor(bytes32 _root) ERC721F("MerkleRoot Pre-Sale", "Merkle") {
         root = _root;
     }
@@ -58,7 +60,10 @@ contract MerkleRoot is ERC721F, ERC721Payable {
             "Purchase would exceed max supply of Tokens"
         );
 
-        require(msg.value >= cost * numberOfTokens, "Insufficient funds");
+        uint transferAmount = msg.value;
+        uint totalCost = cost * numberOfTokens;
+        require(transferAmount >= totalCost, "Insufficient funds");
+        require(transferAmount == totalCost, "Overpaying not allowed");
         for (uint256 i; i < numberOfTokens; ) {
             _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
             unchecked {
@@ -91,7 +96,10 @@ contract MerkleRoot is ERC721F, ERC721Payable {
             "Purchase would exceed max supply of Tokens"
         );
 
-        require(msg.value >= cost * numberOfTokens, "Insufficient funds");
+        uint transferAmount = msg.value;
+        uint totalCost = cost * numberOfTokens;
+        require(transferAmount >= totalCost, "Insufficient funds");
+        require(transferAmount == totalCost, "Overpaying not allowed");
         for (uint256 i; i < numberOfTokens; ) {
             _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
             unchecked {
