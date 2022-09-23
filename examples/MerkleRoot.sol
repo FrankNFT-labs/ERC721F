@@ -79,6 +79,7 @@ contract MerkleRoot is ERC721F, ERC721Payable {
     {
         require(msg.sender == tx.origin, "No Contracts allowed.");
         require(preSaleIsActive, "PreSale is not active yet");
+        require(checkValidity(merkleProof), "Invalid Merkle Proof");
         require(numberOfTokens != 0, "numberOfNfts cannot be 0");
         require(
             numberOfTokens < MAX_PURCHASE,
@@ -89,10 +90,6 @@ contract MerkleRoot is ERC721F, ERC721Payable {
             supply <= MAX_TOKENS,
             "Purchase would exceed max supply of Tokens"
         );
-
-        if (!saleIsActive) {
-            require(checkValidity(merkleProof), "Invalid Merkle Proof");
-        }
 
         require(msg.value >= cost * numberOfTokens, "Insufficient funds");
         for (uint256 i; i < numberOfTokens; ) {
