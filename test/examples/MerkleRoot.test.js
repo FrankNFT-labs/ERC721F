@@ -215,6 +215,27 @@ describe.only("Token Contract", function () {
             })).to.changeTokenBalance(hardhatToken, addr1, 5);
         });
     });
+
+    describe("Withdraw", function() {
+        it("Should only be executable by owner", async function() {
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+
+            await expect(hardhatToken.withdraw(0)).to.not.be.reverted;
+            await expect(hardhatToken.connect(addr1).withdraw(0)).to.be.reverted;
+        });
+
+        it("Should increase the walletbalance of the owner and decrease the wallet of the contract", async function() {
+            const transferAmount = ethers.utils.parseEther("5");
+            const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
+
+            await hardhatToken.flipSaleState();
+            await hardhatToken.connect(addr1).mint(5, {
+                value: transferAmount
+            });
+
+            await expect(hardhatToken.withdraw(transferAmount)).to.changeEtherBalances([hardhatToken.address, owner], [ethers.utils.parseEther("-5"), transferAmount]);
+        });
+    });
 });
 
 function createMerkleRoot(presaleWhiteListAddresses) {
