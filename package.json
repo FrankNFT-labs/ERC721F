@@ -8,7 +8,6 @@
     "@openzeppelin/contracts": "^4.7.3",
     "dotenv": "^16.0.2",
     "keccak256": "^1.0.6",
-    "merkletreejs": "^0.2.32",
-    "web3": "^1.8.0"
+    "merkletreejs": "^0.2.32"
   }
 }
