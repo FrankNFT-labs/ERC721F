@@ -22,6 +22,20 @@ contract MerkleRoot is ERC721F, ERC721Payable {
         root = _root;
     }
 
+    modifier validMintRequest(uint256 numberOfTokens) {
+        require(msg.sender == tx.origin, "No Contracts allowed.");
+        require(numberOfTokens != 0, "numberOfNfts cannot be 0");
+        require(
+            numberOfTokens < MAX_PURCHASE,
+            "Can only mint 30 tokens at a time"
+        );
+        require(
+            tokenPrice * numberOfTokens <= msg.value,
+            "Ether value sent is not correct"
+        );
+        _;
+    }
+
     function setRoot(bytes32 _root) external onlyOwner {
         root = _root;
     }
@@ -48,23 +62,16 @@ contract MerkleRoot is ERC721F, ERC721Payable {
      * @notice Mints a certain number of tokens
      * @param numberOfTokens Total tokens to be minted, must be larger than 0 and at most 30
      */
-    function mint(uint256 numberOfTokens) external payable {
-        require(msg.sender == tx.origin, "No Contracts allowed.");
+    function mint(uint256 numberOfTokens)
+        external
+        payable
+        validMintRequest(numberOfTokens)
+    {
         require(saleIsActive, "Sale NOT active yet");
-        require(numberOfTokens != 0, "numberOfNfts cannot be 0");
-        require(
-            numberOfTokens < MAX_PURCHASE,
-            "Can only mint 30 tokens at a time"
-        );
         uint256 supply = totalSupply();
         require(
             supply + numberOfTokens <= MAX_TOKENS,
             "Purchase would exceed max supply of Tokens"
-        );
-
-        require(
-            tokenPrice * numberOfTokens <= msg.value,
-            "Ether value sent is not correct"
         );
 
         for (uint256 i; i < numberOfTokens; ) {
@@ -84,25 +91,15 @@ contract MerkleRoot is ERC721F, ERC721Payable {
     function mintPreSale(uint256 numberOfTokens, bytes32[] calldata merkleProof)
         external
         payable
+        validMintRequest(numberOfTokens)
     {
-        require(msg.sender == tx.origin, "No Contracts allowed.");
         require(preSaleIsActive, "PreSale is not active yet");
-        require(checkValidity(merkleProof), "Invalid Merkle Proof");
-        require(numberOfTokens != 0, "numberOfNfts cannot be 0");
-        require(
-            numberOfTokens < MAX_PURCHASE,
-            "Can only mint 30 tokens at a time"
-        );
         uint256 supply = totalSupply();
         require(
-            supply <= MAX_TOKENS,
+            supply + numberOfTokens <= MAX_TOKENS,
             "Purchase would exceed max supply of Tokens"
         );
-
-        require(
-            tokenPrice * numberOfTokens <= msg.value,
-            "Ether value sent is not correct"
-        );
+        require(checkValidity(merkleProof), "Invalid Merkle Proof");
 
         for (uint256 i; i < numberOfTokens; ) {
             _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
