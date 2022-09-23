@@ -100,7 +100,7 @@ describe.only("Token Contract", function () {
             })).to.be.revertedWith("Insufficient funds");
         });
 
-        it("Shouldn't allow minting by unwhitelisted accounts during inactive sale period", async function () {
+        it("Shouldn't allow minting by unwhitelisted accounts during pre-sale period", async function () {
             const { hardhatToken, addr6 } = await loadFixture(deployTokenFixture);
 
             const merkleProof = createProof(addr6.address);
@@ -143,7 +143,7 @@ describe.only("Token Contract", function () {
             })).to.changeEtherBalance(hardhatToken.address, transferAmount);
         });
 
-        it("Should revert when account overcharges transfer costs", async function () {
+        it("Should revert when account overpays transfer costs", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
             const merkleProof = createProof(addr1.address);
@@ -174,7 +174,7 @@ describe.only("Token Contract", function () {
             await expect(hardhatToken.connect(addr6).mint(1)).to.be.revertedWith("Sale NOT active yet");
         });
 
-        it("Shouldn't allow minting by whitelisted accounts which don't send enough funds", async function () {
+        it("Shouldn't allow minting by accounts which don't send enough funds", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.flipSaleState();
@@ -218,7 +218,7 @@ describe.only("Token Contract", function () {
             })).to.changeEtherBalance(hardhatToken, transferAmount);
         });
 
-        it("Should revert when account overcharges transfer costs", async function () {
+        it("Should revert when account overpays transfer costs", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.flipSaleState();
