@@ -133,13 +133,14 @@ describe.only("Token Contract", function () {
 
         it("Should transfer the transaction cost to the contract", async function() {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+            const transferAmount = ethers.utils.parseEther("5");
 
             const merkleProof = createProof(addr1.address);
             await hardhatToken.flipPreSaleState();
 
             await expect(hardhatToken.connect(addr1).mintPreSale(5, merkleProof, {
-                value: ethers.utils.parseEther("5.0")
-            })).to.changeTokenBalance(hardhatToken, addr1, 5);
+                value: transferAmount
+            })).to.changeEtherBalance(hardhatToken.address, transferAmount);
         }); 
 
         it("Shouldn't overcharge the account minting", async function() {
@@ -150,6 +151,17 @@ describe.only("Token Contract", function () {
 
             await expect(hardhatToken.connect(addr1).mintPreSale(5, merkleProof, {
                 value: ethers.utils.parseEther("50.0")
+            })).to.changeTokenBalance(hardhatToken, addr1, 5);
+        });
+
+        it("Should increase the token wallet of the acccount minting", async function() {
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+
+            const merkleProof = createProof(addr1.address);
+            await hardhatToken.flipPreSaleState();
+
+            await expect(hardhatToken.connect(addr1).mintPreSale(5, merkleProof, {
+                value: ethers.utils.parseEther("5")
             })).to.changeTokenBalance(hardhatToken, addr1, 5);
         });
     });
@@ -197,12 +209,13 @@ describe.only("Token Contract", function () {
 
         it("Should transfer the transaction cost to the contract", async function() {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+            const transferAmount = ethers.utils.parseEther("5");
 
             await hardhatToken.flipSaleState();
 
             await expect(hardhatToken.connect(addr1).mint(5, {
-                value: ethers.utils.parseEther("5.0")
-            })).to.changeTokenBalance(hardhatToken, addr1, 5);
+                value: transferAmount
+            })).to.changeEtherBalance(hardhatToken, transferAmount);
         }); 
 
         it("Shouldn't overcharge the account minting", async function() {
@@ -212,6 +225,16 @@ describe.only("Token Contract", function () {
 
             await expect(hardhatToken.connect(addr1).mint(5, {
                 value: ethers.utils.parseEther("50.0")
+            })).to.changeTokenBalance(hardhatToken, addr1, 5);
+        });
+
+        it("Should increase the token wallet of the acccount minting", async function() {
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+
+            await hardhatToken.flipSaleState();
+
+            await expect(hardhatToken.connect(addr1).mint(5, {
+                value: ethers.utils.parseEther("5")
             })).to.changeTokenBalance(hardhatToken, addr1, 5);
         });
     });
