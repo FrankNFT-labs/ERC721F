@@ -13,12 +13,16 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 contract MerkleRoot is ERC721F, ERC721Payable {
     uint256 public constant MAX_TOKENS = 10000;
     uint public constant MAX_PURCHASE = 31;
-    uint public cost = 1 ether;
+    uint public tokenPrice = 1 ether;
     bool public preSaleIsActive;
     bool public saleIsActive;
     bytes32 public root;
 
     constructor(bytes32 _root) ERC721F("MerkleRoot Pre-Sale", "Merkle") {
+        root = _root;
+    }
+
+    function setRoot(bytes32 _root) external onlyOwner {
         root = _root;
     }
 
@@ -58,10 +62,10 @@ contract MerkleRoot is ERC721F, ERC721Payable {
             "Purchase would exceed max supply of Tokens"
         );
 
-        uint transferAmount = msg.value;
-        uint totalCost = cost * numberOfTokens;
-        require(transferAmount >= totalCost, "Insufficient funds");
-        require(transferAmount == totalCost, "Overpaying not allowed");
+        require(
+            tokenPrice * numberOfTokens <= msg.value,
+            "Ether value sent is not correct"
+        );
 
         for (uint256 i; i < numberOfTokens; ) {
             _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
@@ -95,11 +99,11 @@ contract MerkleRoot is ERC721F, ERC721Payable {
             "Purchase would exceed max supply of Tokens"
         );
 
-        uint transferAmount = msg.value;
-        uint totalCost = cost * numberOfTokens;
-        require(transferAmount >= totalCost, "Insufficient funds");
-        require(transferAmount == totalCost, "Overpaying not allowed");
-        
+        require(
+            tokenPrice * numberOfTokens <= msg.value,
+            "Ether value sent is not correct"
+        );
+
         for (uint256 i; i < numberOfTokens; ) {
             _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
             unchecked {
