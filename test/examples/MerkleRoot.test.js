@@ -104,7 +104,9 @@ describe.only("Token Contract", function () {
 
             const merkleProof = createProof(addr1.address);
 
-            await expect(hardhatToken.connect(addr1).mintPreSale(1, merkleProof)).to.be.revertedWith("PreSale is not active yet");
+            await expect(hardhatToken.connect(addr1).mintPreSale(1, merkleProof, {
+                value: ethers.utils.parseEther("1")
+            })).to.be.revertedWith("PreSale is not active yet");
         });
 
         it("Shouldn't allow minting by whitelisted accounts which don't send enough funds", async function () {
@@ -124,7 +126,9 @@ describe.only("Token Contract", function () {
             const merkleProof = createProof(addr6.address);
             await hardhatToken.flipPreSaleState();
 
-            await expect(hardhatToken.connect(addr6).mintPreSale(1, merkleProof)).to.be.revertedWith("Invalid Merkle Proof");
+            await expect(hardhatToken.connect(addr6).mintPreSale(1, merkleProof, {
+                value: ethers.utils.parseEther("1")
+            })).to.be.revertedWith("Invalid Merkle Proof");
         });
 
         it("Should allow minting by whitelisted accounts during active pre-sale period", async function () {
@@ -187,9 +191,14 @@ describe.only("Token Contract", function () {
     describe("During Sale Minting", function () {
         it("Shouldn't allow minting by anyone during inactive sale period", async function () {
             const { hardhatToken, addr1, addr6 } = await loadFixture(deployTokenFixture);
+            const transferAmount = ethers.utils.parseEther("1");
 
-            await expect(hardhatToken.connect(addr1).mint(1)).to.be.revertedWith("Sale NOT active yet");
-            await expect(hardhatToken.connect(addr6).mint(1)).to.be.revertedWith("Sale NOT active yet");
+            await expect(hardhatToken.connect(addr1).mint(1, {
+                value: transferAmount
+            })).to.be.revertedWith("Sale NOT active yet");
+            await expect(hardhatToken.connect(addr6).mint(1, {
+                value: transferAmount
+            })).to.be.revertedWith("Sale NOT active yet");
         });
 
         it("Shouldn't allow minting by accounts which don't send enough funds", async function () {
