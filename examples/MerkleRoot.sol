@@ -62,6 +62,7 @@ contract MerkleRoot is ERC721F, ERC721Payable {
         uint totalCost = cost * numberOfTokens;
         require(transferAmount >= totalCost, "Insufficient funds");
         require(transferAmount == totalCost, "Overpaying not allowed");
+
         for (uint256 i; i < numberOfTokens; ) {
             _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
             unchecked {
@@ -98,6 +99,7 @@ contract MerkleRoot is ERC721F, ERC721Payable {
         uint totalCost = cost * numberOfTokens;
         require(transferAmount >= totalCost, "Insufficient funds");
         require(transferAmount == totalCost, "Overpaying not allowed");
+        
         for (uint256 i; i < numberOfTokens; ) {
             _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
             unchecked {
