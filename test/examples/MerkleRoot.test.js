@@ -35,15 +35,15 @@ describe.only("Token Contract", function () {
             expect(await hardhatToken.saleIsActive()).to.be.false;
         });
 
-        it("Should have set isPreSaleActive to false", async function() {
+        it("Should have set isPreSaleActive to false", async function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
             expect(await hardhatToken.preSaleIsActive()).to.be.false;
         });
     });
 
-    describe("SaleFlipping", function() {
-        it("Should flip saleIsActive to true", async function() {
+    describe("SaleFlipping", function () {
+        it("Should flip saleIsActive to true", async function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.flipSaleState();
@@ -51,7 +51,7 @@ describe.only("Token Contract", function () {
             expect(await hardhatToken.saleIsActive()).to.be.true;
         });
 
-        it("Should flip saleIsActive to false if flipping twice", async function() {
+        it("Should flip saleIsActive to false if flipping twice", async function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.flipSaleState();
@@ -61,8 +61,8 @@ describe.only("Token Contract", function () {
         });
     });
 
-    describe("PreSaleFlipping", function() {
-        it("Should flip preSaleIsActive to true", async function() {
+    describe("PreSaleFlipping", function () {
+        it("Should flip preSaleIsActive to true", async function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.flipPreSaleState();
@@ -70,7 +70,7 @@ describe.only("Token Contract", function () {
             expect(await hardhatToken.preSaleIsActive()).to.be.true;
         });
 
-        it("Should flip preSaleIsActive to false when flipping twice", async function() {
+        it("Should flip preSaleIsActive to false when flipping twice", async function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.flipPreSaleState();
@@ -81,7 +81,7 @@ describe.only("Token Contract", function () {
     });
 
     describe("Pre-Sale Minting", function () {
-        it("Shouldn't allow minting by whitelisted accounts during inactive pre-sale period", async function() {
+        it("Shouldn't allow minting by whitelisted accounts during inactive pre-sale period", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
             const merkleProof = createProof(addr1.address);
@@ -89,8 +89,8 @@ describe.only("Token Contract", function () {
             await expect(hardhatToken.connect(addr1).mintPreSale(1, merkleProof)).to.be.revertedWith("PreSale is not active yet");
         });
 
-        it ("Shouldn't allow minting by whitelisted accounts which don't send enough funds", async function() {
-            const { hardhatToken , addr1 } = await loadFixture(deployTokenFixture);
+        it("Shouldn't allow minting by whitelisted accounts which don't send enough funds", async function () {
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
             const merkleProof = createProof(addr1.address);
             await hardhatToken.flipPreSaleState();
@@ -120,7 +120,7 @@ describe.only("Token Contract", function () {
             })).to.not.be.reverted;
         });
 
-        it("Should increase the total cost when requesting more tokens to be minted", async function() {
+        it("Should increase the total cost when requesting more tokens to be minted", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
             const merkleProof = createProof(addr1.address);
@@ -131,7 +131,7 @@ describe.only("Token Contract", function () {
             })).to.be.revertedWith("Insufficient funds");
         });
 
-        it("Should transfer the transaction cost to the contract", async function() {
+        it("Should transfer the transaction cost to the contract", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
             const transferAmount = ethers.utils.parseEther("5");
 
@@ -141,9 +141,9 @@ describe.only("Token Contract", function () {
             await expect(hardhatToken.connect(addr1).mintPreSale(5, merkleProof, {
                 value: transferAmount
             })).to.changeEtherBalance(hardhatToken.address, transferAmount);
-        }); 
+        });
 
-        it("Should revert when account overcharges transfer costs", async function() {
+        it("Should revert when account overcharges transfer costs", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
             const merkleProof = createProof(addr1.address);
@@ -154,7 +154,7 @@ describe.only("Token Contract", function () {
             })).to.revertedWith("Overpaying not allowed");
         });
 
-        it("Should increase the token wallet of the acccount minting", async function() {
+        it("Should increase the token wallet of the acccount minting", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
             const merkleProof = createProof(addr1.address);
@@ -166,16 +166,16 @@ describe.only("Token Contract", function () {
         });
     });
 
-    describe("During Sale Minting", function () { 
-        it("Shouldn't allow minting by anyone during inactive sale period", async function() {
+    describe("During Sale Minting", function () {
+        it("Shouldn't allow minting by anyone during inactive sale period", async function () {
             const { hardhatToken, addr1, addr6 } = await loadFixture(deployTokenFixture);
 
             await expect(hardhatToken.connect(addr1).mint(1)).to.be.revertedWith("Sale NOT active yet");
             await expect(hardhatToken.connect(addr6).mint(1)).to.be.revertedWith("Sale NOT active yet");
         });
 
-        it ("Shouldn't allow minting by whitelisted accounts which don't send enough funds", async function() {
-            const { hardhatToken , addr1 } = await loadFixture(deployTokenFixture);
+        it("Shouldn't allow minting by whitelisted accounts which don't send enough funds", async function () {
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.flipSaleState();
 
@@ -197,7 +197,7 @@ describe.only("Token Contract", function () {
             })).to.not.be.reverted;
         });
 
-        it("Should increase the total cost when requesting more tokens to be minted", async function() {
+        it("Should increase the total cost when requesting more tokens to be minted", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.flipSaleState();
@@ -207,7 +207,7 @@ describe.only("Token Contract", function () {
             })).to.be.revertedWith("Insufficient funds");
         });
 
-        it("Should transfer the transaction cost to the contract", async function() {
+        it("Should transfer the transaction cost to the contract", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
             const transferAmount = ethers.utils.parseEther("5");
 
@@ -216,9 +216,9 @@ describe.only("Token Contract", function () {
             await expect(hardhatToken.connect(addr1).mint(5, {
                 value: transferAmount
             })).to.changeEtherBalance(hardhatToken, transferAmount);
-        }); 
+        });
 
-        it("Should revert when account overcharges transfer costs", async function() {
+        it("Should revert when account overcharges transfer costs", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.flipSaleState();
@@ -228,7 +228,7 @@ describe.only("Token Contract", function () {
             })).to.revertedWith("Overpaying not allowed");
         });
 
-        it("Should increase the token wallet of the acccount minting", async function() {
+        it("Should increase the token wallet of the acccount minting", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.flipSaleState();
@@ -239,15 +239,15 @@ describe.only("Token Contract", function () {
         });
     });
 
-    describe("Withdraw", function() {
-        it("Should only be executable by owner", async function() {
+    describe("Withdraw", function () {
+        it("Should only be executable by owner", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
             await expect(hardhatToken.withdraw(0)).to.not.be.reverted;
             await expect(hardhatToken.connect(addr1).withdraw(0)).to.be.reverted;
         });
 
-        it("Should increase the walletbalance of the owner and decrease the wallet of the contract", async function() {
+        it("Should increase the walletbalance of the owner and decrease the wallet of the contract", async function () {
             const transferAmount = ethers.utils.parseEther("5");
             const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
 
