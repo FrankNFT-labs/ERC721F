@@ -15,7 +15,6 @@ const rootHash = merkleTree.getRoot().toString('hex')
 console.log("WhiteList Merkle Tree\n", merkleTree.toString());
 console.log("Roothash:\n", rootHash);
 
-
 console.log("Proof:\n", createProof("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"));
 
 function createProof(address) {
