@@ -118,7 +118,9 @@ contract MerkleRoot is ERC721F, ERC721Payable {
         return MerkleProof.verify(merkleProof, root, leafToCheck);
     }
 
-    function withdraw(uint256 amount) external onlyOwner {
-        _withdraw(msg.sender, amount);
+    function withdraw() external onlyOwner {
+        uint256 balance = address(this).balance;
+        require(balance > 0, "Insufficient balance");
+        _withdraw(owner(), balance);
     }
 }
