@@ -22,7 +22,7 @@ describe("ChainLink", function () {
     }
 
     describe("Events", function () {
-        it("Should request Random numbers successfully", async () => {
+        it("Contract should emit RequestRandomness event", async function() {
             const { hardhatToken, owner } = await deployTokenFixture();
 
             await expect(hardhatToken.mint(1)).to.emit(hardhatToken, "RequestedRandomness").withArgs(BigNumber.from(1), owner.address);
