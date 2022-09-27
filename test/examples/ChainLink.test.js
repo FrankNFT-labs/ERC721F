@@ -39,12 +39,23 @@ describe("ChainLink", function () {
             const { hardhatToken, hardhatVrfMock } = await deployTokenFixture();
 
             const tx = await hardhatToken.mint(1);
-            const { events } = await tx.wait();
-            const [reqId] = events.filter(x => x.event == "RequestedRandomness")[0].args;
+            const requestId = await retrieveRequestId(tx);
 
             await expect(
-                hardhatVrfMock.fulfillRandomWords(reqId, hardhatToken.address)
+                hardhatVrfMock.fulfillRandomWords(requestId, hardhatToken.address)
             ).to.emit(hardhatVrfMock, "RandomWordsFulfilled");
         });
     });
+
+    describe("fulfillRandomWords", async function() {
+        
+    });
 });
+
+async function retrieveRequestId(tx) {
+    const { events } = await tx.wait();
+
+    const [requestId] = events.filter(x => x.event === "RequestedRandomness")[0].args;
+
+    return requestId;
+}
