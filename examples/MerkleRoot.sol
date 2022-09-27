@@ -119,6 +119,6 @@ contract MerkleRoot is ERC721F, ERC721Payable {
     }
 
     function withdraw() external onlyOwner {
-        _withdraw(msg.sender, address(this).balance);
+        _withdraw(owner(), address(this).balance);
     }
 }
