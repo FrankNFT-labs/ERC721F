@@ -21,34 +21,36 @@ describe("ChainLink", function () {
         return { Token, hardhatToken, VRFMock, hardhatVrfMock, owner };
     }
 
-    describe("Events", function () {
-        it("Contract should emit RequestRandomness event", async function () {
-            const { hardhatToken, owner } = await deployTokenFixture();
+    describe("mint", function () {
+        describe("events", function () {
+            it("Contract should emit RequestRandomness event", async function () {
+                const { hardhatToken, owner } = await deployTokenFixture();
 
-            await expect(hardhatToken.mint(1)).to.emit(hardhatToken, "RequestedRandomness").withArgs(BigNumber.from(1), owner.address);
-        });
+                await expect(hardhatToken.mint(1)).to.emit(hardhatToken, "RequestedRandomness").withArgs(BigNumber.from(1), owner.address);
+            });
 
 
-        it("Coordinator should emit RandomWordsRequested event", async function () {
-            const { hardhatToken, hardhatVrfMock } = await deployTokenFixture();
+            it("Coordinator should emit RandomWordsRequested event", async function () {
+                const { hardhatToken, hardhatVrfMock } = await deployTokenFixture();
 
-            await expect(hardhatToken.mint(1)).to.emit(hardhatVrfMock, "RandomWordsRequested");
-        });
+                await expect(hardhatToken.mint(1)).to.emit(hardhatVrfMock, "RandomWordsRequested");
+            });
 
-        it("Coordinator should emit RandomWordsFulfilled event during Random Number request", async function () {
-            const { hardhatToken, hardhatVrfMock } = await deployTokenFixture();
+            it("Coordinator should emit RandomWordsFulfilled event during Random Number request", async function () {
+                const { hardhatToken, hardhatVrfMock } = await deployTokenFixture();
 
-            const tx = await hardhatToken.mint(1);
-            const requestId = await retrieveRequestId(tx);
+                const tx = await hardhatToken.mint(1);
+                const requestId = await retrieveRequestId(tx);
 
-            await expect(
-                hardhatVrfMock.fulfillRandomWords(requestId, hardhatToken.address)
-            ).to.emit(hardhatVrfMock, "RandomWordsFulfilled");
+                await expect(
+                    hardhatVrfMock.fulfillRandomWords(requestId, hardhatToken.address)
+                ).to.emit(hardhatVrfMock, "RandomWordsFulfilled");
+            });
         });
     });
 
-    describe("fulfillRandomWords", async function() {
-        
+    describe("fulfillRandomWords", async function () {
+
     });
 });
 
