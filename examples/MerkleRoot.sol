@@ -37,7 +37,7 @@ contract MerkleRoot is ERC721F, ERC721Payable {
     }
 
     /**
-     * @notice Changes `root` for `_root` this changes the whitelisted accounts which have access to mintPreSale
+     * @notice Assigns `_root` to `root`, this changes the whitelisted accounts that have access to mintPreSale
      * @param _root Calculated roothash of merkle tree
      * @dev A new roothash can be calculated using the `scripts\merkle_tree.js` file
      */
