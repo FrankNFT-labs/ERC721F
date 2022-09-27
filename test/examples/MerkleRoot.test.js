@@ -6,7 +6,7 @@ const keccak256 = require("keccak256");
 
 let merkleTree;
 
-describe.only("Token Contract", function () {
+describe("Token Contract", function () {
     async function deployTokenFixture() {
         const Token = await ethers.getContractFactory("MerkleRoot");
         const [owner, addr1, addr2, addr3, addr4, addr5, addr6, addr7] = await ethers.getSigners();
