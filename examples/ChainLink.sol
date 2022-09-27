@@ -11,7 +11,7 @@ import "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
 /**
  * @title ChainLink
  *
- * @dev Example implementation of [ERC721F] which supports random mint 
+ * @dev Example implementation of [ERC721F] which supports random mint
  * based on https://docs.chain.link/docs/vrf/v2/examples/get-a-random-number/
  */
 contract ChainLink is ERC721F, VRFConsumerBaseV2 {
@@ -19,59 +19,77 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
 
     // Your subscription ID.
     uint64 subscriptionId;
-
-    // Goerli coordinator. For other networks,
-    // see https://docs.chain.link/docs/vrf-contracts/#configurations
-    address vrfCoordinator = 0x2Ca8E0C643bDe4C2E08ab1fA0da3401AdAD7734D;
-
-    // The gas lane to use, which specifies the maximum gas price to bump to.
-    // For a list of available gas lanes on each network,
-    // see https://docs.chain.link/docs/vrf-contracts/#configurations
     bytes32 keyHash =
         0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15;
 
-    // Depends on the number of requested values that you want sent to the
-    // fulfillRandomWords() function. Storing each word costs about 20,000 gas,
-    // so 100,000 is a safe default for this example contract. Test and adjust
-    // this limit based on the network that you select, the size of the request,
-    // and the processing of the callback request in the fulfillRandomWords()
-    // function.
-    uint32 callbackGasLimit = 100000;
+    uint32 callbackGasLimit = 100000; // Add set method
 
     // The default is 3, but you can set this higher.
-    uint16 requestConfirmations = 3;
+    uint16 requestConfirmations = 3; // Add set method
 
     // For this example, retrieve 2 random values in one request.
     // Cannot exceed VRFCoordinatorV2.MAX_NUM_WORDS.
-    uint32 numWords = 1;
+    uint32 numWords = 1; // Add set method
 
     uint256[] public randomWords;
-    uint256 public requestId;
+    uint256 public constant MAX_TOKENS = 10000;
+    uint public constant MAX_PURCHASE = 31;
+    bool public saleIsActive;
 
-    constructor(uint64 _subscriptionId)
-        VRFConsumerBaseV2(vrfCoordinator)
+    mapping(uint256 => address) requestToSender;
+
+    event ReceivedRandomness(uint256 reqId, uint256[] randomWords);
+    event RequestedRandomness(uint256 reqId, address invoker);
+
+    constructor(uint64 _subscriptionId, address _vrfCoordinator)
+        VRFConsumerBaseV2(_vrfCoordinator)
         ERC721F("ChainLink", "Chain")
     {
-        COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
+        COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
         subscriptionId = _subscriptionId;
     }
 
-    // Assumes the subscription is funded sufficiently.
-    function requestRandomWords() internal {
+    function flipSaleState() external onlyOwner {
+        saleIsActive = !saleIsActive;
+    }
+
+    function mint(uint32 numberOfTokens) public returns (uint256 requestId) {
+        require(saleIsActive, "Sale NOT active yet");
+        require(numberOfTokens != 0, "numberOfNfts cannot be 0");
+        require(
+            numberOfTokens < MAX_PURCHASE,
+            "Can only mint 30 tokens at a time"
+        );
+        require(
+            totalSupply() + 1 <= MAX_TOKENS,
+            "Purchase would exceed max supply of Tokens"
+        );
+
+        require(
+            numberOfTokens <= 500,
+            "Can't request more words than internal limit set by ChainLink"
+        );
         // Will revert if subscription is not set and funded.
         requestId = COORDINATOR.requestRandomWords(
             keyHash,
             subscriptionId,
             requestConfirmations,
             callbackGasLimit,
-            numWords
+            numberOfTokens
         );
+
+        requestToSender[requestId] = msg.sender;
+        emit RequestedRandomness(requestId, msg.sender);
     }
 
     function fulfillRandomWords(
-        uint256,
+        uint256 requestId,
         uint256[] memory _randomWords
     ) internal override {
         randomWords = _randomWords;
+
+        //address sender = requestToSender[requestId];
+        //_mint(sender, _randomWords[0]);
+        emit ReceivedRandomness(requestId, randomWords);
     }
 }
