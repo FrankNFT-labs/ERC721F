@@ -23,7 +23,6 @@ contract MerkleRoot is ERC721F, ERC721Payable {
     }
 
     modifier validMintRequest(uint256 numberOfTokens) {
-        require(msg.sender == tx.origin, "No Contracts allowed.");
         require(numberOfTokens != 0, "numberOfNfts cannot be 0");
         require(
             numberOfTokens < MAX_PURCHASE,
@@ -36,6 +35,11 @@ contract MerkleRoot is ERC721F, ERC721Payable {
         _;
     }
 
+    /**
+     * @notice Assigns `_root` to `root`, this changes the whitelisted accounts that have access to mintPreSale
+     * @param _root Calculated roothash of merkle tree
+     * @dev A new roothash can be calculated using the `scripts\merkle_tree.js` file
+     */
     function setRoot(bytes32 _root) external onlyOwner {
         root = _root;
     }
@@ -67,6 +71,7 @@ contract MerkleRoot is ERC721F, ERC721Payable {
         payable
         validMintRequest(numberOfTokens)
     {
+        require(msg.sender == tx.origin, "No Contracts allowed.");
         require(saleIsActive, "Sale NOT active yet");
         uint256 supply = totalSupply();
         require(
@@ -102,7 +107,7 @@ contract MerkleRoot is ERC721F, ERC721Payable {
         require(checkValidity(merkleProof), "Invalid Merkle Proof");
 
         for (uint256 i; i < numberOfTokens; ) {
-            _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
+            _safeMint(msg.sender, supply + i);
             unchecked {
                 i++;
             }
