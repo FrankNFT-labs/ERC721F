@@ -5,6 +5,7 @@
     "hardhat-gas-reporter": "^1.0.9"
   },
   "dependencies": {
+    "@chainlink/contracts": "^0.4.1",
     "@openzeppelin/contracts": "^4.7.3",
     "dotenv": "^16.0.2",
     "keccak256": "^1.0.6",
