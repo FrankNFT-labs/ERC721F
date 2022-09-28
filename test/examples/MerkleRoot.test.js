@@ -270,8 +270,13 @@ describe("Token Contract", function () {
         it("Should only be executable by owner", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
-            await expect(hardhatToken.withdraw(0)).to.not.be.reverted;
-            await expect(hardhatToken.connect(addr1).withdraw(0)).to.be.reverted;
+            await hardhatToken.flipSaleState();
+            await hardhatToken.connect(addr1).mint(1, {
+                value: ethers.utils.parseEther("1")
+            });
+
+            await expect(hardhatToken.withdraw()).to.not.be.reverted;
+            await expect(hardhatToken.connect(addr1).withdraw()).to.be.reverted;
         });
 
         it("Should increase the walletbalance of the owner and decrease the wallet of the contract", async function () {
@@ -283,7 +288,13 @@ describe("Token Contract", function () {
                 value: transferAmount
             });
 
-            await expect(hardhatToken.withdraw(transferAmount)).to.changeEtherBalances([hardhatToken.address, owner], [ethers.utils.parseEther("-5"), transferAmount]);
+            await expect(hardhatToken.withdraw()).to.changeEtherBalances([hardhatToken.address, owner], [ethers.utils.parseEther("-5"), transferAmount]);
+        });
+
+        it("Should revert when no balance can be withdrawn", async function() {
+            const { hardhatToken } = await loadFixture(deployTokenFixture);
+
+            await expect(hardhatToken.withdraw()).to.be.revertedWith("Insufficient balance");
         });
     });
 });
