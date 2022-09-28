@@ -35,11 +35,13 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
     uint256 public startingIndex;
     bool public saleIsActive;
 
-    constructor(uint64 _subscriptionId)
-        VRFConsumerBaseV2(vrfCoordinator)
+    event RequestedRandomness(uint256 requestId);
+
+    constructor(uint64 _subscriptionId, address _vrfCoordinator)
+        VRFConsumerBaseV2(_vrfCoordinator)
         ERC721F("ChainLink", "Chain")
     {
-        COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
+        COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
         subscriptionId = _subscriptionId;
     }
 
@@ -54,16 +56,20 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
 
     function setRandomStartingIndex() external onlyOwner {
         require(startingIndex == 0, "startingIndex already set");
-        COORDINATOR.requestRandomWords(
+
+        uint256 requestId = COORDINATOR.requestRandomWords(
             keyHash,
             subscriptionId,
             requestConfirmations,
             callbackGasLimit,
             numWords
         );
+        
+        emit RequestedRandomness(requestId);
     }
 
     function mint(uint32 numberOfTokens) external {
+        require(msg.sender == tx.origin, "No Contracts allowed.");
         require(saleIsActive, "Sale NOT active yet");
         require(numberOfTokens != 0, "numberOfTokens cannot be 0");
         require(
