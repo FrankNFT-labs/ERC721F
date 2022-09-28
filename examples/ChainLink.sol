@@ -18,7 +18,7 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
     uint64 subscriptionId;
 
     // Respective values of goerli test network, find other networks keyHash/vrfCoordinator at https://docs.chain.link/docs/vrf/v2/subscription/supported-networks/#configurations
-    // vrfCoordinator is not utilised within contract due to hardhat testing utilising different address, when deploying in for example remix copy address 
+    // vrfCoordinator is not utilised within contract due to hardhat testing utilising different address, when deploying in for example remix copy address
     address vrfCoordinator = 0x2Ca8E0C643bDe4C2E08ab1fA0da3401AdAD7734D;
     bytes32 keyHash =
         0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15;
