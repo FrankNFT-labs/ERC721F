@@ -35,7 +35,7 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
     uint256 public startingIndex;
     bool public saleIsActive;
 
-    // Event utilised in hardhat testing to retrieve requestId from ChainLink request 
+    // Event utilised in hardhat testing to retrieve requestId from ChainLink request
     event RequestedRandomness(uint256 requestId);
 
     constructor(uint64 _subscriptionId, address _vrfCoordinator)
@@ -60,7 +60,7 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
     }
 
     /**
-     * @notice Makes a request for a singular random number 
+     * @notice Makes a request for a singular random number
      * @dev Emits RequestRandomness with `requestId` as parameter for retrieval within `/tests/examples/ChainLink.test.js`
      * @dev Assumes that subscriptionId is set and funded (also requires contractaddress to be assigned as consumer)
      */
@@ -74,13 +74,13 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
             callbackGasLimit,
             numWords
         );
-        
+
         emit RequestedRandomness(requestId);
     }
 
     /**
      * @notice Mint your tokens here.
-     * @dev Uses randomely set startingIndex as first mint, subsequent mints will loop around until startingIndex - 1 has been reached  
+     * @dev Uses randomely set startingIndex as first mint, subsequent mints will loop around until startingIndex - 1 has been reached
      */
     function mint(uint32 numberOfTokens) external {
         require(msg.sender == tx.origin, "No Contracts allowed.");
@@ -121,14 +121,22 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
      * @dev Override of walletOfOwner located in ERC721F, using startingIndex as startpoint of counting instead of _startTokenId
      * @return Array of all tokenIds owned by `_owner` starting from startingIndex
      */
-    function walletOfOwner(address _owner) external view virtual override returns (uint256[] memory) {
+    function walletOfOwner(address _owner)
+        external
+        view
+        virtual
+        override
+        returns (uint256[] memory)
+    {
         uint256 ownerTokenCount = balanceOf(_owner);
         uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
         uint256 currentTokenId = startingIndex;
         uint256 ownedTokenIndex = 0;
         uint256 totalTokensChecked = 0;
 
-        while (ownedTokenIndex < ownerTokenCount && totalTokensChecked < MAX_TOKENS) {
+        while (
+            ownedTokenIndex < ownerTokenCount && totalTokensChecked < MAX_TOKENS
+        ) {
             if (ownerOf(currentTokenId) == _owner) {
                 ownedTokenIds[ownedTokenIndex] = currentTokenId;
                 unchecked {

@@ -19,14 +19,14 @@ describe("ChainLink", function () {
         return { Token, hardhatToken, VRFMock, hardhatVrfMock, owner, addr1 };
     }
 
-    describe("flipSaleState", function() {
-        it("Reverts when startingIndex hasn't been set", async function() {
+    describe("flipSaleState", function () {
+        it("Reverts when startingIndex hasn't been set", async function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);;
 
             await expect(hardhatToken.flipSaleState()).to.be.revertedWith("startingIndex must be set before sale can begin");
         });
 
-        it("Coordinator should emit RandomWordsFulfilled when asking for random number", async function() {
+        it("Coordinator should emit RandomWordsFulfilled when asking for random number", async function () {
             const { hardhatToken, hardhatVrfMock } = await loadFixture(deployTokenFixture);;
 
             const tx = await hardhatToken.setRandomStartingIndex();
@@ -37,7 +37,7 @@ describe("ChainLink", function () {
             ).to.emit(hardhatVrfMock, "RandomWordsFulfilled");
         });
 
-        it("Should allow flipping the saleState after having requested a randomStartingIndex", async function() {
+        it("Should allow flipping the saleState after having requested a randomStartingIndex", async function () {
             const { hardhatToken, hardhatVrfMock } = await loadFixture(deployTokenFixture);;
 
             const tx = await hardhatToken.setRandomStartingIndex();
@@ -51,8 +51,8 @@ describe("ChainLink", function () {
         });
     });
 
-    describe("setRandomStartingIndex", function() {
-        it("Should revert if the startingIndex has already been set", async function() {
+    describe("setRandomStartingIndex", function () {
+        it("Should revert if the startingIndex has already been set", async function () {
             const { hardhatToken, hardhatVrfMock } = await loadFixture(deployTokenFixture);;
 
             const tx = await hardhatToken.setRandomStartingIndex();
@@ -66,7 +66,7 @@ describe("ChainLink", function () {
     });
 
     describe("mint", function () {
-        it("Should increase the totalSupply and walletOfOwner size", async function() {
+        it("Should increase the totalSupply and walletOfOwner size", async function () {
             const { hardhatToken, hardhatVrfMock, owner } = await loadFixture(deployTokenFixture);;
 
             const tx = await hardhatToken.setRandomStartingIndex();
@@ -82,7 +82,7 @@ describe("ChainLink", function () {
             expect(Object.keys(await hardhatToken.walletOfOwner(owner.address)).length).to.be.equal(1);
         });
 
-        it("Should allow multiple minting multiple records at once", async function() {
+        it("Should allow multiple minting multiple records at once", async function () {
             const { hardhatToken, hardhatVrfMock, owner } = await loadFixture(deployTokenFixture);;
 
             const tx = await hardhatToken.setRandomStartingIndex();
@@ -98,7 +98,7 @@ describe("ChainLink", function () {
             expect(Object.keys(await hardhatToken.walletOfOwner(owner.address)).length).to.be.equal(10);
         });
 
-        it("Shouldn't assign non-owner mints to owner however should increase totalSupply", async function() {
+        it("Shouldn't assign non-owner mints to owner however should increase totalSupply", async function () {
             const { hardhatToken, hardhatVrfMock, owner, addr1 } = await loadFixture(deployTokenFixture);
 
             const tx = await hardhatToken.setRandomStartingIndex();
