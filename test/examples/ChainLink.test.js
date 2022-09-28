@@ -1,12 +1,12 @@
+const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
-const { BigNumber } = require("ethers");
 const { ethers } = require("hardhat");
 
 describe("ChainLink", function () {
     async function deployTokenFixture() {
         const Token = await ethers.getContractFactory("ChainLink");
         const VRFMock = await ethers.getContractFactory("VRFCoordinatorV2Mock");
-        const [owner] = await ethers.getSigners();
+        const [owner, addr1] = await ethers.getSigners();
 
         const hardhatVrfMock = await VRFMock.deploy(0, 0);
 
@@ -16,41 +16,106 @@ describe("ChainLink", function () {
 
         const hardhatToken = await Token.deploy(1, hardhatVrfMock.address);
 
-        await hardhatToken.flipSaleState();
-
-        return { Token, hardhatToken, VRFMock, hardhatVrfMock, owner };
+        return { Token, hardhatToken, VRFMock, hardhatVrfMock, owner, addr1 };
     }
 
-    describe("mint", function () {
-        describe("events", function () {
-            it("Contract should emit RequestRandomness event", async function () {
-                const { hardhatToken, owner } = await deployTokenFixture();
+    describe("flipSaleState", function() {
+        it("Reverts when startingIndex hasn't been set", async function() {
+            const { hardhatToken } = await loadFixture(deployTokenFixture);;
 
-                await expect(hardhatToken.mint(1)).to.emit(hardhatToken, "RequestedRandomness").withArgs(BigNumber.from(1), owner.address);
-            });
+            await expect(hardhatToken.flipSaleState()).to.be.revertedWith("startingIndex must be set before sale can begin");
+        });
 
+        it("Coordinator should emit RandomWordsFulfilled when asking for random number", async function() {
+            const { hardhatToken, hardhatVrfMock } = await loadFixture(deployTokenFixture);;
 
-            it("Coordinator should emit RandomWordsRequested event", async function () {
-                const { hardhatToken, hardhatVrfMock } = await deployTokenFixture();
+            const tx = await hardhatToken.setRandomStartingIndex();
+            const requestId = await retrieveRequestId(tx);
 
-                await expect(hardhatToken.mint(1)).to.emit(hardhatVrfMock, "RandomWordsRequested");
-            });
+            await expect(
+                hardhatVrfMock.fulfillRandomWords(requestId, hardhatToken.address)
+            ).to.emit(hardhatVrfMock, "RandomWordsFulfilled");
+        });
 
-            it("Coordinator should emit RandomWordsFulfilled event during Random Number request", async function () {
-                const { hardhatToken, hardhatVrfMock } = await deployTokenFixture();
+        it("Should allow flipping the saleState after having requested a randomStartingIndex", async function() {
+            const { hardhatToken, hardhatVrfMock } = await loadFixture(deployTokenFixture);;
 
-                const tx = await hardhatToken.mint(1);
-                const requestId = await retrieveRequestId(tx);
+            const tx = await hardhatToken.setRandomStartingIndex();
+            const requestId = await retrieveRequestId(tx);
+            await expect(
+                hardhatVrfMock.fulfillRandomWords(requestId, hardhatToken.address)
+            ).to.emit(hardhatVrfMock, "RandomWordsFulfilled");
 
-                await expect(
-                    hardhatVrfMock.fulfillRandomWords(requestId, hardhatToken.address)
-                ).to.emit(hardhatVrfMock, "RandomWordsFulfilled");
-            });
+            await expect(await hardhatToken.flipSaleState()).to.not.be.revertedWith("startingIndex must be set before sale can begin");
+            expect(await hardhatToken.saleIsActive()).to.be.true;
         });
     });
 
-    describe("fulfillRandomWords", async function () {
+    describe("setRandomStartingIndex", function() {
+        it("Should revert if the startingIndex has already been set", async function() {
+            const { hardhatToken, hardhatVrfMock } = await loadFixture(deployTokenFixture);;
 
+            const tx = await hardhatToken.setRandomStartingIndex();
+            const requestId = await retrieveRequestId(tx);
+            await expect(
+                hardhatVrfMock.fulfillRandomWords(requestId, hardhatToken.address)
+            ).to.emit(hardhatVrfMock, "RandomWordsFulfilled");
+
+            await expect(hardhatToken.setRandomStartingIndex()).to.be.revertedWith("startingIndex already set");
+        });
+    });
+
+    describe("mint", function () {
+        it("Should increase the totalSupply and walletOfOwner size", async function() {
+            const { hardhatToken, hardhatVrfMock, owner } = await loadFixture(deployTokenFixture);;
+
+            const tx = await hardhatToken.setRandomStartingIndex();
+            const requestId = await retrieveRequestId(tx);
+            await expect(
+                hardhatVrfMock.fulfillRandomWords(requestId, hardhatToken.address)
+            ).to.emit(hardhatVrfMock, "RandomWordsFulfilled");
+
+            await hardhatToken.flipSaleState();
+            await hardhatToken.mint(1);
+
+            expect(await hardhatToken.totalSupply()).to.be.equal(1);
+            expect(Object.keys(await hardhatToken.walletOfOwner(owner.address)).length).to.be.equal(1);
+        });
+
+        it("Should allow multiple minting multiple records at once", async function() {
+            const { hardhatToken, hardhatVrfMock, owner } = await loadFixture(deployTokenFixture);;
+
+            const tx = await hardhatToken.setRandomStartingIndex();
+            const requestId = await retrieveRequestId(tx);
+            await expect(
+                hardhatVrfMock.fulfillRandomWords(requestId, hardhatToken.address)
+            ).to.emit(hardhatVrfMock, "RandomWordsFulfilled");
+
+            await hardhatToken.flipSaleState();
+            await hardhatToken.mint(10);
+
+            expect(await hardhatToken.totalSupply()).to.be.equal(10);
+            expect(Object.keys(await hardhatToken.walletOfOwner(owner.address)).length).to.be.equal(10);
+        });
+
+        it("Shouldn't assign non-owner mints to owner however should increase totalSupply", async function() {
+            const { hardhatToken, hardhatVrfMock, owner, addr1 } = await loadFixture(deployTokenFixture);
+
+            const tx = await hardhatToken.setRandomStartingIndex();
+            const requestId = await retrieveRequestId(tx);
+            await expect(
+                hardhatVrfMock.fulfillRandomWords(requestId, hardhatToken.address)
+            ).to.emit(hardhatVrfMock, "RandomWordsFulfilled");
+
+            await hardhatToken.flipSaleState();
+            await hardhatToken.mint(3);
+            await hardhatToken.connect(addr1).mint(6);
+            await hardhatToken.mint(1);
+
+            expect(await hardhatToken.totalSupply()).to.be.equal(10);
+            expect(Object.keys(await hardhatToken.walletOfOwner(owner.address)).length).to.be.equal(4);
+            expect(Object.keys(await hardhatToken.walletOfOwner(addr1.address)).length).to.be.equal(6);
+        });
     });
 });
 
