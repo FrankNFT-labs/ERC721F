@@ -32,7 +32,7 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
 
     uint256 public constant MAX_TOKENS = 10000;
     uint public constant MAX_PURCHASE = 31;
-    uint256 public startingIndex;
+    uint256 startingIndex;
     bool public saleIsActive;
 
     // Event utilised in hardhat testing to retrieve requestId from ChainLink request
