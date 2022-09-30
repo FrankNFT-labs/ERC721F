@@ -6,6 +6,10 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "./ERC721F.sol";
 import "../../interfaces/IERC4883.sol";
 
+/**
+ * @title ERC721FOnChain
+ * @dev Extends ERC721F and implements OnChain tokenURI creation
+ */
 contract ERC721FOnChain is ERC721F, IERC4883 {
     string constant svgHead =
         '<svg viewBox="0 0 350 350" xmlns="http://www.w3.org/2000/svg"><style>.centered-text{text-anchor:middle;dominant-baseline:middle}</style><defs><linearGradient id="rainbow" x1="0" x2="0" y1="0" y2="100%" gradientUnits="userSpaceOnUse"><stop stop-color="#FF5B99" offset="0%"/><stop stop-color="#FF5447" offset="20%"/><stop stop-color="#FF7B21" offset="40%"/><stop stop-color="#EAFC37" offset="60%"/><stop stop-color="#4FCB6B" offset="80%"/><stop stop-color="#51F7FE" offset="100%"/></linearGradient></defs><rect width="100%" height="100%" rx="35"/><text fill="url(#rainbow)" class="centered-text"><tspan font-size="30" x="50%" y="30%">';
@@ -21,14 +25,25 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
         description = description_;
     }
 
+    /**
+     * @notice Returns string value that's linked with a tokenId
+     * @dev A tokenId and his data are linked during the minting process
+     */
     function getData(uint256 tokenId) external view returns (string memory) {
+        require(_exists(tokenId), "Non-Existing token");
         return data[tokenId];
     }
 
+    /**
+     * @notice Returns description of the contract
+     */
     function getDescription() public view virtual returns (string memory) {
         return description;
     }
 
+    /**
+     * @notice Mints a token and maps `text` to the tokenId
+     */
     function mint(string calldata text, address to)
         external
         virtual
@@ -41,6 +56,9 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
         return supply;
     }
 
+    /**
+     * @notice Creates the tokenURI which contains the name, description, generated SVG image and token traits
+     */
     function tokenURI(uint256 tokenId)
         public
         view
@@ -71,6 +89,10 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
         return string(abi.encodePacked("data:application/json;base64,", json));
     }
 
+    /**
+     * @notice Generates the SVG image of the tokenId
+     * @dev Image contains the name, description, text linked to the token and `id`
+     */
     function renderTokenById(uint256 id)
         public
         view
@@ -106,6 +128,10 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
             );
     }
 
+    /**
+     * @notice Returns the traits that are associated with `id`
+     * @dev Creates one static and one dynamic trait
+     */
     function getTraits(uint256 id) public view virtual returns (string memory) {
         require(_exists(id), "Non-Existing token");
         string[2] memory traits;
