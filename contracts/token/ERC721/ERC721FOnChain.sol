@@ -67,29 +67,6 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
             );
     }
 
-    function getSvg(uint tokenId) private view returns (string memory) {
-        string[5] memory parts;
-        parts[
-            0
-        ] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">';
-        parts[1] = name();
-        parts[2] = getDescription();
-        parts[3] = data[tokenId];
-        parts[4] = "</text></svg>";
-        return
-            string(
-                abi.encodePacked(
-                    parts[0],
-                    parts[1],
-                    "  ",
-                    parts[2],
-                    " ",
-                    parts[3],
-                    parts[4]
-                )
-            );
-    }
-
     function tokenURI(uint256 tokenId)
         public
         view
