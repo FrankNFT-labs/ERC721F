@@ -32,20 +32,24 @@ abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
             "Index out of bounds for owned tokens"
         );
         uint256 totalMinted = ERC721FEnumerable.totalSupply();
-        uint256 currentTokenId = _startTokenId();
+        uint256 currentTokenIndex;
         uint256 ownedTokenIndex = 0;
 
-        while (ownedTokenIndex <= index && currentTokenId < totalMinted) {
-            if (ownerOf(currentTokenId) == owner) {
-                if (currentTokenId == index) return currentTokenId;
-                unchecked {
+        // Counter overflow is impossible as the loop breaks when
+        // uint256 i is equal to another uint256 totalMinted.
+        unchecked {
+            for (uint256 i; i < totalMinted; i++) {
+                if (ownerOf(currentTokenIndex) == owner) {
+                    if (ownedTokenIndex == index) {
+                        return i;
+                    }
                     ownedTokenIndex++;
                 }
-            }
-            unchecked {
-                currentTokenId++;
+                currentTokenIndex++;
             }
         }
+
+        // Execution should never reach this point.
         revert();
     }
 
@@ -59,11 +63,15 @@ abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
             index < totalMinted,
             "Index out of bounds for total minted tokens"
         );
-        uint256 currentTokenIndex = _startTokenId();
+        uint256 currentTokenIndex;
 
-        while (currentTokenIndex < totalMinted) {
-            if (currentTokenIndex == index) return currentTokenIndex;
-            unchecked {
+        // Counter overflow is impossible as the loop breaks when
+        // uint256 i is equal to another uint256 totalMinted.
+        unchecked {
+            for (uint256 i; i < totalMinted; i++) {
+                if (currentTokenIndex == index) {
+                        return i;
+                    }
                 currentTokenIndex++;
             }
         }
