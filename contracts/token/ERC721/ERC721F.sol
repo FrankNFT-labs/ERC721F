@@ -31,7 +31,7 @@ contract ERC721F is Ownable, ERC721 {
      * This read function is O(totalSupply). If calling from a separate contract, be sure to test gas first.
      * It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case.
      */
-    function walletOfOwner(address _owner) external view returns (uint256[] memory){
+    function walletOfOwner(address _owner) external view virtual returns (uint256[] memory){
         uint256 ownerTokenCount = balanceOf(_owner);
         uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
         uint256 currentTokenId = _startTokenId();
