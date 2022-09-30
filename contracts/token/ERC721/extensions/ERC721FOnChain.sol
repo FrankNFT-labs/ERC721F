@@ -6,6 +6,9 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "../../../interfaces/IERC4883.sol";
 import "../ERC721F.sol";
 
+/**
+ * Extension of ERC721F which contains foundation for OnChain tokenURI generation
+ */
 abstract contract ERC721FOnChain is IERC4883, ERC721F {
     string description;
 
@@ -59,7 +62,7 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
 
     /**
      * @notice Generates the SVG image of the tokenId
-     * @dev Image contains the name, description, text linked to the token and `id`
+     * @dev Image contains `name` - `description`, override for custom SVG design
      */
     function renderTokenById(uint256 id)
         public
@@ -78,6 +81,7 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
                 abi.encodePacked(
                     parts[0],
                     parts[1],
+                    " - ",
                     parts[2],
                     parts[3]
                 )
@@ -86,7 +90,7 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
 
     /**
      * @notice Returns the traits that are associated with `id`
-     * @dev Creates one static and one dynamic trait
+     * @dev Creates two example traits, one static and one dynamic, override function for custom traits (leave empty when no traits are wanted)
      */
     function getTraits(uint256 id) public view virtual returns (string memory) {
         require(_exists(id), "Non-Existing token");
