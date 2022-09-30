@@ -7,8 +7,9 @@ import "./ERC721F.sol";
 import "../../interfaces/IERC4883.sol";
 
 contract ERC721FOnChain is ERC721F, IERC4883 {
-    string constant svgHead = '<svg viewBox="0 0 350 350"><style>.centered-text{text-anchor:middle;dominant-baseline:middle}</style><defs><linearGradient id="rainbow" x1="0" x2="0" y1="0" y2="100%" gradientUnits="userSpaceOnUse"><stop stop-color="#FF5B99" offset="0%"/><stop stop-color="#FF5447" offset="20%"/><stop stop-color="#FF7B21" offset="40%"/><stop stop-color="#EAFC37" offset="60%"/><stop stop-color="#4FCB6B" offset="80%"/><stop stop-color="#51F7FE" offset="100%"/></linearGradient></defs><rect width="100%" height="100%" rx="35"/><text fill="url(#rainbow)" class="centered-text"><tspan font-size="30" x="50%" y="30%">';
-    string constant svgFooter = '</text></svg>';
+    string constant svgHead =
+        '<svg viewBox="0 0 350 350"><style>.centered-text{text-anchor:middle;dominant-baseline:middle}</style><defs><linearGradient id="rainbow" x1="0" x2="0" y1="0" y2="100%" gradientUnits="userSpaceOnUse"><stop stop-color="#FF5B99" offset="0%"/><stop stop-color="#FF5447" offset="20%"/><stop stop-color="#FF7B21" offset="40%"/><stop stop-color="#EAFC37" offset="60%"/><stop stop-color="#4FCB6B" offset="80%"/><stop stop-color="#51F7FE" offset="100%"/></linearGradient></defs><rect width="100%" height="100%" rx="35"/><text fill="url(#rainbow)" class="centered-text"><tspan font-size="30" x="50%" y="30%">';
+    string constant svgFooter = "</text></svg>";
     string description;
     mapping(uint256 => string) data;
 
@@ -24,7 +25,7 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
         return data[tokenId];
     }
 
-    function getDescription() public virtual view returns (string memory) {
+    function getDescription() public view virtual returns (string memory) {
         return description;
     }
 
@@ -53,11 +54,13 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
                 string(
                     abi.encodePacked(
                         '{"name": "',
-                        name(), " ", 
+                        name(),
+                        " ",
                         Strings.toString(tokenId),
-                        '", "description": "', getDescription(), '", "image": "data:image/svg+xml;base64,',
-                        Base64.encode(bytes(svgData)), '"',
-                        '", "traits": "', getTraits(tokenId),
+                        '", "description": "',
+                        getDescription(),
+                        '", "image": "data:image/svg+xml;base64,',
+                        Base64.encode(bytes(svgData)),
                         '"}'
                     )
                 )
@@ -66,7 +69,12 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
         return string(abi.encodePacked("data:application/json;base64,", json));
     }
 
-    function renderTokenById(uint256 id) public virtual view returns (string memory) {
+    function renderTokenById(uint256 id)
+        public
+        view
+        virtual
+        returns (string memory)
+    {
         require(_exists(id), "Non-Existing token");
         string[9] memory parts;
         parts[0] = svgHead;
@@ -75,7 +83,9 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
         parts[3] = data[id];
         parts[4] = '</tspan><tspan font-size="20" x="50%" dy="15%">';
         parts[5] = getDescription();
-        parts[6] = '</tspan></text><path fill="transparent" stroke="gold" stroke-width="2" d="M338.971 322.5 300 345l-38.971-22.5v-45L300 255l38.971 22.5z"/><text font-size="15" fill="#fff" font-weight="bold" font-family="Cursive" x="300" y="300" class="centered-text">';
+        parts[
+            6
+        ] = '</tspan></text><path fill="transparent" stroke="gold" stroke-width="2" d="M338.971 322.5 300 345l-38.971-22.5v-45L300 255l38.971 22.5z"/><text font-size="15" fill="#fff" font-weight="bold" font-family="Cursive" x="300" y="300" class="centered-text">';
         parts[7] = Strings.toString(id);
         parts[8] = svgFooter;
         return
@@ -94,23 +104,37 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
             );
     }
 
-    function getTraits(uint256 id) public virtual view returns(string memory) {
-        string[] memory traits;
-        traits[0] = string(abi.encodePacked(
-            '[{' "\n",
-            '"trait_type": "TypeName",', "\n",
-            '"value": "', "testValue", '"', "\n",
-            '}'"\n" 
-        ));
-        traits[1] = string(abi.encodePacked(
-            ',{', "\n",
-            '"trait_type": "Id",', "\n",
-            '"value": "', id, '"', "\n",
-            '}'"\n"
-        ));
-        return string(abi.encodePacked(
-            traits[0],
-            traits[1]
-        ));
+    function getTraits(uint256 id) public view virtual returns (string memory) {
+        require(_exists(id), "Non-Existing token");
+        string[2] memory traits;
+        traits[0] = string(
+            abi.encodePacked(
+                "{"
+                "\n",
+                '"trait_type": "TypeName",',
+                "\n",
+                '"value": "',
+                "testValue",
+                '"',
+                "\n",
+                "}"
+                "\n"
+            )
+        );
+        traits[1] = string(
+            abi.encodePacked(
+                ",{",
+                "\n",
+                '"trait_type": "Id",',
+                "\n",
+                '"value": "',
+                id,
+                '"',
+                "\n",
+                "}"
+                "\n"
+            )
+        );
+        return string(abi.encodePacked("[", traits[0], traits[1], "]"));
     }
 }
