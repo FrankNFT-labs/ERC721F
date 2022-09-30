@@ -61,7 +61,9 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
                         getDescription(),
                         '", "image": "data:image/svg+xml;base64,',
                         Base64.encode(bytes(svgData)),
-                        '"}'
+                        '", "attributes": ',
+                        getTraits(tokenId),
+                        "}"
                     )
                 )
             )
@@ -128,7 +130,7 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
                 '"trait_type": "Id",',
                 "\n",
                 '"value": "',
-                id,
+                Strings.toString(id),
                 '"',
                 "\n",
                 "}"
