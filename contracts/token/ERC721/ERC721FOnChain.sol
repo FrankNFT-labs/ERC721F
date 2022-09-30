@@ -56,7 +56,8 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
                         name(), " ", 
                         Strings.toString(tokenId),
                         '", "description": "', getDescription(), '", "image": "data:image/svg+xml;base64,',
-                        Base64.encode(bytes(svgData)),
+                        Base64.encode(bytes(svgData)), '"',
+                        '", "traits": "', getTraits(tokenId),
                         '"}'
                     )
                 )
@@ -91,5 +92,25 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
                     parts[8]
                 )
             );
+    }
+
+    function getTraits(uint256 id) public virtual view returns(string memory) {
+        string[] memory traits;
+        traits[0] = string(abi.encodePacked(
+            '[{' "\n",
+            '"trait_type": "TypeName",', "\n",
+            '"value": "', "testValue", '"', "\n",
+            '}'"\n" 
+        ));
+        traits[1] = string(abi.encodePacked(
+            ',{', "\n",
+            '"trait_type": "Id",', "\n",
+            '"value": "', id, '"', "\n",
+            '}'"\n"
+        ));
+        return string(abi.encodePacked(
+            traits[0],
+            traits[1]
+        ));
     }
 }
