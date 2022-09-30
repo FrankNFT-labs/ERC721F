@@ -47,10 +47,17 @@ contract OnChain is ERC721FOnChain {
         }
     }
 
+    /**
+     * @notice Overridden function to display description change in tokenURI
+     */
     function getDescription() public view override returns (string memory) {
         return string(abi.encodePacked(description, " - Overwrote description"));
     }
 
+    /**
+     * @notice Overridden function which creates custom SVG image 
+     * @dev `id` changes the displayed name in `parts[3]`, every 100th you get mew
+     */
     function renderTokenById(uint256 id)
         public
         view
@@ -87,6 +94,9 @@ contract OnChain is ERC721FOnChain {
             );
     }
 
+    /**
+     * @notice Overridden function to show how to disable traits being included in the URI
+     */
     function getTraits(uint256 /*id*/) public pure override returns (string memory) {
         return "";
     }
