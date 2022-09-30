@@ -29,7 +29,6 @@ contract OnChain is ERC721FOnChain {
 
     /**
      * @notice Mints `numberOfTokens` tokens for `sender`
-     * @dev Can't request more than 30 tokens at once
      */
     function mint(uint256 numberOfTokens)
         external
