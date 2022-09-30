@@ -38,6 +38,7 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
     {
         require(_exists(tokenId), "Non-Existing token");
         string memory svgData = renderTokenById(tokenId);
+        string memory traits = getTraits(tokenId);
         string memory json = Base64.encode(
             bytes(
                 string(
@@ -50,8 +51,8 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
                         getDescription(),
                         '", "image": "data:image/svg+xml;base64,',
                         Base64.encode(bytes(svgData)),
-                        '", "attributes": ',
-                        getTraits(tokenId),
+                        bytes(traits).length == 0 ? '"' : '", "attributes": ',
+                        traits,
                         "}"
                     )
                 )
@@ -72,19 +73,15 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
     {
         require(_exists(id), "Non-Existing token");
         string[4] memory parts;
-        parts[0] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">';
+        parts[
+            0
+        ] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">';
         parts[1] = name();
         parts[2] = getDescription();
-        parts[3] = '</text></svg>';
+        parts[3] = "</text></svg>";
         return
             string(
-                abi.encodePacked(
-                    parts[0],
-                    parts[1],
-                    " - ",
-                    parts[2],
-                    parts[3]
-                )
+                abi.encodePacked(parts[0], parts[1], " - ", parts[2], parts[3])
             );
     }
 
