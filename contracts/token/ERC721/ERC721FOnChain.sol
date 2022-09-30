@@ -40,6 +40,31 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
         return supply;
     }
 
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override
+        returns (string memory)
+    {
+        require(_exists(tokenId), "Non-Existing token");
+        string memory svgData = renderTokenById(tokenId);
+        string memory json = Base64.encode(
+            bytes(
+                string(
+                    abi.encodePacked(
+                        '{"name": "',
+                        name(), " ", 
+                        Strings.toString(tokenId),
+                        '", "description": "', getDescription(), '", "image": "data:image/svg+xml;base64,',
+                        Base64.encode(bytes(svgData)),
+                        '"}'
+                    )
+                )
+            )
+        );
+        return string(abi.encodePacked("data:application/json;base64,", json));
+    }
+
     function renderTokenById(uint256 id) public virtual view returns (string memory) {
         require(_exists(id), "Non-Existing token");
         string[9] memory parts;
@@ -66,30 +91,5 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
                     parts[8]
                 )
             );
-    }
-
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override
-        returns (string memory)
-    {
-        require(_exists(tokenId), "Non-Existing token");
-        string memory svgData = renderTokenById(tokenId);
-        string memory json = Base64.encode(
-            bytes(
-                string(
-                    abi.encodePacked(
-                        '{"name": "',
-                        name(), " ", 
-                        Strings.toString(tokenId),
-                        '", "description": "', getDescription(), '", "image": "data:image/svg+xml;base64,',
-                        Base64.encode(bytes(svgData)),
-                        '"}'
-                    )
-                )
-            )
-        );
-        return string(abi.encodePacked("data:application/json;base64,", json));
     }
 }
