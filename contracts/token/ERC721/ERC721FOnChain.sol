@@ -24,12 +24,13 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
         return data[tokenId];
     }
 
-    function getDescription() public view returns (string memory) {
+    function getDescription() public virtual view returns (string memory) {
         return description;
     }
 
     function mint(string calldata text, address to)
         external
+        virtual
         onlyOwner
         returns (uint256)
     {
@@ -39,7 +40,7 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
         return supply;
     }
 
-    function renderTokenById(uint256 id) public view returns (string memory) {
+    function renderTokenById(uint256 id) public virtual view returns (string memory) {
         require(_exists(id), "Non-Existing token");
         string[9] memory parts;
         parts[0] = svgHead;
@@ -74,7 +75,7 @@ contract ERC721FOnChain is ERC721F, IERC4883 {
         returns (string memory)
     {
         require(_exists(tokenId), "Non-Existing token");
-        string memory svgData = getSvg(tokenId);
+        string memory svgData = renderTokenById(tokenId);
         string memory json = Base64.encode(
             bytes(
                 string(
