@@ -3,8 +3,9 @@ pragma solidity ^0.8.9 <0.9.0;
 
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "./ERC721F.sol";
+import "../../interfaces/IERC4883.sol";
 
-contract ERC721FOnChain is ERC721F {
+contract ERC721FOnChain is ERC721F, IERC4883 {
     string description;
     mapping(uint256 => string) data;
 
@@ -33,6 +34,10 @@ contract ERC721FOnChain is ERC721F {
         _safeMint(to, supply);
         data[supply] = text;
         return supply;
+    }
+
+    function renderTokenById(uint256 id) external view returns (string memory) {
+        
     }
 
     function getSvg(uint tokenId) private view returns (string memory) {
