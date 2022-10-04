@@ -12,7 +12,7 @@ describe("ERC721FEnumerable", function() {
         return { Token, hardhatToken, owner, addr1 };
     }
 
-    describe("Should behave like ERC721Enumerable", function() {
+    describe("Function handling", function() {
         context("With minted tokens", function() {
             let token;
             let ownerContract;
@@ -76,37 +76,25 @@ describe("ERC721FEnumerable", function() {
             });
  
             describe("tokenByIndex", function() {
+                describe("When the given index is lower than the amount of tokens minted", function() {
+                    it("Returns the token ID placed at the given index", async function() {
+                        expect(await token.tokenByIndex(0)).to.be.equal(0);
+                    });
+                });
+
+                describe("When the given index is greater than or equal to the total tokens minted", function() {
+                    it("Reverts", async function() {
+                        await expect(token.tokenByIndex(2)).to.be.revertedWith("Index out of bounds for total minted tokens");
+                    });
+                })
+
                 it("Returns all tokens", async function() {
                     const tokensListed = await Promise.all(
                         [0, 1].map(i => token.tokenByIndex(i)),
                     );
                     expect(tokensListed.map(t => t.toNumber())).to.have.members([0, 1]);
                 });
-
-                it("Reverts if the index is greater than supply", async function() {
-                    await expect(token.tokenByIndex(2)).to.be.revertedWith("Index out of bounds for total minted tokens");
-                });
             });
         });
     })
-
-    describe("_mint(address, uint256)", function() {
-        context("With minted token", async function() {
-            it("Adjusts owner tokens by index", async function() {
-                const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
-                
-                await hardhatToken.mint(1);
-                
-                expect(await hardhatToken.tokenOfOwnerByIndex(owner.address, 0)).to.equal(0);
-            });
-
-            it("Adjust all tokens list", async function() {
-                const { hardhatToken } = await loadFixture(deployTokenFixture);
-
-                await hardhatToken.mint(1);
-
-                expect(await hardhatToken.tokenByIndex(0)).to.be.equal(0);
-            });
-        });
-    });
 });
