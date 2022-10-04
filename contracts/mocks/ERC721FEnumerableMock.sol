@@ -8,30 +8,14 @@ import "../token/ERC721/extensions/ERC721FEnumerable.sol";
  * This mock provides a public safeMint and mint functions for testing purposes
  */
 contract ERC721FEnumerableMock is ERC721FEnumerable {
-    string private _baseTokenURI;
-
     constructor(string memory name, string memory symbol)
         ERC721F(name, symbol)
     {}
-
-    function exists(uint256 tokenId) public view returns (bool) {
-        return _exists(tokenId);
-    }
 
     function mint(uint256 numberOfTokens) public {
         uint256 supply = totalSupply();
         for (uint256 i; i < numberOfTokens; ) {
             _mint(msg.sender, supply + i);
-            unchecked {
-                i++;
-            }
-        }
-    }
-
-    function safeMint(uint256 numberOfTokens) public {
-        uint256 supply = totalSupply();
-        for (uint256 i; i < numberOfTokens; ) {
-            _safeMint(msg.sender, supply + i);
             unchecked {
                 i++;
             }
