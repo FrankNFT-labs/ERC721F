@@ -74,6 +74,19 @@ describe("ERC721FEnumerable", function() {
                     });
                 });
             });
+ 
+            describe("tokenByIndex", function() {
+                it("Returns all tokens", async function() {
+                    const tokensListed = await Promise.all(
+                        [0, 1].map(i => token.tokenByIndex(i)),
+                    );
+                    expect(tokensListed.map(t => t.toNumber())).to.have.members([0, 1]);
+                });
+
+                it("Reverts if the index is greater than supply", async function() {
+                    await expect(token.tokenByIndex(2)).to.be.revertedWith("Index out of bounds for total minted tokens");
+                });
+            });
         });
     })
 });
