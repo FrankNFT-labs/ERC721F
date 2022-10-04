@@ -5,7 +5,7 @@ import "../token/ERC721/extensions/ERC721FEnumerable.sol";
 
 /**
  * @title ERC721FEnumerableMock
- * This mock provides a public safeMint and mint functions for testing purposes
+ * This mock provides a public mint function for testing purposes
  */
 contract ERC721FEnumerableMock is ERC721FEnumerable {
     constructor(string memory name, string memory symbol)
