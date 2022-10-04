@@ -16,15 +16,19 @@ contract ERC721FEnumerableMock is ERC721FEnumerable {
         return _exists(tokenId);
     }
 
-    function mint(address to, uint256 tokenId) public {
-        _mint(to, tokenId);
+    function mint(address to, uint256 numberOfTokens) public {
+        uint256 supply = totalSupply();
+        for(uint256 i; i < numberOfTokens;){
+            _mint( to, supply + i );
+            unchecked{ i++;}
+        }
     }
 
-    function safeMint(address to, uint256 tokenId) public {
-        _safeMint(to, tokenId);
-    }
-
-    function safeMint(address to, uint256 tokenId, bytes memory _data) public {
-        _safeMint(to, tokenId, _data);
+    function safeMint(address to, uint256 numberOfTokens) public {
+        uint256 supply = totalSupply();
+        for(uint256 i; i < numberOfTokens;){
+            _safeMint( to, supply + i );
+            unchecked{ i++;}
+        }
     }
 }
