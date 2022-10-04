@@ -83,7 +83,7 @@ contract ERC721F is Ownable, ERC721 {
      * @dev Gets the total amount of tokens stored by the contract.
      * @return uint256 representing the total amount of tokens
      */
-    function totalSupply() public view returns (uint256) {
+    function totalSupply() public view virtual returns (uint256) {
         return _tokenSupply.current();
     }
 }
