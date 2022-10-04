@@ -23,17 +23,26 @@ describe("ERC721FEnumerable", function() {
     describe("Should behave like ERC721Enumerable", function() {
         context("With minted tokens", function() {
             let token;
+            let ownerContract;
     
             beforeEach(async () => {
                 const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
                 token = hardhatToken;
-                await token.mint(owner.address, firstTokenId);
-                await token.mint(owner.address, secondTokenId);
+                ownerContract = owner;
+                await token.mint(2);
             });
     
             describe("totalSupply", function() {
                 it("Returns total token supply", async function() {
                     expect(await token.totalSupply()).to.be.equal("2");
+                });
+            });
+
+            describe("tokenOfOwnerByIndex", function() {
+                describe("When the given index is lower than the amount of tokens owned by the given address", function() {
+                    it("Returns the token ID placed at the given index", async function() {
+                        expect(await token.tokenOfOwnerByIndex(ownerContract.address, 0)).to.be.equal(0);
+                    });
                 });
             });
         });
