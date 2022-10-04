@@ -89,4 +89,24 @@ describe("ERC721FEnumerable", function() {
             });
         });
     })
+
+    describe("_mint(address, uint256)", function() {
+        context("With minted token", async function() {
+            it("Adjusts owner tokens by index", async function() {
+                const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
+                
+                await hardhatToken.mint(1);
+                
+                expect(await hardhatToken.tokenOfOwnerByIndex(owner.address, 0)).to.equal(0);
+            });
+
+            it("Adjust all tokens list", async function() {
+                const { hardhatToken } = await loadFixture(deployTokenFixture);
+
+                await hardhatToken.mint(1);
+
+                expect(await hardhatToken.tokenByIndex(0)).to.be.equal(0);
+            });
+        });
+    });
 });
