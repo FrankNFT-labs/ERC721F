@@ -45,6 +45,7 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
     {
         COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
         subscriptionId = _subscriptionId;
+        setBaseTokenURI("ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/");
     }
 
     /**
