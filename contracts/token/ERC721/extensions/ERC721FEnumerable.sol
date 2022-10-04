@@ -21,6 +21,8 @@ abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
     /**
      * @dev See {IERC721Enumerable-tokenOfOwnerByIndex}
      * Returns token ID owned by `owner` at a given `index` of its token list
+     * This read function is O(totalSupply). If calling from a seperate contract, be sure to test gas first
+     * It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case
      */
     function tokenOfOwnerByIndex(address owner, uint256 index)
         external
@@ -56,6 +58,8 @@ abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
     /**
      * @dev See {IERC721Enumerable-tokenByIndex}
      * Returns a token ID at a given `index` of all the tokens stored by the contract
+     * This read function is O(totalSupply). If calling from a seperate contract, be sure to test gas first
+     * It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case
      */
     function tokenByIndex(uint256 index) external view returns (uint256) {
         uint256 totalMinted = ERC721FEnumerable.totalSupply();
