@@ -20,6 +20,7 @@ contract MerkleRoot is ERC721F, ERC721Payable {
 
     constructor(bytes32 _root) ERC721F("MerkleRoot Pre-Sale", "Merkle") {
         root = _root;
+        setBaseTokenURI("ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/");
     }
 
     modifier validMintRequest(uint256 numberOfTokens) {
