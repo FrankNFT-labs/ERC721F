@@ -28,7 +28,7 @@ describe("ERC721FEnumerable", function () {
 
             describe("totalSupply", function () {
                 it("Returns total token supply", async function () {
-                    expect(await token.totalSupply()).to.be.equal("2");
+                    expect(await token.totalSupply()).to.be.equal(2);
                 });
             });
 
