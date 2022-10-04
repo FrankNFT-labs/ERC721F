@@ -50,28 +50,28 @@ describe("ERC721FEnumerable", function() {
                         await expect(token.tokenOfOwnerByIndex(otherAddress.address, 0)).to.be.revertedWith("Index out of bounds for owned tokens");
                     });
                 });
-            });
 
-            describe("After transferring all tokens to another user", function() {
-                beforeEach(async () => {
-                    await token.transferFrom(ownerContract.address, otherAddress.address, 0);
-                    await token.transferFrom(ownerContract.address, otherAddress.address, 1);
-                });
-
-                it("Returns correct token IDs for target", async function() {
-                    expect(await token.balanceOf(otherAddress.address)).to.be.equal(2);
-
-                    const tokensListed = await Promise.all(
-                        [0, 1].map(i => token.tokenOfOwnerByIndex(otherAddress.address, i)),
-                    );
-
-                    expect(tokensListed.map(t => t.toNumber())).to.have.members([0, 1]);
-                });
-
-                it("Returns empty collection for original owner", async function() {
-                    expect(await token.balanceOf(ownerContract.address)).to.be.equal(0);
-
-                    await expect(token.tokenOfOwnerByIndex(ownerContract.address, 0)).to.be.revertedWith("Index out of bounds for owned tokens");
+                describe("After transferring all tokens to another user", function() {
+                    beforeEach(async () => {
+                        await token.transferFrom(ownerContract.address, otherAddress.address, 0);
+                        await token.transferFrom(ownerContract.address, otherAddress.address, 1);
+                    });
+    
+                    it("Returns correct token IDs for target", async function() {
+                        expect(await token.balanceOf(otherAddress.address)).to.be.equal(2);
+    
+                        const tokensListed = await Promise.all(
+                            [0, 1].map(i => token.tokenOfOwnerByIndex(otherAddress.address, i)),
+                        );
+    
+                        expect(tokensListed.map(t => t.toNumber())).to.have.members([0, 1]);
+                    });
+    
+                    it("Returns empty collection for original owner", async function() {
+                        expect(await token.balanceOf(ownerContract.address)).to.be.equal(0);
+    
+                        await expect(token.tokenOfOwnerByIndex(ownerContract.address, 0)).to.be.revertedWith("Index out of bounds for owned tokens");
+                    });
                 });
             });
         });
