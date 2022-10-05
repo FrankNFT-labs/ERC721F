@@ -11,10 +11,16 @@ abstract contract AllowList is Ownable {
         _;
     }
 
+    /**
+     * @notice Adds an address to the allowList
+     */
     function allowAddress(address _address) public onlyOwner {
         allowList[_address] = true;
     }
 
+    /**
+     * @notice Adds an array of addresses to the allowList
+     */
     function allowAddresses(address[] calldata _addresses) external onlyOwner {
         uint length = _addresses.length;
         for (uint i; i < length; ) {
@@ -25,10 +31,16 @@ abstract contract AllowList is Ownable {
         }
     }
 
+    /**
+     * @notice Removes an address off the allowList
+     */
     function disallowAddress(address _address) public onlyOwner {
         allowList[_address] = false;
     }
 
+    /**
+     * @notice Returns `true` if `_address` is in and `true` in the allowList
+     */
     function isAllowList(address _address) public view returns (bool) {
         return allowList[_address];
     }
