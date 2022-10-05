@@ -262,4 +262,19 @@ describe("AllowList", function () {
             await expect(hardhatToken.withdraw()).to.be.revertedWith("Insufficient balance");
         })
     });
+
+    context.only("AllowList", function() {
+        let token;
+        let whitelistedAddress;
+        let nonWhitelistedAddress;
+        let secondNonWhitelistedAddress;
+
+        beforeEach(async () => {
+            const { hardhatToken, addr1, addr6, addr7 } = await loadFixture(deployTokenFixture);
+            token = hardhatToken;
+            whitelistedAddress = addr1;
+            nonWhitelistedAddress = addr6;
+            secondNonWhitelistedAddress = addr7
+        });
+    })
 });
