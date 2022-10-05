@@ -5,6 +5,10 @@ import "../contracts/token/ERC721/ERC721F.sol";
 import "../contracts/utils/AllowList.sol";
 import "../contracts/token/ERC721/extensions/ERC721Payable.sol";
 
+/**
+ * @title AllowListExample
+ * @dev Example implementation of [ERC721F] with AllowList validation using the AllowList.sol library
+ */
 contract AllowListExample is ERC721F, ERC721Payable, AllowList {
     uint256 public constant MAX_TOKENS = 10000;
     uint public constant MAX_PURCHASE = 31;
@@ -33,10 +37,17 @@ contract AllowListExample is ERC721F, ERC721Payable, AllowList {
         _;
     }
 
+    /**
+     * @notice Changes the state of preSaleIsActive from true to false and false to true
+     */
     function flipPreSaleState() external onlyOwner {
         preSaleIsActive = !preSaleIsActive;
     }
 
+    /**
+     * @notice Changes the state of saleIsActive from true to false and false to true
+     * @dev If saleIsActive becomes `true` sets preSaleIsActive to `false`
+     */
     function flipSaleState() external onlyOwner {
         saleIsActive = !saleIsActive;
         if (saleIsActive) {
@@ -44,6 +55,10 @@ contract AllowListExample is ERC721F, ERC721Payable, AllowList {
         }
     }
 
+    /**
+     * @notice Mints a certain number of tokens
+     * @param numberOfTokens Total tokens to be minted, must be larger than 0 and at most 30
+     */
     function mint(uint256 numberOfTokens)
         external
         payable
@@ -65,6 +80,11 @@ contract AllowListExample is ERC721F, ERC721Payable, AllowList {
         }
     }
 
+    /**
+     * @notice Mints a certain number of tokens
+     * @param numberOfTokens Total tokens to be minted, must be larger than 0 and at most 30
+     * @dev Uses AllowList.onlyAllowList modifier for whitelist functionality
+     */
     function mintPreSale(
         uint256 numberOfTokens
     ) external payable validMintRequest(numberOfTokens) onlyAllowList {
