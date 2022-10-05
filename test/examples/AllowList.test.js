@@ -117,6 +117,48 @@ describe("AllowList", function () {
 
                 await token.flipPreSaleState();
             });
+
+            it("shouldn't allow minting by whitelisted accounts which don't send enough funds", async function() {
+                await expect(token.connect(whitelistedAddress).mintPreSale(5, {
+                    value: transferAmount
+                })).to.be.revertedWith("Ether value sent is not correct");
+            });
+
+            it("shouldn't allow minting by unwhitelisted accounts during pre-sale period", async function() {
+                await expect(token.connect(nonWhitelistedAddress).mintPreSale(1, {
+                    value: transferAmount
+                })).to.be.revertedWith("Address is not within allowList");
+            });
+
+            it("should allow minting by whitelisted accounts during active pre-sale period", async function() {
+                await expect(token.connect(whitelistedAddress).mintPreSale(1, {
+                    value: transferAmount
+                })).to.not.be.reverted;
+            });
+
+            it("should increase the total cost when requesting more tokens to be minted", async function() {
+                await expect(token.connect(whitelistedAddress).mintPreSale(5, {
+                    value: transferAmount
+                })).to.be.revertedWith("Ether value sent is not correct");
+            });
+
+            it("should transfer the transaction cost to the contract", async function() {
+                await expect(token.connect(whitelistedAddress).mintPreSale(1, {
+                    value: transferAmount
+                })).to.changeEtherBalance(token.address, transferAmount);
+            });
+
+            it("shouldn't revert when accounts overpays transfer costs", async function() {
+                await expect(token.connect(whitelistedAddress).mintPreSale(1, {
+                    value: ethers.utils.parseEther("5")
+                })).to.not.be.reverted;
+            });
+
+            it("should increase the token wallet of the account minting", async function() {
+                await expect(token.connect(whitelistedAddress).mintPreSale(5, {
+                    value: ethers.utils.parseEther("5")
+                })).to.changeTokenBalance(token, whitelistedAddress, 5);
+            });
         });
     });
 });
