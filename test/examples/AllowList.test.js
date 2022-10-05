@@ -33,4 +33,38 @@ describe("AllowList", function () {
             expect(await hardhatToken.preSaleIsActive()).to.be.false;
         })
     });
+
+    context("flipSaleState", function() {
+        describe("Single flip", function() {
+            it("should cause saleIsActive to become true", async function() {
+                const { hardhatToken } = await loadFixture(deployTokenFixture);
+
+                await hardhatToken.flipSaleState();
+
+                expect(await hardhatToken.saleIsActive()).to.be.true;
+            });
+
+            it("should disable preSaleIsactive when flipping to true", async function() {
+                const { hardhatToken } = await loadFixture(deployTokenFixture);
+
+                await hardhatToken.flipPreSaleState();
+                expect(await hardhatToken.preSaleIsActive()).to.be.true;
+
+                await hardhatToken.flipSaleState();
+                expect(await hardhatToken.saleIsActive()).to.be.true;
+                expect(await hardhatToken.preSaleIsActive()).to.be.false;
+            });
+        })
+
+        describe("Double flip", function() {
+            it("should cause saleIsActive to become false", async function() {
+                const { hardhatToken } = await loadFixture(deployTokenFixture);
+
+                await hardhatToken.flipSaleState();
+                await hardhatToken.flipSaleState();
+
+                expect(await hardhatToken.saleIsActive()).to.be.false;
+            });
+        });
+    })
 });
