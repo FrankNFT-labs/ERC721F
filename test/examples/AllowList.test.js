@@ -32,7 +32,7 @@ describe("AllowList", function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
             expect(await hardhatToken.preSaleIsActive()).to.be.false;
-        })
+        });
     });
 
     context("flipSaleState", function () {
@@ -55,7 +55,7 @@ describe("AllowList", function () {
                 expect(await hardhatToken.saleIsActive()).to.be.true;
                 expect(await hardhatToken.preSaleIsActive()).to.be.false;
             });
-        })
+        });
 
         describe("Double flip", function () {
             it("should cause saleIsActive to become false", async function () {
@@ -67,7 +67,7 @@ describe("AllowList", function () {
                 expect(await hardhatToken.saleIsActive()).to.be.false;
             });
         });
-    })
+    });
 
     context("flipPreSaleState", function () {
         describe("Single flip", function () {
@@ -228,7 +228,7 @@ describe("AllowList", function () {
                 })).to.changeTokenBalance(token, nonWhitelistedAddress, 1);
             });
         });
-    })
+    });
 
     describe("withdraw", function () {
         it("should only be executable by owner", async function () {
@@ -259,7 +259,7 @@ describe("AllowList", function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
             await expect(hardhatToken.withdraw()).to.be.revertedWith("Insufficient balance");
-        })
+        });
     });
 
     context("AllowList imported functions", function () {
@@ -280,7 +280,7 @@ describe("AllowList", function () {
             it("should only be executable by the owner", async function () {
                 await expect(token.allowAddress(nonWhitelistedAddress.address)).to.not.be.reverted;
                 await expect(token.connect(nonWhitelistedAddress).allowAddress(nonWhitelistedAddress.address)).to.be.reverted;
-            })
+            });
 
             it("should add the address to the allowList", async function () {
                 expect(await token.isAllowList(nonWhitelistedAddress.address)).to.be.false;
@@ -369,5 +369,5 @@ describe("AllowList", function () {
                 expect(await token.isAllowList(nonWhitelistedAddress.address)).to.false;
             });
         });
-    })
+    });
 });
