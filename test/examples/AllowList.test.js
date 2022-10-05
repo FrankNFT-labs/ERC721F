@@ -349,5 +349,26 @@ describe("AllowList", function () {
                 expect(await token.isAllowList(nonWhitelistedAddress.address)).to.be.false;
             });
         });
+
+        describe("isAllowList", function() {
+            it("should be executable by anyone", async function() {
+                await expect(token.isAllowList(whitelistedAddress.address)).to.not.be.reverted;
+                await expect(token.connect(nonWhitelistedAddress.address).isAllowList(whitelistedAddress.address)).to.not.be.reverted;
+            });
+
+            it("should return true for allowed addresses", async function() {
+                expect(await token.isAllowList(whitelistedAddress.address)).to.be.true;
+            });
+
+            it("should return false for non-existing allowed addresses", async function() {
+                expect(await token.isAllowList(nonWhitelistedAddress.address)).to.be.false;
+            });
+
+            it("should return false for disallowed addresses", async function() {
+                await token.disallowAddress(nonWhitelistedAddress.address);
+
+                expect(await token.isAllowList(nonWhitelistedAddress.address)).to.false;
+            });
+        });
     })
 });
