@@ -161,7 +161,7 @@ describe("AllowList", function () {
             });
         });
 
-        context.only("mint", function() {
+        context("mint", function() {
             describe("Inactive sale", function() {
                 it("shouldn't allow minting by anyone", async function() {
                     const { hardhatToken, addr1, addr6 } = await loadFixture(deployTokenFixture);
@@ -229,5 +229,37 @@ describe("AllowList", function () {
                 });
             });
         })
+
+        describe("withdraw", function() {
+            it("should only be executable by owner", async function() {
+                const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+
+                await hardhatToken.flipSaleState();
+                await hardhatToken.connect(addr1).mint(1, {
+                    value: ethers.utils.parseEther("1")
+                });
+
+                await expect(hardhatToken.withdraw()).to.not.be.reverted;
+                await expect(hardhatToken.connect(addr1).withdraw()).to.be.reverted;
+            });
+
+            it("should increase the wallebalance of the owner and decrease the wallet of the contract", async function() {
+                const transferAmount = ethers.utils.parseEther("5");
+                const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
+
+                await hardhatToken.flipSaleState();
+                await hardhatToken.connect(addr1).mint(5, {
+                    value: transferAmount
+                });
+
+                await expect(hardhatToken.withdraw()).to.changeEtherBalances([hardhatToken.address, owner], [ethers.utils.parseEther("-5"), transferAmount]);
+            });
+
+            it("should revert when no balance can be withdrawn", async function() {
+                const { hardhatToken } = await loadFixture(deployTokenFixture);
+
+                await expect(hardhatToken.withdraw()).to.be.revertedWith("Insufficient balance");
+            })
+        });
     });
 });
