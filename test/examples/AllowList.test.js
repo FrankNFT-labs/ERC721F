@@ -3,6 +3,8 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const { ContractFunctionType } = require("hardhat/internal/hardhat-network/stack-traces/model");
 
+const transferAmount = ethers.utils.parseEther("1");
+
 describe("AllowList", function () {
     async function deployTokenFixture() {
         const Token = await ethers.getContractFactory("AllowListExample");
@@ -21,13 +23,13 @@ describe("AllowList", function () {
     }
 
     describe("Deployment", function () {
-        it("Should have saleIsActive as false by default", async function () {
+        it("should have saleIsActive as false by default", async function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
             expect(await hardhatToken.saleIsActive()).to.be.false;
         });
 
-        it("Should have preSaleIsActive as false by default", async function () {
+        it("should have preSaleIsActive as false by default", async function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
             expect(await hardhatToken.preSaleIsActive()).to.be.false;
@@ -87,6 +89,33 @@ describe("AllowList", function () {
                 await hardhatToken.flipPreSaleState();
 
                 expect(await hardhatToken.preSaleIsActive()).to.be.false;
+            });
+        });
+    });
+
+    context("mintPreSale", function() {
+        describe("Inactive pre-sale", function() {
+            it("shouldn't allow minting by whitelisted accounts during inactive pre-sale period", async function() {
+                const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+
+                await expect(hardhatToken.connect(addr1).mintPreSale(1, {
+                    value: transferAmount
+                })).to.be.revertedWith("PreSale is NOT active yet");
+            });
+        });
+
+        describe("Active pre-sale", function() {
+            let token;
+            let whitelistedAddress;
+            let nonWhitelistedAddress;
+
+            beforeEach(async () => {
+                const { hardhatToken, addr1, addr6 } = await loadFixture(deployTokenFixture);
+                token = hardhatToken;
+                whitelistedAddress = addr1;
+                nonWhitelistedAddress = addr6;
+
+                await token.flipPreSaleState();
             });
         });
     });
