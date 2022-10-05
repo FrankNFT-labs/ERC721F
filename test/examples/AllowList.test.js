@@ -19,4 +19,18 @@ describe("AllowList", function () {
 
         return { Token, hardhatToken, owner, addr1, addr2, addr3, addr4, addr5, addr6, addr7 };
     }
+
+    describe("Deployment", function () {
+        it("Should have saleIsActive as false by default", async function () {
+            const { hardhatToken } = await loadFixture(deployTokenFixture);
+
+            expect(await hardhatToken.saleIsActive()).to.be.false;
+        });
+
+        it("Should have preSaleIsActive as false by default", async function () {
+            const { hardhatToken } = await loadFixture(deployTokenFixture);
+
+            expect(await hardhatToken.preSaleIsActive()).to.be.false;
+        })
+    });
 });
