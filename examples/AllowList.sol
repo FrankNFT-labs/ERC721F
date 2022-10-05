@@ -1,13 +1,91 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9 <0.9.0;
 
-import "../contracts/utils/AllowList.sol";
 import "../contracts/token/ERC721/ERC721F.sol";
+import "../contracts/utils/AllowList.sol";
+import "../contracts/token/ERC721/extensions/ERC721Payable.sol";
 
-contract AllowListExample is AllowList, ERC721F {
-    constructor() ERC721F("AllowList", "AL") {
+contract AllowListExample is ERC721F, ERC721Payable, AllowList {
+    uint256 public constant MAX_TOKENS = 10000;
+    uint public constant MAX_PURCHASE = 31;
+    uint public tokenPrice = 1 ether;
+    bool public preSaleIsActive;
+    bool public saleIsActive;
+
+    constructor()
+        ERC721F("AllowList", "AL")
+    {
         setBaseTokenURI(
             "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
         );
+    }
+
+    modifier validMintRequest(uint256 numberOfTokens) {
+        require(numberOfTokens != 0, "numberOfNfts cannot be 0");
+        require(
+            numberOfTokens < MAX_PURCHASE,
+            "Can only mint 30 tokens at a time"
+        );
+        require(
+            tokenPrice * numberOfTokens <= msg.value,
+            "Ether value sent is not correct"
+        );
+        _;
+    }
+
+    function flipPreSaleState() external onlyOwner {
+        preSaleIsActive = !preSaleIsActive;
+    }
+
+    function flipSaleState() external onlyOwner {
+        saleIsActive = !saleIsActive;
+        if (saleIsActive) {
+            preSaleIsActive = false;
+        }
+    }
+
+    function mint(uint256 numberOfTokens)
+        external
+        payable
+        validMintRequest(numberOfTokens)
+    {
+        require(msg.sender == tx.origin, "No contracts allowed");
+        require(saleIsActive, "Sale NOT active yet");
+        uint256 supply = totalSupply();
+        require(
+            supply + numberOfTokens <= MAX_TOKENS,
+            "Purchase would exceed max supply of tokens"
+        );
+
+        for (uint256 i; i < numberOfTokens; ) {
+            _mint(msg.sender, supply + i);
+            unchecked {
+                i++;
+            }
+        }
+    }
+
+    function mintPreSale(
+        uint256 numberOfTokens
+    ) external payable validMintRequest(numberOfTokens) onlyAllowList {
+        require(preSaleIsActive, "PreSale is NOT active yet");
+        uint256 supply = totalSupply();
+        require(
+            supply + numberOfTokens <= MAX_TOKENS,
+            "Purchase would exceed max supply of tokens"
+        );
+
+        for (uint256 i; i < numberOfTokens; ) {
+            _safeMint(msg.sender, supply + i);
+            unchecked {
+                i++;
+            }
+        }
+    }
+
+    function withdraw() external onlyOwner {
+        uint256 balance = address(this).balance;
+        require(balance > 0, "Insufficient balance");
+        _withdraw(owner(), balance);
     }
 }
