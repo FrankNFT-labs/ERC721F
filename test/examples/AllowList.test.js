@@ -297,7 +297,34 @@ describe("AllowList", function () {
                 await expect(token.allowAddress(whitelistedAddress.address)).to.not.be.reverted;
 
                 expect(await token.isAllowList(whitelistedAddress.address)).to.be.true;
-            })
-        })
+            });
+        });
+
+        describe("allowAddresses", function() {
+            it("should only be executable by owner", async function() {
+                await expect(token.allowAddress(nonWhitelistedAddress.address)).to.not.be.reverted;
+                await expect(token.connect(nonWhitelistedAddress).allowAddress(nonWhitelistedAddress.address)).to.be.reverted;
+            });
+
+            it("should add the addresses to the allowList", async function() {
+                expect(await token.isAllowList(nonWhitelistedAddress.address)).to.be.false;
+                expect(await token.isAllowList(secondNonWhitelistedAddress.address)).to.be.false;
+
+                await token.allowAddresses([nonWhitelistedAddress.address, secondNonWhitelistedAddress.address]);
+
+                expect(await token.isAllowList(nonWhitelistedAddress.address)).to.be.true;
+                expect(await token.isAllowList(secondNonWhitelistedAddress.address)).to.be.true;
+            });
+
+            it("shouldn't revert or disallow an existing allowed address", async function() {
+                expect(await token.isAllowList(whitelistedAddress.address)).to.be.true;
+                expect(await token.isAllowList(nonWhitelistedAddress.address)).to.be.false;
+
+                await expect(token.allowAddresses([whitelistedAddress.address, nonWhitelistedAddress.address])).to.not.be.reverted;
+
+                expect(await token.isAllowList(whitelistedAddress.address)).to.be.true;
+                expect(await token.isAllowList(nonWhitelistedAddress.address)).to.be.true;
+            });
+        });
     })
 });
