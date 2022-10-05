@@ -160,5 +160,74 @@ describe("AllowList", function () {
                 })).to.changeTokenBalance(token, whitelistedAddress, 5);
             });
         });
+
+        context.only("mint", function() {
+            describe("Inactive sale", function() {
+                it("shouldn't allow minting by anyone", async function() {
+                    const { hardhatToken, addr1, addr6 } = await loadFixture(deployTokenFixture);
+
+                    await expect(hardhatToken.connect(addr1).mint(1, {
+                        value: transferAmount
+                    })).to.be.revertedWith("Sale NOT active yet");
+                    await expect(hardhatToken.connect(addr6).mint(1, {
+                        value: transferAmount
+                    })).to.be.revertedWith("Sale NOT active yet");
+                });
+            });
+
+            describe("Active sale", function() {
+                let token;
+                let whitelistedAddress;
+                let nonWhitelistedAddress;
+
+                beforeEach(async () => {
+                    const { hardhatToken, addr1, addr6 } = await loadFixture(deployTokenFixture);
+                    token = hardhatToken;
+                    whitelistedAddress = addr1;
+                    nonWhitelistedAddress = addr6;
+
+                    await token.flipSaleState();
+                });
+
+                it("shouldn't allow minting by accounts which don't send enough funds", async function() {
+                    await expect(token.connect(whitelistedAddress).mint(5, {
+                        value: transferAmount
+                    })).to.be.revertedWith("Ether value sent is not correct");
+                });
+
+                it("should allow anyone to mint when sending sufficient funds", async function() {
+                    await expect(token.connect(whitelistedAddress).mint(1, {
+                        value: transferAmount
+                    })).to.not.be.reverted;
+                    await expect(token.connect(nonWhitelistedAddress).mint(1, {
+                        value: transferAmount
+                    })).to.not.be.reverted;
+                });
+
+                it("should increase the total cost when requesting more tokens to be minted", async function() {
+                    await expect(token.mint(5, {
+                        value: transferAmount
+                    })).to.be.revertedWith("Ether value sent is not correct");
+                });
+
+                it("should transfer the transaction cost to the contract", async function() {
+                    await expect(token.mint(1, {
+                        value: transferAmount
+                    })).to.changeEtherBalance(token, transferAmount);
+                });
+
+                it("shouldn't revert when the accounts overpays transfer costs", async function() {
+                    await expect(token.mint(1, {
+                        value: ethers.utils.parseEther("5")
+                    })).to.not.be.reverted;
+                });
+
+                it("should increase the token wallet of the account minting", async function() {
+                    await expect(token.connect(nonWhitelistedAddress).mint(1, {
+                        value: transferAmount
+                    })).to.changeTokenBalance(token, nonWhitelistedAddress, 1);
+                });
+            });
+        })
     });
 });
