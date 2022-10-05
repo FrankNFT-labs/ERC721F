@@ -263,7 +263,7 @@ describe("AllowList", function () {
         })
     });
 
-    context.only("AllowList", function() {
+    context("AllowList imported functions", function() {
         let token;
         let whitelistedAddress;
         let nonWhitelistedAddress;
