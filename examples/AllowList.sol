@@ -1,22 +1,21 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9 <0.9.0;
 
-import "../contracts/token/ERC721/ERC721F.sol";
+import "../contracts/token/ERC721/ERC721FCOMMON.sol";
 import "../contracts/utils/AllowList.sol";
-import "../contracts/token/ERC721/extensions/ERC721Payable.sol";
 
 /**
  * @title AllowListExample
  * @dev Example implementation of [ERC721F] with AllowList validation using the AllowList.sol library
  */
-contract AllowListExample is ERC721F, ERC721Payable, AllowList {
+contract AllowListExample is ERC721FCOMMON, AllowList {
     uint256 public constant MAX_TOKENS = 10000;
     uint public constant MAX_PURCHASE = 31;
     uint public tokenPrice = 1 ether;
     bool public preSaleIsActive;
     bool public saleIsActive;
 
-    constructor() ERC721F("AllowList", "AL") {
+    constructor() ERC721FCOMMON("AllowList", "AL") {
         setBaseTokenURI(
             "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
         );
