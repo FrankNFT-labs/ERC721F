@@ -44,7 +44,7 @@ contract ERC721FGasReporterMock is ERC721F {
         for (uint256 i = 0; i < numberOfTokens; ) {
             _mint(to, supply + i);
             unchecked {
-                ++i;
+                i++;
             }
         }
     }
@@ -70,7 +70,7 @@ contract ERC721FGasReporterMock is ERC721F {
         for (uint i = 0; i < 10; ) {
             transferFrom(msg.sender, to, retrieveFirstToken());
             unchecked {
-                ++i;
+                i++;
             }
         }
     }
@@ -82,7 +82,7 @@ contract ERC721FGasReporterMock is ERC721F {
         for (uint i = 0; i < 10; ) {
             transferFrom(msg.sender, to, retrieveLastToken());
             unchecked {
-                ++i;
+                i++;
             }
         }
     }
@@ -95,7 +95,7 @@ contract ERC721FGasReporterMock is ERC721F {
         for (uint i = 0; i < 50; ) {
             transferFrom(msg.sender, to, retrieveFirstToken());
             unchecked {
-                ++i;
+                i++;
             }
         }
     }
@@ -107,7 +107,7 @@ contract ERC721FGasReporterMock is ERC721F {
         for (uint i = 0; i < 50; ) {
             transferFrom(msg.sender, to, retrieveLastToken());
             unchecked {
-                ++i;
+                i++;
             }
         }
     }
@@ -126,7 +126,7 @@ contract ERC721FGasReporterMock is ERC721F {
                 return i;
             }
             unchecked {
-                ++i;
+                i++;
             }
         }
     }
@@ -141,7 +141,7 @@ contract ERC721FGasReporterMock is ERC721F {
                 return i;
             }
             unchecked {
-                --i;
+                i--;
             }
         }
     }
