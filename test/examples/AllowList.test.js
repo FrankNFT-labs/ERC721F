@@ -302,8 +302,8 @@ describe("AllowList", function () {
 
         describe("allowAddresses", function() {
             it("should only be executable by owner", async function() {
-                await expect(token.allowAddress(nonWhitelistedAddress.address)).to.not.be.reverted;
-                await expect(token.connect(nonWhitelistedAddress).allowAddress(nonWhitelistedAddress.address)).to.be.reverted;
+                await expect(token.allowAddresses([nonWhitelistedAddress.address])).to.not.be.reverted;
+                await expect(token.connect(nonWhitelistedAddress).allowAddresses([nonWhitelistedAddress.address])).to.be.reverted;
             });
 
             it("should add the addresses to the allowList", async function() {
@@ -324,6 +324,29 @@ describe("AllowList", function () {
 
                 expect(await token.isAllowList(whitelistedAddress.address)).to.be.true;
                 expect(await token.isAllowList(nonWhitelistedAddress.address)).to.be.true;
+            });
+        });
+
+        describe("disallowAddress", function() {
+            it("should only be executable by owner", async function() {
+                await expect(token.disallowAddress(nonWhitelistedAddress.address)).to.not.be.reverted;
+                await expect(token.connect(nonWhitelistedAddress).disallowAddress(nonWhitelistedAddress.address)).to.be.reverted;
+            });
+
+            it("should remove the address from the allowList", async function() {
+                expect(await token.isAllowList(whitelistedAddress.address)).to.be.true;
+
+                await token.disallowAddress(whitelistedAddress.address);
+
+                expect(await token.isAllowList(whitelistedAddress.address)).to.be.false;
+            });
+
+            it("shouldn't revert or allow a non-existing allowed address", async function(){
+                expect(await token.isAllowList(nonWhitelistedAddress.address)).to.be.false;
+
+                await expect(token.disallowAddress(whitelistedAddress.address)).to.not.be.reverted;
+
+                expect(await token.isAllowList(nonWhitelistedAddress.address)).to.be.false;
             });
         });
     })
