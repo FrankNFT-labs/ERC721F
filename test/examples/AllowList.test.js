@@ -67,4 +67,27 @@ describe("AllowList", function () {
             });
         });
     })
+
+    context("flipPreSaleState", function() {
+        describe("Single flip", function() {
+            it("should cause preSaleIsActive to become true", async function() {
+                const { hardhatToken } = await loadFixture(deployTokenFixture);
+
+                await hardhatToken.flipPreSaleState();
+
+                expect(await hardhatToken.preSaleIsActive()).to.be.true;
+            });
+        }); 
+
+        describe("Double flip", function() {
+            it("should cause preSaleIsActive to become false", async function() {
+                const { hardhatToken } = await loadFixture(deployTokenFixture);
+
+                await hardhatToken.flipPreSaleState();
+                await hardhatToken.flipPreSaleState();
+
+                expect(await hardhatToken.preSaleIsActive()).to.be.false;
+            });
+        });
+    });
 });
