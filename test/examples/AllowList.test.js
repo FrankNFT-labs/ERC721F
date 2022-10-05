@@ -1,7 +1,6 @@
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
-const { ContractFunctionType } = require("hardhat/internal/hardhat-network/stack-traces/model");
 
 const transferAmount = ethers.utils.parseEther("1");
 
