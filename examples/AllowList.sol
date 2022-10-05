@@ -16,9 +16,7 @@ contract AllowListExample is ERC721F, ERC721Payable, AllowList {
     bool public preSaleIsActive;
     bool public saleIsActive;
 
-    constructor()
-        ERC721F("AllowList", "AL")
-    {
+    constructor() ERC721F("AllowList", "AL") {
         setBaseTokenURI(
             "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
         );
@@ -85,9 +83,12 @@ contract AllowListExample is ERC721F, ERC721Payable, AllowList {
      * @param numberOfTokens Total tokens to be minted, must be larger than 0 and at most 30
      * @dev Uses AllowList.onlyAllowList modifier for whitelist functionality
      */
-    function mintPreSale(
-        uint256 numberOfTokens
-    ) external payable validMintRequest(numberOfTokens) onlyAllowList {
+    function mintPreSale(uint256 numberOfTokens)
+        external
+        payable
+        validMintRequest(numberOfTokens)
+        onlyAllowList
+    {
         require(preSaleIsActive, "PreSale is NOT active yet");
         uint256 supply = totalSupply();
         require(
