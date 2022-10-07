@@ -3,7 +3,6 @@ pragma solidity ^0.8.9 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 
 /**
  * @title ERC721F
@@ -14,13 +13,10 @@ import "@openzeppelin/contracts/utils/Counters.sol";
  */
 
 contract ERC721F is Ownable, ERC721 {
-    using Counters for Counters.Counter;
-
-    Counters.Counter private _tokenSupply;
+    uint256 _tokenSupply;
 
     // Base URI for Meta data
     string private _baseTokenURI;
-
     
     constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {
     }
@@ -37,7 +33,7 @@ contract ERC721F is Ownable, ERC721 {
         uint256 currentTokenId = _startTokenId();
         uint256 ownedTokenIndex = 0;
 
-        while ( ownedTokenIndex < ownerTokenCount && currentTokenId < _tokenSupply.current() ) {
+        while ( ownedTokenIndex < ownerTokenCount && currentTokenId < _tokenSupply ) {
             if (ownerOf(currentTokenId) == _owner) {
                 ownedTokenIds[ownedTokenIndex] = currentTokenId;
                 unchecked{ ownedTokenIndex++;}
@@ -62,6 +58,7 @@ contract ERC721F is Ownable, ERC721 {
     function _baseURI() internal view virtual override returns (string memory) {
         return _baseTokenURI;
     }
+
     /**
      * @dev Set the base token URI
      */
@@ -76,7 +73,9 @@ contract ERC721F is Ownable, ERC721 {
      */
     function _mint(address to, uint256 tokenId) internal virtual override {
         super._mint(to, tokenId);
-        _tokenSupply.increment();
+        unchecked {
+            _tokenSupply++;
+        }
     }
 
     /**
@@ -84,6 +83,6 @@ contract ERC721F is Ownable, ERC721 {
      * @return uint256 representing the total amount of tokens
      */
     function totalSupply() public view virtual returns (uint256) {
-        return _tokenSupply.current();
+        return _tokenSupply;
     }
 }
