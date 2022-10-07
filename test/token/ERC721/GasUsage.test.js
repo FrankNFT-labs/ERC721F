@@ -44,7 +44,7 @@ describe("ERC721F Gas Usage", function () {
     });
 
     describe("Transferring", async function () {
-        context("mintOne", function() {
+        context("mintOne", function () {
             context("transferOneAsc", async function () {
                 it("Transfers to and from two addresses", async function () {
                     const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
@@ -53,7 +53,7 @@ describe("ERC721F Gas Usage", function () {
                     await hardhatToken.connect(addr1).transferOneAsc(owner.address);
                 });
             });
-    
+
             context("transferOneDesc", async function () {
                 it("Transfers to and from two addresses", async function () {
                     const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
@@ -64,7 +64,7 @@ describe("ERC721F Gas Usage", function () {
             });
         });
 
-        context("mintTen", function() {
+        context("mintTen", function () {
             context("transferOneAsc", async function () {
                 it("Transfers first token to address1 from owner with walletsize 10", async function () {
                     const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
@@ -72,26 +72,26 @@ describe("ERC721F Gas Usage", function () {
                     await hardhatToken.transferOneAsc(addr1.address);
                 });
             });
-    
-            context("transferOneDesc", async function() {
-                it("Transfers last token to addres1 from owner with walletsize 10", async function() {
+
+            context("transferOneDesc", async function () {
+                it("Transfers last token to addres1 from owner with walletsize 10", async function () {
                     const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
                     await hardhatToken.mintTen(owner.address);
                     await hardhatToken.transferOneDesc(addr1.address);
                 });
             });
-    
-            context("transferTenAsc", async function() {
-                it("Transfer to and from two addresses", async function() {
-                    const {hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
+
+            context("transferTenAsc", async function () {
+                it("Transfer to and from two addresses", async function () {
+                    const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
                     await hardhatToken.mintTen(owner.address);
                     await hardhatToken.transferTenAsc(addr1.address);
                     await hardhatToken.connect(addr1).transferTenAsc(owner.address);
                 });
             });
-    
-            context("transferTenDesc", async function() {
-                it("Transfer to and from two addresses", async function() {
+
+            context("transferTenDesc", async function () {
+                it("Transfer to and from two addresses", async function () {
                     const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
                     await hardhatToken.mintTen(owner.address);
                     await hardhatToken.transferTenDesc(addr1.address);
@@ -100,33 +100,33 @@ describe("ERC721F Gas Usage", function () {
             });
         });
 
-        context("mintHundred", function() {
-            context("transferTenAsc", async function() {
-                it("Transfer first ten tokens to address1 from owner with walletsize 100", async function() {
+        context("mintHundred", function () {
+            context("transferTenAsc", async function () {
+                it("Transfer first ten tokens to address1 from owner with walletsize 100", async function () {
                     const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
                     await hardhatToken.mintHundred(owner.address);
                     await hardhatToken.transferTenAsc(addr1.address);
                 });
             });
-    
-            context("transferTenDesc", async function() {
-                it("Transfer last ten tokens to address1 from owner with walletsize 100", async function() {
+
+            context("transferTenDesc", async function () {
+                it("Transfer last ten tokens to address1 from owner with walletsize 100", async function () {
                     const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
                     await hardhatToken.mintHundred(owner.address);
-                    await hardhatToken.transferTenDesc(addr1.address); 
+                    await hardhatToken.transferTenDesc(addr1.address);
                 });
             });
-    
-            context("transferFiftyAsc", async function() {
-                it("Transfer first fifty tokens to address1 from owner with walletsize 100", async function() {
+
+            context("transferFiftyAsc", async function () {
+                it("Transfer first fifty tokens to address1 from owner with walletsize 100", async function () {
                     const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
                     await hardhatToken.mintHundred(owner.address);
                     await hardhatToken.transferFiftyAsc(addr1.address);
                 });
             });
-    
-            context("transferFiftyDesc", async function() {
-                it("Transfer last fifty tokens to address1 from owner with walletsize 100", async function() {
+
+            context("transferFiftyDesc", async function () {
+                it("Transfer last fifty tokens to address1 from owner with walletsize 100", async function () {
                     const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
                     await hardhatToken.mintHundred(owner.address);
                     await hardhatToken.transferFiftyDesc(addr1.address);
