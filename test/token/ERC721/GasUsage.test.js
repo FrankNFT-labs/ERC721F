@@ -100,7 +100,7 @@ describe("ERC721F Gas Usage", function () {
             });
         });
 
-        context.only("mintHundred", function() {
+        context("mintHundred", function() {
             context("transferTenAsc", async function() {
                 it("Transfer first ten tokens to address1 from owner with walletsize 100", async function() {
                     const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
