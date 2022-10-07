@@ -132,6 +132,6 @@ describe("ERC721F Gas Usage", function () {
                     await hardhatToken.transferFiftyDesc(addr1.address);
                 });
             });
-        })
+        });
     });
 });
