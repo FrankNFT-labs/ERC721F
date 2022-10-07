@@ -17,7 +17,6 @@ contract ERC721F is Ownable, ERC721 {
 
     // Base URI for Meta data
     string private _baseTokenURI;
-
     
     constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {
     }
@@ -59,7 +58,7 @@ contract ERC721F is Ownable, ERC721 {
     function _baseURI() internal view virtual override returns (string memory) {
         return _baseTokenURI;
     }
-    
+
     /**
      * @dev Set the base token URI
      */
