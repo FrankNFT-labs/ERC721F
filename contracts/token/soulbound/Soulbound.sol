@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT 
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -9,8 +9,9 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     uint256 _tokenSupply;
     uint256 _burnCounter;
 
-    constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {
-    }
+    constructor(string memory name_, string memory symbol_)
+        ERC721(name_, symbol_)
+    {}
 
     /**
      * @dev Mint function is only executable by the owner who is responsible for the uri provided and can decide for who the token is
@@ -28,7 +29,11 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     /**
      * @dev Burn function is only executable by the owner of the contract disregarding the current owner of the token, increases `_burnCounter` for proper functionality of totalSupply
      */
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) onlyOwner {
+    function _burn(uint256 tokenId)
+        internal
+        override(ERC721, ERC721URIStorage)
+        onlyOwner
+    {
         super._burn(tokenId);
         unchecked {
             _burnCounter++;
@@ -38,7 +43,11 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     /**
      * @dev Transfer function is only executable by the owner of the contract
      */
-    function _transfer(address from, address to, uint256 tokenId) internal virtual override onlyOwner {
+    function _transfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal virtual override onlyOwner {
         super._transfer(from, to, tokenId);
     }
 
