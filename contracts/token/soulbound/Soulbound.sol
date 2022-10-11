@@ -25,6 +25,9 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
         }
     }
 
+    /**
+     * @dev Burn function is only executable by the owner of the contract disregarding the current owner of the token, increases `_burnCounter` for proper functionality of totalSupply
+     */
     function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) onlyOwner {
         super._burn(tokenId);
         unchecked {
