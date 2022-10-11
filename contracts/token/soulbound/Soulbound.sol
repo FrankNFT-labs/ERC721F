@@ -12,6 +12,11 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {
     }
 
+    /**
+     * @dev Mint function is only executable by the owner who is responsible for the uri provided and can decide for who the token is
+     * @param to address which receives the mint
+     * @param uri string in which the svg image, attributes, etc are stored
+     */
     function _mint(address to, string memory uri) internal virtual onlyOwner {
         _mint(to, _tokenSupply);
         _setTokenURI(_tokenSupply, uri);
