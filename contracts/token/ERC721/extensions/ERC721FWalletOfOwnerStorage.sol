@@ -3,7 +3,7 @@ pragma solidity ^0.8.9 <0.9.0;
 
 import "../ERC721F.sol";
 
-abstract contract walletOfOwnerStorage is ERC721F {
+abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
     mapping(address => uint256[]) _walletOfOwner;
 
     function walletOfOwner(address _owner) external view virtual override returns (uint256[] memory) {
