@@ -11,16 +11,21 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {
     }
 
-    function _mint(string memory uri) internal virtual onlyOwner override(ERC721) {
-
+    function _mint(address to, string memory uri) internal virtual onlyOwner {
+        uint256 tokenId = _tokenSupply;
+        unchecked {
+            _tokenSupply++;
+        }
+        _mint(to, tokenId);
+        _setTokenURI(tokenId, uri);
     }
 
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) onlyOwner {
         super._burn(tokenId);
     }
 
-    function _transfer(address to, uint256 tokenId) internal virtual onlyOwner {
-
+    function _transfer(address from, address to, uint256 tokenId) internal virtual override onlyOwner {
+        transferFrom(from, to, tokenId);
     }
 
     function tokenURI(uint256 tokenId)
