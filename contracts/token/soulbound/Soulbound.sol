@@ -42,6 +42,9 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
         super._transfer(from, to, tokenId);
     }
 
+    /**
+     * @notice Returns tokenURI of `tokenId`
+     */
     function tokenURI(uint256 tokenId)
         public
         view
