@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     uint256 _tokenSupply;
+    uint256 _burnCounter;
 
     constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {
     }
@@ -21,6 +22,9 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
 
     function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) onlyOwner {
         super._burn(tokenId);
+        unchecked {
+            _burnCounter++;
+        }
     }
 
     function _transfer(address from, address to, uint256 tokenId) internal virtual override onlyOwner {
@@ -41,6 +45,6 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
      * @return uint256 representing the total amount of tokens
      */
     function totalSupply() public view virtual returns (uint256) {
-        return _tokenSupply;
+        return _tokenSupply - _burnCounter;
     }
 }
