@@ -4,7 +4,7 @@ pragma solidity ^0.8.9 <0.9.0;
 import "../ERC721F.sol";
 
 /**
- * @title ERC721FWalletOfOwnerStrorage
+ * @title ERC721FWalletOfOwnerStorage
  *
  * @dev Extension of ERC721F, which overrides default walletOfOwner functionality to utilise a mapping instead of looping through the token collection
  */
