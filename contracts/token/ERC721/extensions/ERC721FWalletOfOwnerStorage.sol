@@ -5,7 +5,7 @@ import "../ERC721F.sol";
 
 /**
  * @title ERC721FWalletOfOwnerStrorage
- * 
+ *
  * @dev Extension of ERC721F, which overrides default walletOfOwner functionality to utilise a mapping instead of looping through the token collection
  */
 abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
@@ -13,9 +13,15 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
 
     /**
      * @dev walletOfOwner
-     * @return tokens id owned by `_owner` 
+     * @return tokens id owned by `_owner`
      */
-    function walletOfOwner(address _owner) external view virtual override returns (uint256[] memory) {
+    function walletOfOwner(address _owner)
+        external
+        view
+        virtual
+        override
+        returns (uint256[] memory)
+    {
         return _walletOfOwner[_owner];
     }
 
