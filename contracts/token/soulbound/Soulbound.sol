@@ -55,7 +55,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     }
 
     /**
-     * @dev Gets the total amount of tokens stored by the contract.
+     * @dev Gets the total amount of tokens stored by the contract, uses _burnCounter to take burned tokens into consideration
      * @return uint256 representing the total amount of tokens
      */
     function totalSupply() public view virtual returns (uint256) {
