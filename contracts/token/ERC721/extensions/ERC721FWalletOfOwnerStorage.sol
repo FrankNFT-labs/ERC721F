@@ -34,37 +34,32 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
     }
 
     /**
-     * @dev Transfers `tokenId` from `from` to `to`
-     * @dev moves all tokens from `from` wallet one place over starting at `tokenId` position and pops it off
-     * @dev pushes `tokenId` to wallet of `to`
+     * @dev Transfers `tokenId` from `from` to `to` and pushes `tokenId` to wallet of `to`
      */
     function _transfer(address from, address to, uint256 tokenId) internal virtual override {
         super._transfer(from, to, tokenId);
-        uint length = _walletOfOwner[from].length - 1;
-        bool encountedId = false;
-        for (uint i; i < length; ) {
-            if (_walletOfOwner[from][i] == tokenId) encountedId = true;
-            if (encountedId) _walletOfOwner[from][i] = _walletOfOwner[from][i + 1];
-            unchecked {
-                i++;
-            }
-        }
-        _walletOfOwner[from].pop();
+        removeTokenFromWallet(tokenId);
         _walletOfOwner[to].push(tokenId);
     }
 
     /**
      * @dev Burns `tokenId`
-     * @dev moves all tokens from `tokenId` owner wallet one place over starting at `tokenId` position and pops it off
      */
     function _burn(uint256 tokenId) internal virtual override {
         super._burn(tokenId);
+        removeTokenFromWallet(tokenId);
+    }
+
+    /**
+     * @dev Moves all tokens from wallet of `sender` one index lower starting from index where `tokenId` is at and pops last element. Removes `tokenId` from wallet
+     */
+    function removeTokenFromWallet(uint256 tokenId) internal virtual {
         address owner = msg.sender;
         uint length = _walletOfOwner[owner].length - 1;
-        bool encountedId = false;
+        bool encounteredId = false;
         for (uint i; i < length; ) {
-            if (_walletOfOwner[owner][i] == tokenId) encountedId = true;
-            if (encountedId) _walletOfOwner[owner][i] = _walletOfOwner[owner][i + 1];
+            if (_walletOfOwner[owner][i] == tokenId) encounteredId = true;
+            if (encounteredId) _walletOfOwner[owner][i] = _walletOfOwner[owner][i + 1];
             unchecked {
                 i++;
             }
