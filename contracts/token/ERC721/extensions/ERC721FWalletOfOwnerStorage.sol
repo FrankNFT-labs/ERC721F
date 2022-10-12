@@ -35,16 +35,21 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
 
     function _transfer(address from, address to, uint256 tokenId) internal virtual override {
         super._transfer(from, to, tokenId);
-        removeTokenIdFromWallet(tokenId);
+        uint length = _walletOfOwner[from].length - 1;
+        bool encountedId = false;
+        for (uint i; i < length; ) {
+            if (_walletOfOwner[from][i] == tokenId) encountedId = true;
+            if (encountedId) _walletOfOwner[from][i] = _walletOfOwner[from][i + 1];
+            unchecked {
+                i++;
+            }
+        }
+        _walletOfOwner[from].pop();
         _walletOfOwner[to].push(tokenId);
     }
 
     function _burn(uint256 tokenId) internal virtual override {
         super._burn(tokenId);
-        removeTokenIdFromWallet(tokenId);
-    }
-
-    function removeTokenIdFromWallet(uint256 tokenId) internal {
         address owner = msg.sender;
         require(ownerOf(tokenId) == owner);
         uint length = _walletOfOwner[owner].length - 1;
