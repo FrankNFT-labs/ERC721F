@@ -51,7 +51,6 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
     function _burn(uint256 tokenId) internal virtual override {
         super._burn(tokenId);
         address owner = msg.sender;
-        require(ownerOf(tokenId) == owner);
         uint length = _walletOfOwner[owner].length - 1;
         bool encountedId = false;
         for (uint i; i < length; ) {
