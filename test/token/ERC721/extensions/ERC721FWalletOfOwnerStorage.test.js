@@ -73,5 +73,30 @@ describe("ERC721FWalletOfOwnerStorage", function () {
                 expect(walletOfOwner.map(t => t.toNumber())).to.have.members([1]);
             });
         });
+
+        describe("Burning", async function() {
+            let token;
+            let ownerAddress;
+
+            beforeEach(async () => {
+                const { hardhatToken, owner } = await deployTokenFixture(loadFixture);   
+                token = hardhatToken;
+                ownerAddress = owner;
+                await token.mint(5);
+                await token.burn(3);
+            });
+
+            it("Should remove the burned token from the wallet", async function() {
+                const walletOfOwner = await token.walletOfOwner(ownerAddress.address);
+
+                expect(walletOfOwner.map(t => t.toNumber())).to.not.have.members([0, 1, 2, 3, 4]);
+            })
+
+            it("Shouldn't remove the non-burned tokens from the wallet", async function() {
+                const walletOfOwner = await token.walletOfOwner(ownerAddress.address);
+
+                expect(walletOfOwner.map(t => t.toNumber())).to.have.members([0, 1, 2, 4]);
+            });
+        });
     });
 });
