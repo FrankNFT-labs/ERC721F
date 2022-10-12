@@ -9,7 +9,6 @@ import "../token/ERC721/extensions/ERC721FWalletOfOwnerStorage.sol";
  */
 contract ERC721FWalletOfOwnerStorageMock is ERC721FWalletOfOwnerStorage {
     constructor(string memory name, string memory symbol) ERC721F(name, symbol) {
-        setBaseTokenURI("ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"); 
     }
 
     /**
