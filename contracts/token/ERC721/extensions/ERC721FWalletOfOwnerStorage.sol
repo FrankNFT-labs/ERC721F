@@ -36,7 +36,11 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
     /**
      * @dev Transfers `tokenId` from `from` to `to` and pushes `tokenId` to wallet of `to`
      */
-    function _transfer(address from, address to, uint256 tokenId) internal virtual override {
+    function _transfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal virtual override {
         super._transfer(from, to, tokenId);
         removeTokenFromWallet(tokenId);
         _walletOfOwner[to].push(tokenId);
@@ -59,7 +63,8 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
         bool encounteredId = false;
         for (uint i; i < length; ) {
             if (_walletOfOwner[owner][i] == tokenId) encounteredId = true;
-            if (encounteredId) _walletOfOwner[owner][i] = _walletOfOwner[owner][i + 1];
+            if (encounteredId)
+                _walletOfOwner[owner][i] = _walletOfOwner[owner][i + 1];
             unchecked {
                 i++;
             }
