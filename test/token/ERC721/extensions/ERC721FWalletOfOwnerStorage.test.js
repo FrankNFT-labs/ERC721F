@@ -64,7 +64,7 @@ describe("ERC721FWalletOfOwnerStorage", function () {
             it("Should remove the transferred token from the wallet of the transferee", async function() {
                 const walletOfOwner = await token.walletOfOwner(otherAddress.address);
 
-                expect(walletOfOwner.map(t => t.toNumber())).to.not.have.members([2]);
+                expect(walletOfOwner.map(t => t.toNumber())).to.not.have.members([1, 2]);
             });
 
             it("Shouldn't remove non-transferred tokens from the wallet of the transferee", async function() {
