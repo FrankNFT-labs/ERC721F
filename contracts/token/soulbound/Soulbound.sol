@@ -31,6 +31,17 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     }
 
     /**
+     * @notice Give transfer- and burnperms to `operator` for all tokens owned by `owner`
+     */
+    function setApprovalForAll(address owner,  address operator, bool approved) public virtual onlyOwner {
+        _setApprovalForAll(owner, operator, approved);
+    }
+
+    function setApprovalForAll(address, bool) public virtual override onlyOwner {
+        revert("Use setApprovalForAll with 3 parameters");
+    }
+
+    /**
      * @dev Mint function is only executable by operators who aree responsible for the uri provided and can decide for who the token is
      * @param to address which receives the mint
      * @param uri string in which the name, svg image, properties, etc are stored
