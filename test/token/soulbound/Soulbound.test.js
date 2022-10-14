@@ -89,10 +89,23 @@ describe("Soulbound", function() {
     });
 
     describe("burn", function() {
+        let token;
+        let ownerAdress;
+        let operatorAddress;
+        let otherAddress;
 
+        beforeEach(async () => {
+            const { hardhatToken, owner, addr1, addr2 } = await loadFixture(deployTokenFixture);
+            token = hardhatToken;
+            ownerAdress = owner;
+            operatorAddress = addr1;
+            otherAddress = addr2;
+            await token.mint(otherAddress.address, tokenURI);
+            await token.addOperator(operatorAddress.address);
+        });
     });
 
     describe("totalSupply", function() {
-        
+
     });
 });
