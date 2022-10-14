@@ -57,7 +57,7 @@ describe("Soulbound", function() {
         });
 
         it("Shouldn't allow transfers by unapproved addresses", async function() {
-            await expect(token.connect(otherAddress).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.be.revertedWith("Neither operator of contract nor approved address");
+            await expect(token.connect(otherAddress).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
         });
 
         it("Should allow transfers by approved addresses", async function() {
@@ -116,7 +116,7 @@ describe("Soulbound", function() {
         });
 
         it("Shouldn't allow burns by unapproved addresses", async function() {
-            await expect(token.connect(otherAddress).burn(0)).to.be.revertedWith("Neither operator of contract nor approved address");
+            await expect(token.connect(otherAddress).burn(0)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
         });
 
         it("Should allow burns by approved addresses", async function() {
