@@ -8,8 +8,8 @@ contract SoulboundMock is Soulbound {
         Soulbound(name, symbol)
     {}
 
-    function mint(string memory uri) public {
-        _mint(msg.sender, uri);
+    function mint(address to, string memory uri) public {
+        _mint(to, uri);
     }
 
     function burn(uint256 tokenId) public {
