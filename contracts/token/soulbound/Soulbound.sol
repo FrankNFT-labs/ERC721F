@@ -39,6 +39,11 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
         _setApprovalForAll(owner, operator, approved);
     }
 
+    /**
+     * @dev Approve `operator` to operate on all of `owner` tokens
+     *
+     * Emits an {ApprovalForAll} event.
+     */
     function _setApprovalForAll(
         address owner, 
         address operator,
@@ -48,6 +53,9 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
         emit ApprovalForAll(owner, operator, approved);
     }
 
+    /**
+     * @dev See {IERC721-setApprovalForAll}.
+     */
     function setApprovalForAll(address, bool) public virtual override onlyOwner {
         revert("Use setApprovalForAllOwner");
     }
@@ -94,10 +102,16 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
         _transfer(from, to, tokenId);
     }
 
+    /**
+     * @dev See {IERC721-safeTransferFrom}.
+     */
     function safeTransferFrom(address from, address to, uint256 tokenId) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
         safeTransferFrom(from, to, tokenId, "");
     }
 
+    /**
+     * @dev See {IERC721-safeTransferFrom}.
+     */
     function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
         _safeTransfer(from, to, tokenId, data);
     }
