@@ -11,7 +11,10 @@ contract Operatable is Ownable, AccessControl {
      * @dev Only operators can pass modifier
      */
     modifier onlyOperator() {
-        require(hasRole(OPERATOR_ROLE, msg.sender), "Sender does not have operator role");
+        require(
+            hasRole(OPERATOR_ROLE, msg.sender),
+            "Sender does not have operator role"
+        );
         _;
     }
 
@@ -35,10 +38,9 @@ contract Operatable is Ownable, AccessControl {
     }
 
     /**
-     * @dev Returns `true` if `_account` has `OPERATOR_ROLE`, otherwise returns `false` 
+     * @dev Returns `true` if `_account` has `OPERATOR_ROLE`, otherwise returns `false`
      */
-    function checkOperator(address _account) public view returns (bool) { 
+    function checkOperator(address _account) public view returns (bool) {
         return hasRole(OPERATOR_ROLE, _account);
     }
 }
-
