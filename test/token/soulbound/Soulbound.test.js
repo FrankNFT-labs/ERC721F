@@ -16,6 +16,35 @@ describe("Soulbound", function() {
         return { Token, hardhatToken, owner, addr1, addr2 };
     }
 
+    describe("approve", function() {
+        it("Should only be executable by owner of the contract", async function() {
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+            
+            await hardhatToken.mint(addr1.address, tokenURI);
+
+            await expect(hardhatToken.approve(addr1.address, 0)).to.not.be.reverted;
+            await expect(hardhatToken.connect(addr1).approve(addr1.address, 0)).to.be.revertedWith("Ownable: caller is not the owner");
+        });
+
+        it("Should set the address as the approved of the token", async function() {
+            const { hardhatToken, addr1, addr2 } = await loadFixture(deployTokenFixture);
+
+            await hardhatToken.mint(addr1.address, tokenURI);
+            await hardhatToken.approve(addr2.address, 0);
+            expect(await hardhatToken.getApproved(0)).to.be.equal(addr2.address);
+
+        });
+
+        it("Should allow that the owner of the token can be the ones being approved", async function() {
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+            
+            await hardhatToken.mint(addr1.address, tokenURI);
+
+            await expect(hardhatToken.approve(addr1.address, 0)).to.not.be.reverted;
+            expect(await hardhatToken.getApproved(0)).to.be.equal(addr1.address);
+        });
+    });
+
     describe("mint", function() {
         it("Should only be executable by the owner of the contract", async function() {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
