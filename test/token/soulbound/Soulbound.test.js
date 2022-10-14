@@ -80,6 +80,16 @@ describe("Soulbound", function() {
             await expect(token.transferFrom(otherAddress.address, ownerAdress.address, 0)).to.changeTokenBalances(token, [otherAddress.address, ownerAdress.address], [-1, 1]);
             expect(await token.ownerOf(0)).to.be.equal(ownerAdress.address);
         });
+
+        it("Should remove the approval status of approved address post transfer", async function() {
+            await token.approve(otherAddress.address, 0);
+            expect(await token.getApproved(0)).to.equal(otherAddress.address);
+
+            await token.connect(otherAddress).transferFrom(otherAddress.address, ownerAdress.address, 0)
+
+            expect(await token.getApproved(0)).to.not.equal(otherAddress.address);
+            expect(await token.getApproved(0)).to.equal(ethers.constants.AddressZero);
+        })
     });
 
     describe("Burning", function() {
