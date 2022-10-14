@@ -65,6 +65,16 @@ describe("Soulbound", function() {
             expect(await token.transferFrom(otherAddress.address, ownerAdress.address, 0)).to.not.be.reverted;
             expect(await token.connect(operatorAddress).transferFrom(ownerAdress.address, otherAddress.address, 0)).to.not.be.reverted;
         });
+
+        it("Shouldn't allow transfers by unapproved addresses", async function() {
+            await expect(token.connect(otherAddress).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.be.revertedWith("Neither operator of contract nor approved address");
+        });
+
+        it("Should allow transfers by approved addresses", async function() {
+            await token.approve(otherAddress.address, 0);
+
+            await expect(token.connect(otherAddress).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.not.be.reverted;
+        }); 
     });
 
     describe("Burning", function() {
