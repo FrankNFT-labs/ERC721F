@@ -24,7 +24,13 @@ describe("Soulbound", function() {
             
             await expect(hardhatToken.mint(addr1.address, "Testing")).to.not.be.reverted;
             await expect(hardhatToken.connect(addr1).mint(addr1.address, "Testing")).to.be.revertedWith("Ownable: caller is not the owner");
-        })
+        });
+
+        it("Should increase the tokenbalance of the recipient", async function() {
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+
+            await expect(hardhatToken.mint(addr1.address, "Testing")).to.changeTokenBalance(hardhatToken, addr1.address, 1);
+        });
     });
 
     describe("Transferring", function() {
