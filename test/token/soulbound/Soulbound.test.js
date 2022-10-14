@@ -31,8 +31,8 @@ describe("Soulbound", function() {
 
             await hardhatToken.mint(addr1.address, tokenURI);
             await hardhatToken.approve(addr2.address, 0);
-            expect(await hardhatToken.getApproved(0)).to.be.equal(addr2.address);
 
+            expect(await hardhatToken.getApproved(0)).to.be.equal(addr2.address);
         });
 
         it("Should allow that the owner of the token can be the ones being approved", async function() {
@@ -42,6 +42,44 @@ describe("Soulbound", function() {
 
             await expect(hardhatToken.approve(addr1.address, 0)).to.not.be.reverted;
             expect(await hardhatToken.getApproved(0)).to.be.equal(addr1.address);
+        });
+    });
+
+    describe.only("setApproveForAll", function() {
+        it("Should only be executable by the owner of the contract", async function() {
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+
+            await expect(hardhatToken.setApprovalForAllOwner(addr1.address, addr1.address, true)).to.not.be.reverted;
+            await expect(hardhatToken.connect(addr1).setApprovalForAllOwner(addr1.address, addr1.address, true)).be.revertedWith("Ownable: caller is not the owner");
+        });
+
+        it("Should allow that the owner of the token can be the one being approved", async function() {
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+
+            await expect(hardhatToken.setApprovalForAllOwner(addr1.address, addr1.address, true)).to.not.be.reverted;
+            expect(await hardhatToken.isApprovedForAll(addr1.address, addr1.address)).to.be.true;
+        });
+
+        it("Should set the address as the approved of the token", async function() {
+            const { hardhatToken, addr1, addr2 } = await loadFixture(deployTokenFixture);
+            
+            expect(await hardhatToken.isApprovedForAll(addr1.address, addr1.address)).to.be.false;
+
+            await hardhatToken.setApprovalForAllOwner(addr1.address, addr2.address, true);
+
+            expect(await hardhatToken.isApprovedForAll(addr1.address, addr2.address)).to.be.true;
+        });
+
+        it("Should remove the approval status when setting approval to false", async function() {
+            const { hardhatToken, addr1, addr2 } = await loadFixture(deployTokenFixture);
+
+            await hardhatToken.setApprovalForAllOwner(addr1.address, addr2.address, true);
+
+            expect(await hardhatToken.isApprovedForAll(addr1.address, addr2.address)).to.be.true;
+
+            await hardhatToken.setApprovalForAllOwner(addr1.address, addr2.address, false);
+
+            expect(await hardhatToken.isApprovedForAll(addr1.address, addr2.address)).to.be.false;
         });
     });
 
