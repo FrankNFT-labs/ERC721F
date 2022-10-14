@@ -75,6 +75,11 @@ describe("Soulbound", function() {
 
             await expect(token.connect(otherAddress).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.not.be.reverted;
         }); 
+
+        it("Should transfer the token between addresses", async function() {
+            await expect(token.transferFrom(otherAddress.address, ownerAdress.address, 0)).to.changeTokenBalances(token, [otherAddress.address, ownerAdress.address], [-1, 1]);
+            expect(await token.ownerOf(0)).to.be.equal(ownerAdress.address);
+        });
     });
 
     describe("Burning", function() {
