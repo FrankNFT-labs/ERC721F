@@ -13,6 +13,9 @@ contract Soulbound is ERC721, ERC721URIStorage, Operatable {
         ERC721(name_, symbol_)
     {}
 
+    /**
+     * @dev Only a `spender` with `OPERATOR_ROLE` or approved for `tokenId` passes
+     */
     modifier onlyOperatorOrApproved(address spender, uint256 tokenId) {
         if (getApproved(tokenId) != spender) {
             if (!checkOperator(spender)) revert("Neither operator of contract nor approved address");
@@ -24,12 +27,15 @@ contract Soulbound is ERC721, ERC721URIStorage, Operatable {
         return super.supportsInterface(interfaceId);
     }
 
+    /**
+     * @notice Approve `to` to have transfer- and burnperms of `tokenId` 
+     */
     function approve(address to, uint256 tokenId) public virtual override onlyOperator {
         _approve(to, tokenId);
     }
 
     /**
-     * @dev Mint function is only executable by the owner who is responsible for the uri provided and can decide for who the token is
+     * @dev Mint function is only executable by operators who aree responsible for the uri provided and can decide for who the token is
      * @param to address which receives the mint
      * @param uri string in which the name, svg image, properties, etc are stored
      */
@@ -42,7 +48,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Operatable {
     }
 
     /**
-     * @dev Burn function is only executable by the owner of the contract disregarding the current owner of the token, increases `_burnCounter` for proper functionality of totalSupply
+     * @dev Burn function is only executable by operators of the contract or an approved address of `tokenId`, increases `_burnCounter` for proper functionality of totalSupply
      */
     function _burn(uint256 tokenId)
         internal
@@ -55,6 +61,10 @@ contract Soulbound is ERC721, ERC721URIStorage, Operatable {
         }
     }
 
+    /**
+     * @notice Transfers `tokenId` from `from` to `to`
+     * @dev Only executable by operators or an approved address of `tokenId`
+     */
     function transferFrom(address from, address to, uint256 tokenId) public virtual override onlyOperatorOrApproved(msg.sender, tokenId) {
         _transfer(from, to, tokenId);
     }
