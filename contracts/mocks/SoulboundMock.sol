@@ -27,18 +27,26 @@ contract SoulboundMock is Soulbound {
         _burn(tokenId);
     }
 
-
     /**
      * @dev Helper function to bypass non-overload support from hardhat testing of safeTransferFrom(from, to, tokenId)
      */
-    function safeTransferFromHelperNonData(address from, address to, uint256 tokenId) public {
+    function safeTransferFromHelperNonData(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public {
         safeTransferFrom(from, to, tokenId);
     }
 
     /**
      * @dev Helper function to bypass non-overload support from hardhat testing of safeTransferFrom(from, to, tokenId, data)
      */
-    function safeTransferFromHelperWithData(address from, address to, uint256 tokenId, bytes memory data) public {
+    function safeTransferFromHelperWithData(
+        address from,
+        address to,
+        uint256 tokenId,
+        bytes memory data
+    ) public {
         safeTransferFrom(from, to, tokenId, data);
     }
 }
