@@ -4,7 +4,7 @@ pragma solidity ^0.8.9 <0.9.0;
 import "../token/soulbound/Soulbound.sol";
 
 /**
- * @title SoulboudnMock
+ * @title SoulboundMock
  * This mock provides a public mint and burn function for testing purposes
  */
 contract SoulboundMock is Soulbound {
