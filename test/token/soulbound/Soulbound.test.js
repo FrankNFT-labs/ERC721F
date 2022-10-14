@@ -19,11 +19,13 @@ describe("Soulbound", function() {
     });
 
     describe("Minting", function() {
-        it("Should only be executable by the owner of the contract", async function() {
+        it("Should only be executable by the operators of the contract", async function() {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
             
             await expect(hardhatToken.mint(addr1.address, "Testing")).to.not.be.reverted;
-            await expect(hardhatToken.connect(addr1).mint(addr1.address, "Testing")).to.be.revertedWith("Ownable: caller is not the owner");
+            await expect(hardhatToken.connect(addr1).mint(addr1.address, "Testing")).to.be.revertedWith("Sender does not have operator role");
+            await hardhatToken.addOperator(addr1.address);
+            await expect(hardhatToken.connect(addr1).mint(addr1.address, "Testing")).to.not.be.reverted;
         });
 
         it("Should increase the tokenbalance of the recipient", async function() {
