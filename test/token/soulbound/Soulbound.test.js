@@ -17,13 +17,11 @@ describe("Soulbound", function() {
     }
 
     describe("mint", function() {
-        it("Should only be executable by the operators of the contract", async function() {
+        it("Should only be executable by the owner of the contract", async function() {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
             
             await expect(hardhatToken.mint(addr1.address, tokenURI)).to.not.be.reverted;
-            await expect(hardhatToken.connect(addr1).mint(addr1.address, tokenURI)).to.be.revertedWith("Sender does not have operator role");
-            await hardhatToken.addOperator(addr1.address);
-            await expect(hardhatToken.connect(addr1).mint(addr1.address, tokenURI)).to.not.be.reverted;
+            await expect(hardhatToken.connect(addr1).mint(addr1.address, tokenURI)).to.be.revertedWith("Ownable: caller is not the owner");
         });
 
         it("Should increase the tokenbalance of the recipient", async function() {
@@ -44,22 +42,18 @@ describe("Soulbound", function() {
     describe("transferFrom", function() {
         let token;
         let ownerAdress;
-        let operatorAddress;
         let otherAddress;
 
         beforeEach(async () => {
-            const { hardhatToken, owner, addr1, addr2 } = await loadFixture(deployTokenFixture);
+            const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
             token = hardhatToken;
             ownerAdress = owner;
-            operatorAddress = addr1;
-            otherAddress = addr2;
+            otherAddress = addr1;
             await token.mint(otherAddress.address, tokenURI);
-            await token.addOperator(operatorAddress.address);
         });
 
-        it("Should allow transfers done by operators", async function() {
+        it("Should allow transfers done by owner", async function() {
             expect(await token.transferFrom(otherAddress.address, ownerAdress.address, 0)).to.not.be.reverted;
-            expect(await token.connect(operatorAddress).transferFrom(ownerAdress.address, otherAddress.address, 0)).to.not.be.reverted;
         });
 
         it("Shouldn't allow transfers by unapproved addresses", async function() {
@@ -85,30 +79,26 @@ describe("Soulbound", function() {
 
             expect(await token.getApproved(0)).to.not.equal(otherAddress.address);
             expect(await token.getApproved(0)).to.equal(ethers.constants.AddressZero);
-        })
+        });
     });
 
     describe("burn", function() {
         let token;
         let ownerAdress;
-        let operatorAddress;
         let otherAddress;
 
         beforeEach(async () => {
             const { hardhatToken, owner, addr1, addr2 } = await loadFixture(deployTokenFixture);
             token = hardhatToken;
             ownerAdress = owner;
-            operatorAddress = addr1;
-            otherAddress = addr2;
+            otherAddress = addr1;
             await token.mint(otherAddress.address, tokenURI);
-            await token.addOperator(operatorAddress.address);
         });
 
-        it("Should allow burns done by operators", async function() {
+        it("Should allow burns done by owner", async function() {
             await token.mint(otherAddress.address, tokenURI);
 
             await expect(token.burn(0)).to.not.be.reverted;
-            await expect(token.connect(operatorAddress).burn(1)).to.not.be.reverted;
         });
 
         it("Shouldn't allow burns by unapproved addresses", async function() {

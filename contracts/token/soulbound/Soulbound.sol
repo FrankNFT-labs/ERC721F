@@ -3,9 +3,9 @@ pragma solidity ^0.8.9 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "./utils/Operatable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Soulbound is ERC721, ERC721URIStorage, Operatable {
+contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     uint256 _tokenSupply;
     uint256 _burnCounter;
 
@@ -14,23 +14,19 @@ contract Soulbound is ERC721, ERC721URIStorage, Operatable {
     {}
 
     /**
-     * @dev Only a `spender` with `OPERATOR_ROLE` or approved for `tokenId` passes
+     * @dev Only a `spender` that is owner of contract or approved for `tokenId` passes
      */
-    modifier onlyOperatorOrApproved(address spender, uint256 tokenId) {
+    modifier onlyOwnerOrApproved(address spender, uint256 tokenId) {
         if (getApproved(tokenId) != spender) {
-            if (!checkOperator(spender)) revert("Neither operator of contract nor approved address");
+            if (spender != owner()) revert("Neither operator of contract nor approved address");
         }
         _;
-    }
-
-    function supportsInterface(bytes4 interfaceId) public view virtual override(AccessControl, ERC721) returns (bool) {
-        return super.supportsInterface(interfaceId);
     }
 
     /**
      * @notice Approve `to` to have transfer- and burnperms of `tokenId` 
      */
-    function approve(address to, uint256 tokenId) public virtual override onlyOperator {
+    function approve(address to, uint256 tokenId) public virtual override onlyOwner {
         _approve(to, tokenId);
     }
 
@@ -39,7 +35,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Operatable {
      * @param to address which receives the mint
      * @param uri string in which the name, svg image, properties, etc are stored
      */
-    function _mint(address to, string memory uri) internal virtual onlyOperator {
+    function _mint(address to, string memory uri) internal virtual onlyOwner {
         _mint(to, _tokenSupply);
         _setTokenURI(_tokenSupply, uri);
         unchecked {
@@ -53,7 +49,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Operatable {
     function _burn(uint256 tokenId)
         internal
         override(ERC721, ERC721URIStorage)
-        onlyOperatorOrApproved(msg.sender, tokenId)
+        onlyOwnerOrApproved(msg.sender, tokenId)
     {
         super._burn(tokenId);
         unchecked {
@@ -65,7 +61,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Operatable {
      * @notice Transfers `tokenId` from `from` to `to`
      * @dev Only executable by operators or an approved address of `tokenId`
      */
-    function transferFrom(address from, address to, uint256 tokenId) public virtual override onlyOperatorOrApproved(msg.sender, tokenId) {
+    function transferFrom(address from, address to, uint256 tokenId) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
         _transfer(from, to, tokenId);
     }
 
