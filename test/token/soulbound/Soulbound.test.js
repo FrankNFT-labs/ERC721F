@@ -222,6 +222,20 @@ describe("Soulbound", function() {
             await expect(token.connect(addressToBeApproved).burn(0)).to.not.be.reverted;
         });
 
+        it("Should allow burns by approved-all addresses", async function() {
+            await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+
+            await expect(token.connect(addressToBeApproved).burn(0)).to.not.be.reverted;
+        });
+
+        it("Shouldn't remove approval status of approved-all address post burn", async function() {
+            await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+
+            await token.connect(addressToBeApproved).burn(0);
+
+            expect(await token.isApprovedForAll(otherAddress.address, addressToBeApproved.address)).to.be.true;
+        });
+
         it("Should destroy the burned token", async function() {
             await token.burn(0);
 
