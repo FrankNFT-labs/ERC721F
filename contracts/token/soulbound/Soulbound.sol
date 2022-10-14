@@ -94,6 +94,10 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
         _transfer(from, to, tokenId);
     }
 
+    function safeTransferFrom(address from, address to, uint256 tokenId) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
+        safeTransferFrom(from, to, tokenId, "");
+    }
+
     function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
         _safeTransfer(from, to, tokenId, data);
     }
