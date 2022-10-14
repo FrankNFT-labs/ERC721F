@@ -13,4 +13,20 @@ describe("Soulbound", function() {
 
         return { Token, hardhatToken, owner, addr1 };
     }
+
+    describe("Deployment", function() {
+
+    });
+
+    describe("Minting", function() {
+
+    });
+
+    describe("Transferring", function() {
+
+    });
+
+    describe("Burning", function() {
+
+    });
 });
