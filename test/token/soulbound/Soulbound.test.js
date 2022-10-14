@@ -82,6 +82,20 @@ describe("Soulbound", function() {
         });
     });
 
+    describe("safeTransferFrom", function() {
+        let token;
+        let ownerAdress;
+        let otherAddress;
+
+        beforeEach(async () => {
+            const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
+            token = hardhatToken;
+            ownerAdress = owner;
+            otherAddress = addr1;
+            await token.mint(otherAddress.address, tokenURI);
+        });
+    });
+
     describe("burn", function() {
         let token;
         let ownerAdress;
