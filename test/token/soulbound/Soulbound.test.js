@@ -181,12 +181,14 @@ describe("Soulbound", function() {
         let token;
         let ownerAdress;
         let otherAddress;
+        let addressToBeApproved;
 
         beforeEach(async () => {
             const { hardhatToken, owner, addr1, addr2 } = await loadFixture(deployTokenFixture);
             token = hardhatToken;
             ownerAdress = owner;
             otherAddress = addr1;
+            addressToBeApproved = addr2;
             await token.mint(otherAddress.address, tokenURI);
         });
 
@@ -197,13 +199,13 @@ describe("Soulbound", function() {
         });
 
         it("Shouldn't allow burns by unapproved addresses", async function() {
-            await expect(token.connect(otherAddress).burn(0)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
+            await expect(token.connect(addressToBeApproved).burn(0)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
         });
 
         it("Should allow burns by approved addresses", async function() {
-            await token.approve(otherAddress.address, 0);
+            await token.approve(addressToBeApproved.address, 0);
 
-            await expect(token.connect(otherAddress).burn(0)).to.not.be.reverted;
+            await expect(token.connect(addressToBeApproved).burn(0)).to.not.be.reverted;
         });
 
         it("Should destroy the burned token", async function() {
