@@ -16,11 +16,7 @@ describe("Soulbound", function() {
         return { Token, hardhatToken, owner, addr1, addr2 };
     }
 
-    describe("Deployment", function() {
-
-    });
-
-    describe("Minting", function() {
+    describe("mint", function() {
         it("Should only be executable by the operators of the contract", async function() {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
             
@@ -45,7 +41,7 @@ describe("Soulbound", function() {
         });
     });
 
-    describe("Transferring", function() {
+    describe("transferFrom", function() {
         let token;
         let ownerAdress;
         let operatorAddress;
@@ -92,7 +88,11 @@ describe("Soulbound", function() {
         })
     });
 
-    describe("Burning", function() {
+    describe("burn", function() {
 
+    });
+
+    describe("totalSupply", function() {
+        
     });
 });
