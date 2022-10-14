@@ -120,6 +120,12 @@ describe("Soulbound", function() {
 
             await expect(token.connect(otherAddress).burn(0)).to.not.be.reverted;
         });
+
+        it("Should destroy the burned token", async function() {
+            await token.burn(0);
+
+            await expect(token.tokenURI(0)).to.be.revertedWith("ERC721: invalid token ID");
+        });
     });
 
     describe("totalSupply", function() {
