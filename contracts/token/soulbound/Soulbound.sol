@@ -14,7 +14,14 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     {}
 
     modifier onlyContractOwnerOrApproved(address spender, uint256 tokenId) {
+        if (getApproved(tokenId) != spender) {
+            if (spender != owner()) revert("Neither owner of contract or approved address");
+        }
         _;
+    }
+
+    function approve(address to, uint256 tokenId) public virtual override onlyOwner {
+        _approve(to, tokenId);
     }
 
     /**
@@ -36,7 +43,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     function _burn(uint256 tokenId)
         internal
         override(ERC721, ERC721URIStorage)
-        onlyOwner
+        onlyContractOwnerOrApproved(msg.sender, tokenId)
     {
         super._burn(tokenId);
         unchecked {
@@ -44,15 +51,8 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
         }
     }
 
-    /**
-     * @dev Transfer function is only executable by the owner of the contract
-     */
-    function _transfer(
-        address from,
-        address to,
-        uint256 tokenId
-    ) internal virtual override onlyOwner {
-        super._transfer(from, to, tokenId);
+    function transferFrom(address from, address to, uint256 tokenId) public virtual override onlyContractOwnerOrApproved(msg.sender, tokenId) {
+        _transfer(from, to, tokenId);
     }
 
     /**
