@@ -9,6 +9,9 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     uint256 _tokenSupply;
     uint256 _burnCounter;
 
+    // Mapping from owner to operator approvals
+    mapping(address => mapping(address => bool)) private _operatorApprovals;
+
     constructor(string memory name_, string memory symbol_)
         ERC721(name_, symbol_)
     {}
@@ -32,12 +35,28 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     /**
      * @notice Give transfer- and burnperms to `operator` for all tokens owned by `owner`
      */
-    function setApprovalForAll(address owner,  address operator, bool approved) public virtual onlyOwner {
+    function setApprovalForAllOwner(address owner,  address operator, bool approved) public virtual onlyOwner {
         _setApprovalForAll(owner, operator, approved);
     }
 
+    function _setApprovalForAll(
+        address owner, 
+        address operator,
+        bool approved
+    ) internal virtual override {
+        _operatorApprovals[owner][operator] = approved;
+        emit ApprovalForAll(owner, operator, approved);
+    }
+
     function setApprovalForAll(address, bool) public virtual override onlyOwner {
-        revert("Use setApprovalForAll with 3 parameters");
+        revert("Use setApprovalForAllOwner");
+    }
+
+    /**
+     * @dev See {IERC721-isApprovedForAll}.
+     */
+    function isApprovedForAll(address owner, address operator) public view virtual override returns (bool) {
+        return _operatorApprovals[owner][operator];
     }
 
     /**
