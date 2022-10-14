@@ -93,7 +93,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     }
 
     /**
-     * @dev Mint function is only executable by operators who aree responsible for the uri provided and can decide for who the token is
+     * @dev Mint function is only executable by the owner of the contract or approved addresses who are responsible for the uri provided and can decide for who the token is
      * @param to address which receives the mint
      * @param uri string in which the name, svg image, properties, etc are stored
      */
@@ -106,7 +106,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     }
 
     /**
-     * @dev Burn function is only executable by operators of the contract or an approved address of `tokenId`, increases `_burnCounter` for proper functionality of totalSupply
+     * @dev Burn function is only executable by the owner of the contract or approved addresses, increases `_burnCounter` for proper functionality of totalSupply
      */
     function _burn(uint256 tokenId)
         internal
@@ -121,7 +121,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
 
     /**
      * @notice Transfers `tokenId` from `from` to `to`
-     * @dev Only executable by operators or an approved address of `tokenId`
+     * @dev Only executable by owner or approved addresses
      */
     function transferFrom(
         address from,
@@ -133,6 +133,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
 
     /**
      * @dev See {IERC721-safeTransferFrom}.
+     * @dev Only executable by owner or approved addresses
      */
     function safeTransferFrom(
         address from,
@@ -144,6 +145,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
 
     /**
      * @dev See {IERC721-safeTransferFrom}.
+     * @dev Only executable by owner or approved addresses
      */
     function safeTransferFrom(
         address from,
