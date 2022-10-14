@@ -55,7 +55,13 @@ describe("Soulbound", function() {
             ownerAdress = owner;
             operatorAddress = addr1;
             otherAddress = addr2;
-            await token.mint(otherAddress.address);
+            await token.mint(otherAddress.address, "Testing");
+            await token.addOperator(operatorAddress.address);
+        });
+
+        it("Should allow transfers done by operators", async function() {
+            expect(await token.transferFrom(otherAddress.address, ownerAdress.address, 0)).to.not.be.reverted;
+            expect(await token.connect(operatorAddress).transferFrom(ownerAdress.address, otherAddress.address, 0)).to.not.be.reverted;
         });
     });
 
