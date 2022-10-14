@@ -134,7 +134,7 @@ describe("Soulbound", function() {
         });
 
         it("Should allow transfers done by owner", async function() {
-            expect(await token.transferFrom(otherAddress.address, ownerAdress.address, 0)).to.not.be.reverted;
+            await expect(token.transferFrom(otherAddress.address, ownerAdress.address, 0)).to.not.be.reverted;
         });
 
         it("Shouldn't allow transfers by unapproved addresses", async function() {
@@ -181,14 +181,17 @@ describe("Soulbound", function() {
         let token;
         let ownerAdress;
         let otherAddress;
+        let addressToBeApproved;
 
         beforeEach(async () => {
-            const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
+            const { hardhatToken, owner, addr1, addr2 } = await loadFixture(deployTokenFixture);
             token = hardhatToken;
             ownerAdress = owner;
             otherAddress = addr1;
+            addressToBeApproved = addr2;
             await token.mint(otherAddress.address, tokenURI);
         });
+
     });
 
     describe("burn", function() {
@@ -207,8 +210,6 @@ describe("Soulbound", function() {
         });
 
         it("Should allow burns done by owner", async function() {
-            await token.mint(otherAddress.address, tokenURI);
-
             await expect(token.burn(0)).to.not.be.reverted;
         });
 
