@@ -5,13 +5,13 @@ const { ethers } = require("hardhat");
 describe("Soulbound", function() {
     async function deployTokenFixture() {
         const Token = await ethers.getContractFactory("SoulboundMock");
-        const [owner, addr1] = await ethers.getSigners();
+        const [owner, addr1, addr2] = await ethers.getSigners();
 
         const hardhatToken = await Token.deploy("Soulbound", "Soulbound");
 
         await hardhatToken.deployed();
 
-        return { Token, hardhatToken, owner, addr1 };
+        return { Token, hardhatToken, owner, addr1, addr2 };
     }
 
     describe("Deployment", function() {
@@ -44,7 +44,19 @@ describe("Soulbound", function() {
     });
 
     describe("Transferring", function() {
+        let token;
+        let ownerAdress;
+        let operatorAddress;
+        let otherAddress;
 
+        beforeEach(async () => {
+            const { hardhatToken, owner, addr1, addr2 } = await loadFixture(deployTokenFixture);
+            token = hardhatToken;
+            ownerAdress = owner;
+            operatorAddress = addr1;
+            otherAddress = addr2;
+            await token.mint(otherAddress.address);
+        });
     });
 
     describe("Burning", function() {
