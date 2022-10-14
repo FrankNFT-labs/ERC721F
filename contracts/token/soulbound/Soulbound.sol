@@ -17,7 +17,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     {}
 
     /**
-     * @dev Only a `spender` that is owner of contract or approved for `tokenId` passes
+     * @dev Only a `spender` that is the owner of the contract or approved for `tokenId`/owner of `tokenId` passes
      */
     modifier onlyOwnerOrApproved(address spender, uint256 tokenId) {
         address ownerToken = ERC721.ownerOf(tokenId);
