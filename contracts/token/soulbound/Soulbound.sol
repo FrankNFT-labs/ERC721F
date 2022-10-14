@@ -21,21 +21,35 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
      */
     modifier onlyOwnerOrApproved(address spender, uint256 tokenId) {
         address ownerToken = ERC721.ownerOf(tokenId);
-        require(spender == owner() || isApprovedForAll(ownerToken, spender) || getApproved(tokenId) == spender, "Address is neither owner of contract nor approved for token/tokenowner");
+        require(
+            spender == owner() ||
+                isApprovedForAll(ownerToken, spender) ||
+                getApproved(tokenId) == spender,
+            "Address is neither owner of contract nor approved for token/tokenowner"
+        );
         _;
     }
 
     /**
-     * @notice Approve `to` to have transfer- and burnperms of `tokenId` 
+     * @notice Approve `to` to have transfer- and burnperms of `tokenId`
      */
-    function approve(address to, uint256 tokenId) public virtual override onlyOwner {
+    function approve(address to, uint256 tokenId)
+        public
+        virtual
+        override
+        onlyOwner
+    {
         _approve(to, tokenId);
     }
 
     /**
      * @notice Give transfer- and burnperms to `operator` for all tokens owned by `owner`
      */
-    function setApprovalForAllOwner(address owner,  address operator, bool approved) public virtual onlyOwner {
+    function setApprovalForAllOwner(
+        address owner,
+        address operator,
+        bool approved
+    ) public virtual onlyOwner {
         _setApprovalForAll(owner, operator, approved);
     }
 
@@ -45,7 +59,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
      * Emits an {ApprovalForAll} event.
      */
     function _setApprovalForAll(
-        address owner, 
+        address owner,
         address operator,
         bool approved
     ) internal virtual override {
@@ -56,14 +70,25 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     /**
      * @dev See {IERC721-setApprovalForAll}.
      */
-    function setApprovalForAll(address, bool) public virtual override onlyOwner {
+    function setApprovalForAll(address, bool)
+        public
+        virtual
+        override
+        onlyOwner
+    {
         revert("Use setApprovalForAllOwner");
     }
 
     /**
      * @dev See {IERC721-isApprovedForAll}.
      */
-    function isApprovedForAll(address owner, address operator) public view virtual override returns (bool) {
+    function isApprovedForAll(address owner, address operator)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
         return _operatorApprovals[owner][operator];
     }
 
@@ -98,21 +123,34 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
      * @notice Transfers `tokenId` from `from` to `to`
      * @dev Only executable by operators or an approved address of `tokenId`
      */
-    function transferFrom(address from, address to, uint256 tokenId) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
+    function transferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
         _transfer(from, to, tokenId);
     }
 
     /**
      * @dev See {IERC721-safeTransferFrom}.
      */
-    function safeTransferFrom(address from, address to, uint256 tokenId) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
         safeTransferFrom(from, to, tokenId, "");
     }
 
     /**
      * @dev See {IERC721-safeTransferFrom}.
      */
-    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId,
+        bytes memory data
+    ) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
         _safeTransfer(from, to, tokenId, data);
     }
 
