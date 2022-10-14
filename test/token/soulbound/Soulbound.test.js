@@ -31,6 +31,14 @@ describe("Soulbound", function() {
 
             await expect(hardhatToken.mint(addr1.address, "Testing")).to.changeTokenBalance(hardhatToken, addr1.address, 1);
         });
+
+        it("Should set the tokenURI of the minted token", async function() {
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+
+            await hardhatToken.mint(addr1.address, "Testing");
+
+            expect(await hardhatToken.tokenURI(0)).to.be.equal("Testing");
+        });
     });
 
     describe("Transferring", function() {
