@@ -122,12 +122,14 @@ describe("Soulbound", function() {
         let token;
         let ownerAdress;
         let otherAddress;
+        let addressToBeApproved;
 
         beforeEach(async () => {
-            const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
+            const { hardhatToken, owner, addr1, addr2 } = await loadFixture(deployTokenFixture);
             token = hardhatToken;
             ownerAdress = owner;
             otherAddress = addr1;
+            addressToBeApproved = addr2;
             await token.mint(otherAddress.address, tokenURI);
         });
 
@@ -136,13 +138,13 @@ describe("Soulbound", function() {
         });
 
         it("Shouldn't allow transfers by unapproved addresses", async function() {
-            await expect(token.connect(otherAddress).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
+            await expect(token.connect(addressToBeApproved).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
         });
 
         it("Should allow transfers by approved addresses", async function() {
-            await token.approve(otherAddress.address, 0);
+            await token.approve(addressToBeApproved.address, 0);
 
-            await expect(token.connect(otherAddress).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.not.be.reverted;
+            await expect(token.connect(addressToBeApproved).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.not.be.reverted;
         }); 
 
         it("Should transfer the token between addresses", async function() {
@@ -151,12 +153,12 @@ describe("Soulbound", function() {
         });
 
         it("Should remove the approval status of approved address post transfer", async function() {
-            await token.approve(otherAddress.address, 0);
-            expect(await token.getApproved(0)).to.equal(otherAddress.address);
+            await token.approve(addressToBeApproved.address, 0);
+            expect(await token.getApproved(0)).to.equal(addressToBeApproved.address);
 
-            await token.connect(otherAddress).transferFrom(otherAddress.address, ownerAdress.address, 0)
+            await token.connect(addressToBeApproved).transferFrom(otherAddress.address, ownerAdress.address, 0)
 
-            expect(await token.getApproved(0)).to.not.equal(otherAddress.address);
+            expect(await token.getApproved(0)).to.not.equal(addressToBeApproved.address);
             expect(await token.getApproved(0)).to.equal(ethers.constants.AddressZero);
         });
     });
