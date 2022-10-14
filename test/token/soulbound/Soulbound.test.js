@@ -43,9 +43,21 @@ describe("Soulbound", function() {
             await expect(hardhatToken.approve(addr1.address, 0)).to.not.be.reverted;
             expect(await hardhatToken.getApproved(0)).to.be.equal(addr1.address);
         });
+
+        it("Should remove the approval status when assigning another address to the token", async function() {
+            const { hardhatToken, owner, addr1, addr2 } = await loadFixture(deployTokenFixture);
+
+            await hardhatToken.mint(addr1.address, tokenURI);
+
+            await hardhatToken.approve(owner.address, 0);
+            expect(await hardhatToken.getApproved(0)).to.be.equal(owner.address);
+
+            await hardhatToken.approve(addr2.address, 0);
+            expect(await hardhatToken.getApproved(0)).to.be.equal(addr2.address);
+        });
     });
 
-    describe.only("setApproveForAll", function() {
+    describe("setApproveForAll", function() {
         it("Should only be executable by the owner of the contract", async function() {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
