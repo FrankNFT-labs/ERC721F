@@ -103,6 +103,23 @@ describe("Soulbound", function() {
             await token.mint(otherAddress.address, tokenURI);
             await token.addOperator(operatorAddress.address);
         });
+
+        it("Should allow burns done by operators", async function() {
+            await token.mint(otherAddress.address, tokenURI);
+
+            await expect(token.burn(0)).to.not.be.reverted;
+            await expect(token.connect(operatorAddress).burn(1)).to.not.be.reverted;
+        });
+
+        it("Shouldn't allow burns by unapproved addresses", async function() {
+            await expect(token.connect(otherAddress).burn(0)).to.be.revertedWith("Neither operator of contract nor approved address");
+        });
+
+        it("Should allow burns by approved addresses", async function() {
+            await token.approve(otherAddress.address, 0);
+
+            await expect(token.connect(otherAddress).burn(0)).to.not.be.reverted;
+        });
     });
 
     describe("totalSupply", function() {
