@@ -26,4 +26,12 @@ contract SoulboundMock is Soulbound {
     function burn(uint256 tokenId) public {
         _burn(tokenId);
     }
+
+    function safeTransferFromHelperNonData(address from, address to, uint256 tokenId) public {
+        safeTransferFrom(from, to, tokenId);
+    }
+
+    function safeTransferFromHelperWithData(address from, address to, uint256 tokenId, bytes memory data) public {
+        safeTransferFrom(from, to, tokenId, data);
+    }
 }
