@@ -147,6 +147,12 @@ describe("Soulbound", function() {
             await expect(token.connect(addressToBeApproved).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.not.be.reverted;
         }); 
 
+        it("Should allow transfers by approved-all addresses", async function() {
+            await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+
+            await expect(token.connect(addressToBeApproved).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.not.be.reverted;
+        })
+
         it("Should transfer the token between addresses", async function() {
             await expect(token.transferFrom(otherAddress.address, ownerAdress.address, 0)).to.changeTokenBalances(token, [otherAddress.address, ownerAdress.address], [-1, 1]);
             expect(await token.ownerOf(0)).to.be.equal(ownerAdress.address);
@@ -160,6 +166,14 @@ describe("Soulbound", function() {
 
             expect(await token.getApproved(0)).to.not.equal(addressToBeApproved.address);
             expect(await token.getApproved(0)).to.equal(ethers.constants.AddressZero);
+        });
+
+        it("Shouldn't remove approval status of an approved-all address post transfer", async function() {
+            await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+            
+            await token.connect(addressToBeApproved).transferFrom(otherAddress.address, ownerAdress.address, 0);
+
+            expect(await token.isApprovedForAll(otherAddress.address, addressToBeApproved.address)).to.be.true;
         });
     });
 
