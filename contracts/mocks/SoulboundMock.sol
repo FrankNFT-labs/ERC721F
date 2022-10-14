@@ -12,7 +12,6 @@ contract SoulboundMock is Soulbound {
         Soulbound(name, symbol)
     {}
 
-
     /**
      * @notice Mint your tokens here
      * @dev Function utilised in testing, don't use in production due to lack of restrictions
