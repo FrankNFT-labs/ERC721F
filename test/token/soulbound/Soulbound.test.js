@@ -2,6 +2,8 @@ const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
+const tokenURI = "TestingURI";
+
 describe("Soulbound", function() {
     async function deployTokenFixture() {
         const Token = await ethers.getContractFactory("SoulboundMock");
@@ -22,24 +24,24 @@ describe("Soulbound", function() {
         it("Should only be executable by the operators of the contract", async function() {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
             
-            await expect(hardhatToken.mint(addr1.address, "Testing")).to.not.be.reverted;
-            await expect(hardhatToken.connect(addr1).mint(addr1.address, "Testing")).to.be.revertedWith("Sender does not have operator role");
+            await expect(hardhatToken.mint(addr1.address, tokenURI)).to.not.be.reverted;
+            await expect(hardhatToken.connect(addr1).mint(addr1.address, tokenURI)).to.be.revertedWith("Sender does not have operator role");
             await hardhatToken.addOperator(addr1.address);
-            await expect(hardhatToken.connect(addr1).mint(addr1.address, "Testing")).to.not.be.reverted;
+            await expect(hardhatToken.connect(addr1).mint(addr1.address, tokenURI)).to.not.be.reverted;
         });
 
         it("Should increase the tokenbalance of the recipient", async function() {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
-            await expect(hardhatToken.mint(addr1.address, "Testing")).to.changeTokenBalance(hardhatToken, addr1.address, 1);
+            await expect(hardhatToken.mint(addr1.address, tokenURI)).to.changeTokenBalance(hardhatToken, addr1.address, 1);
         });
 
         it("Should set the tokenURI of the minted token", async function() {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
-            await hardhatToken.mint(addr1.address, "Testing");
+            await hardhatToken.mint(addr1.address, tokenURI);
 
-            expect(await hardhatToken.tokenURI(0)).to.be.equal("Testing");
+            expect(await hardhatToken.tokenURI(0)).to.be.equal(tokenURI);
         });
     });
 
@@ -55,7 +57,7 @@ describe("Soulbound", function() {
             ownerAdress = owner;
             operatorAddress = addr1;
             otherAddress = addr2;
-            await token.mint(otherAddress.address, "Testing");
+            await token.mint(otherAddress.address, tokenURI);
             await token.addOperator(operatorAddress.address);
         });
 
