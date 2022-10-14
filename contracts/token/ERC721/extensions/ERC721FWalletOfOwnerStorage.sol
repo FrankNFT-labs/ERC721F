@@ -9,7 +9,7 @@ import "../ERC721F.sol";
  * @dev Extension of ERC721F, which overrides default walletOfOwner functionality to utilise a mapping instead of looping through the token collection
  */
 abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
-    mapping(address => uint256[]) _walletOfOwner;
+    mapping(address => uint256[]) private _walletOfOwner;
 
     /**
      * @dev walletOfOwner
