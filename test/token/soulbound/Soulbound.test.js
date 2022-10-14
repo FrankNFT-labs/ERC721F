@@ -175,6 +175,15 @@ describe("Soulbound", function() {
 
             expect(await token.isApprovedForAll(otherAddress.address, addressToBeApproved.address)).to.be.true;
         });
+
+        it("Shouldn't allow transfers from addresses which had their approved-all status removed", async function() {
+            await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+            expect(await token.isApprovedForAll(otherAddress.address, addressToBeApproved.address)).to.be.true;
+
+            await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, false);
+
+            expect(await token.transferFrom(otherAddress.address, ownerAdress.address, 0)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
+        });
     });
 
     describe("safeTransferFrom", function() {
@@ -235,6 +244,15 @@ describe("Soulbound", function() {
     
                 expect(await token.isApprovedForAll(otherAddress.address, addressToBeApproved.address)).to.be.true;
             });
+
+            it("Shouldn't allow transfers from addresses which had their approved-all status removed", async function() {
+                await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+                expect(await token.isApprovedForAll(otherAddress.address, addressToBeApproved.address)).to.be.true;
+    
+                await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, false);
+    
+                expect(await token.safeTransferFromHelperNonData(otherAddress.address, ownerAdress.address, 0)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
+            });
         });
 
         context("With data parameter", function() {
@@ -279,6 +297,15 @@ describe("Soulbound", function() {
                 await token.connect(addressToBeApproved).safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00);
     
                 expect(await token.isApprovedForAll(otherAddress.address, addressToBeApproved.address)).to.be.true;
+            });
+
+            it("Shouldn't allow transfers from addresses which had their approved-all status removed", async function() {
+                await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+                expect(await token.isApprovedForAll(otherAddress.address, addressToBeApproved.address)).to.be.true;
+    
+                await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, false);
+    
+                expect(await token.safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
             });
         });        
     });
@@ -330,6 +357,15 @@ describe("Soulbound", function() {
             await token.burn(0);
 
             await expect(token.tokenURI(0)).to.be.revertedWith("ERC721: invalid token ID");
+        });
+
+        it("Shouldn't allow burns from addresses which had their approved-all status removed", async function() {
+            await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+            expect(await token.isApprovedForAll(otherAddress.address, addressToBeApproved.address)).to.be.true;
+
+            await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, false);
+
+            expect(await token.burn(0)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
         });
     });
 
