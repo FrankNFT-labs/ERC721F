@@ -3,9 +3,9 @@ pragma solidity ^0.8.9 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "./utils/Operatable.sol";
 
-contract Soulbound is ERC721, ERC721URIStorage, Ownable {
+contract Soulbound is ERC721, ERC721URIStorage, Operatable {
     uint256 _tokenSupply;
     uint256 _burnCounter;
 
@@ -13,14 +13,18 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
         ERC721(name_, symbol_)
     {}
 
-    modifier onlyContractOwnerOrApproved(address spender, uint256 tokenId) {
+    modifier onlyOperatorOrApproved(address spender, uint256 tokenId) {
         if (getApproved(tokenId) != spender) {
-            if (spender != owner()) revert("Neither owner of contract or approved address");
+            if (!checkOperator(spender)) revert("Neither operator of contract nor approved address");
         }
         _;
     }
 
-    function approve(address to, uint256 tokenId) public virtual override onlyOwner {
+    function supportsInterface(bytes4 interfaceId) public view virtual override(AccessControl, ERC721) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
+
+    function approve(address to, uint256 tokenId) public virtual override onlyOperator {
         _approve(to, tokenId);
     }
 
@@ -29,7 +33,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
      * @param to address which receives the mint
      * @param uri string in which the name, svg image, properties, etc are stored
      */
-    function _mint(address to, string memory uri) internal virtual onlyOwner {
+    function _mint(address to, string memory uri) internal virtual onlyOperator {
         _mint(to, _tokenSupply);
         _setTokenURI(_tokenSupply, uri);
         unchecked {
@@ -43,7 +47,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     function _burn(uint256 tokenId)
         internal
         override(ERC721, ERC721URIStorage)
-        onlyContractOwnerOrApproved(msg.sender, tokenId)
+        onlyOperatorOrApproved(msg.sender, tokenId)
     {
         super._burn(tokenId);
         unchecked {
@@ -51,7 +55,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
         }
     }
 
-    function transferFrom(address from, address to, uint256 tokenId) public virtual override onlyContractOwnerOrApproved(msg.sender, tokenId) {
+    function transferFrom(address from, address to, uint256 tokenId) public virtual override onlyOperatorOrApproved(msg.sender, tokenId) {
         _transfer(from, to, tokenId);
     }
 
