@@ -29,7 +29,7 @@ This can then be used in your contract as following:
 // SPDX-License-Identifier: MIT 
 pragma solidity ^0.8.9 <0.9.0;
 
-import "https://github.com/FrankNFT-labs/ERC721F/blob/v4.7.0/contracts/token/ERC721/ERC721FCOMMON.sol";
+import "https://github.com/FrankNFT-labs/ERC721F/blob/v4.7.1/contracts/token/ERC721/ERC721FCOMMON.sol";
 
 contract Example is ERC721F {
     constructor() ERC721F("Example", "Example") {
