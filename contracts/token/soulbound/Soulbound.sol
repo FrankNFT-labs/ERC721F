@@ -121,6 +121,9 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
         }
     }
 
+    /**
+     * @notice Returns whether an address is the owner of the contract or is approved for a specific `tokenId` or has overal approval for the holder of `tokenId`
+     */
     function isOwnerOrApproved(address spender, uint256 tokenId)
         public
         view
@@ -133,6 +136,10 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
             getApproved(tokenId) == spender;
     }
 
+    /**
+     * @notice Allows whether the holder of `tokenId` is allowed to burn token
+     * @dev Requires that `tokenId` exists, only executable by owner of the contract or approved address of token/tokenOwner
+     */
     function allowBurn(uint256 tokenId, bool allowed)
         public
         onlyOwnerOrApproved(msg.sender, tokenId)
@@ -141,6 +148,10 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
         ownerIsAllowedToBurn[tokenId] = allowed;
     }
 
+    /**
+     * @notice Returns whether the holder of `tokenId` is allowed to burn
+     * @dev Requires that `tokenId` exists
+     */
     function isOwnerAllowedToBurn(uint256 tokenId) public view returns (bool) {
         _requireMinted(tokenId);
         return ownerIsAllowedToBurn[tokenId];
