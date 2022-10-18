@@ -34,8 +34,8 @@ describe("ERC721F", function () {
         });
     });
 
-    describe("totalSupply", function() {
-        it("Should increase in value after minting", async function() {
+    describe("totalSupply", function () {
+        it("Should increase in value after minting", async function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
             expect(await hardhatToken.totalSupply()).to.be.equal(0);
@@ -45,7 +45,7 @@ describe("ERC721F", function () {
             expect(await hardhatToken.totalSupply()).to.be.equal(1);
         });
 
-        it("Should take burned tokens into account", async function() {
+        it("Should take burned tokens into account", async function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.mint(2);
@@ -55,7 +55,7 @@ describe("ERC721F", function () {
         });
     });
 
-    describe("walletOfOwner", function() {
+    describe("walletOfOwner", function () {
         let token;
         let ownerAddress;
         let otherAddress;
@@ -70,13 +70,13 @@ describe("ERC721F", function () {
             await token.connect(otherAddress).mint(1);
         });
 
-        it("Should include the tokens minted by the sender", async function() {
+        it("Should include the tokens minted by the sender", async function () {
             const walletOfOwner = await token.walletOfOwner(ownerAddress.address);
-            
+
             expect(walletOfOwner.map(t => t.toNumber())).to.have.members([0, 1]);
         });
 
-        it("Shouldn't assign minted tokens by another address to the owner of the contract", async function() {
+        it("Shouldn't assign minted tokens by another address to the owner of the contract", async function () {
             const walletOwner = await token.walletOfOwner(ownerAddress.address);
             const walletOther = await token.walletOfOwner(otherAddress.address);
 
@@ -85,8 +85,8 @@ describe("ERC721F", function () {
         });
     });
 
-    describe("totalMinted", function() {
-        it("Should increase in value after minting", async function() {
+    describe("totalMinted", function () {
+        it("Should increase in value after minting", async function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
             expect(await hardhatToken.totalMinted()).to.be.equal(0);
@@ -96,9 +96,9 @@ describe("ERC721F", function () {
             expect(await hardhatToken.totalMinted()).to.be.equal(1);
         });
 
-        it("Shouldn't be influenced by burned tokens", async function() {
+        it("Shouldn't be influenced by burned tokens", async function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
-            
+
             await hardhatToken.mint(2);
             await hardhatToken.burn(0);
 
@@ -106,13 +106,13 @@ describe("ERC721F", function () {
         });
     });
 
-    describe("totalBurned", function() {
-        it("Should increase in value after burning", async function() {
+    describe("totalBurned", function () {
+        it("Should increase in value after burning", async function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
             await hardhatToken.mint(1);
 
             expect(await hardhatToken.totalBurned()).to.be.equal(0);
-            
+
             await hardhatToken.burn(0);
 
             expect(await hardhatToken.totalBurned()).to.be.equal(1);

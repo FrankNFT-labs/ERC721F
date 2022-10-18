@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * @dev Extends ERC721 Non-Fungible Token Standard basic implementation.
  * Optimized to no longer use ERC721Enumerable , but still provide a totalSupply() and walletOfOwner(address _owner) implementation.
  * @author @FrankNFT.eth
- * 
+ *
  */
 
 contract ERC721F is Ownable, ERC721 {
@@ -18,32 +18,44 @@ contract ERC721F is Ownable, ERC721 {
 
     // Base URI for Meta data
     string private _baseTokenURI;
-    
-    constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {
-    }
 
-    /** 
+    constructor(string memory name_, string memory symbol_)
+        ERC721(name_, symbol_)
+    {}
+
+    /**
      * @dev walletofOwner
      * @return tokens id owned by the given address
      * This read function is O(totalSupply). If calling from a separate contract, be sure to test gas first.
      * It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case.
      */
-    function walletOfOwner(address _owner) external view virtual returns (uint256[] memory){
+    function walletOfOwner(address _owner)
+        external
+        view
+        virtual
+        returns (uint256[] memory)
+    {
         uint256 ownerTokenCount = balanceOf(_owner);
         uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
         uint256 currentTokenId = _startTokenId();
         uint256 ownedTokenIndex = 0;
 
-        while ( ownedTokenIndex < ownerTokenCount && currentTokenId < _tokenSupply ) {
+        while (
+            ownedTokenIndex < ownerTokenCount && currentTokenId < _tokenSupply
+        ) {
             if (ownerOf(currentTokenId) == _owner) {
                 ownedTokenIds[ownedTokenIndex] = currentTokenId;
-                unchecked{ ownedTokenIndex++;}
+                unchecked {
+                    ownedTokenIndex++;
+                }
             }
-            unchecked{ currentTokenId++;}
+            unchecked {
+                currentTokenId++;
+            }
         }
         return ownedTokenIds;
     }
-    
+
     /**
      * To change the starting tokenId, override this function.
      */
@@ -68,7 +80,7 @@ contract ERC721F is Ownable, ERC721 {
     }
 
     /**
-     *    
+     *
      * @dev Mints `tokenId` and transfers it to `to`.
      *
      */
