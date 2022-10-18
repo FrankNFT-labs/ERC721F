@@ -404,4 +404,17 @@ describe("Soulbound", function () {
             expect(await hardhatToken.totalMinted()).to.be.equal(2);
         });
     });
+
+    describe("totalBurned", function() {
+        it("Should increase in value when burning tokens", async function() {
+            const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
+            await hardhatToken.mint(owner.address, tokenURI);
+
+            expect(await hardhatToken.totalBurned()).to.be.equal(0);
+
+            await hardhatToken.burn(0);
+
+            expect(await hardhatToken.totalBurned()).to.be.equal(1);
+        });
+    });
 });
