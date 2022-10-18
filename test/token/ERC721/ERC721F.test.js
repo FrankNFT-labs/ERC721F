@@ -105,4 +105,17 @@ describe("ERC721F", function () {
             expect(await hardhatToken.totalMinted()).to.be.equal(2);
         });
     });
+
+    describe("totalBurned", function() {
+        it("Should increase in value after burning", async function() {
+            const { hardhatToken } = await loadFixture(deployTokenFixture);
+            await hardhatToken.mint(1);
+
+            expect(await hardhatToken.totalBurned()).to.be.equal(0);
+            
+            await hardhatToken.burn(0);
+
+            expect(await hardhatToken.totalBurned()).to.be.equal(1);
+        });
+    });
 });
