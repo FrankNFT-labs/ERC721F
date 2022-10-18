@@ -13,7 +13,7 @@ import "../contracts/token/ERC721/ERC721FCOMMON.sol";
 
 contract FreeMint is ERC721FCOMMON {
     mapping(uint256 => uint256) public offers;
-    mapping(address => uint256) private sellerBalance;
+    mapping(address => uint256) private _sellerBalance;
 
     uint256 public constant MAX_TOKENS = 10000;
     uint public constant MAX_PURCHASE = 31; // Theoretical limit 1100
@@ -74,9 +74,13 @@ contract FreeMint is ERC721FCOMMON {
 
         delete offers[tokenId];
 
-        sellerBalance[royaltyReceiver] = royaltyAmount;
-        sellerBalance[tokenOwner] = buyPrice - royaltyAmount;
+        _sellerBalance[royaltyReceiver] = royaltyAmount;
+        _sellerBalance[tokenOwner] = buyPrice - royaltyAmount;
 
         _transfer(tokenOwner, msg.sender, tokenId);
+    }
+
+    function sellerBalance(address seller) public view returns (uint256) {
+        return _sellerBalance[seller];
     }
 }
