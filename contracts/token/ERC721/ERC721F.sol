@@ -80,6 +80,17 @@ contract ERC721F is Ownable, ERC721 {
     }
 
     /**
+     * @dev See {ERC721-_burn}
+     * Increases value of _burnCounter
+     */
+    function _burn(uint256 tokenId) internal virtual override {
+        super._burn(tokenId);
+        unchecked {
+            _burnCounter++;
+        }
+    }
+
+    /**
      * @dev Gets the total amount of tokens stored by the contract.
      * @return uint256 representing the total amount of tokens
      */
