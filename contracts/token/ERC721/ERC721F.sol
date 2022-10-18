@@ -14,6 +14,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract ERC721F is Ownable, ERC721 {
     uint256 _tokenSupply;
+    uint256 _burnCounter;
 
     // Base URI for Meta data
     string private _baseTokenURI;
