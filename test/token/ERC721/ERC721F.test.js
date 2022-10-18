@@ -2,7 +2,7 @@ const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-describe("Token contract", function () {
+describe("ERC721F", function () {
     async function deployTokenFixture() {
         const Token = await ethers.getContractFactory("ERC721FMock");
         const [owner, addr1] = await ethers.getSigners();
