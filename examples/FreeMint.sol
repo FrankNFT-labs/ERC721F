@@ -8,13 +8,11 @@ import "../contracts/token/ERC721/ERC721FCOMMON.sol";
  *
  * @dev Example implementation of [ERC721F]
  */
-contract FreeMint is ERC721FCOMMON {
-    struct Offer {
-        uint256 tokenId;
-        uint256 priceInWei;
-    }
 
-    mapping(bytes32 => Offer) public offers;
+
+
+contract FreeMint is ERC721FCOMMON {
+    mapping(uint256 => uint256) public offers;
     mapping(address => uint256) private sellerBalance;
 
     uint256 public constant MAX_TOKENS = 10000;
@@ -61,26 +59,23 @@ contract FreeMint is ERC721FCOMMON {
     function sellToken(uint256 tokenId, uint256 priceInWei) public {
         require(msg.sender == tx.origin, "No Contracts allowed.");
         require(ownerOf(tokenId) == msg.sender, "Not the tokenowner");
-        bytes32 offerHash = keccak256(abi.encodePacked(tokenId));
-        offers[offerHash] = Offer({
-            tokenId: tokenId,
-            priceInWei: priceInWei
-        });
+        require(priceInWei > 0, "token price must be larger than 0");
+        offers[tokenId] = priceInWei;
     }
 
-    function buyToken(bytes32 offerHash) public payable {
-        Offer memory offer = offers[offerHash];
-        require(msg.value >= offer.priceInWei, "Insufficient funds");
+    function buyToken(uint256 tokenId) public payable {
+        uint256 tokenPrice = offers[tokenId];
+        uint256 buyPrice = msg.value;
+        require(tokenPrice > 0, "Token is not for sale");
+        require(buyPrice >= tokenPrice, "Insufficient funds");
 
-        uint256 tokenId = offer.tokenId;
-        uint256 priceInWei = offer.priceInWei;
         address tokenOwner = ownerOf(tokenId);
-        (address royaltyReceiver, uint256 royaltyAmount) = royaltyInfo(tokenId, priceInWei);
+        (address royaltyReceiver, uint256 royaltyAmount) = royaltyInfo(tokenId, buyPrice);
 
-        delete offers[offerHash];
+        delete offers[tokenId];
 
         sellerBalance[royaltyReceiver] = royaltyAmount;
-        sellerBalance[tokenOwner] = priceInWei - royaltyAmount;
+        sellerBalance[tokenOwner] = buyPrice - royaltyAmount;
 
         transferFrom(tokenOwner, msg.sender, tokenId);
     }
