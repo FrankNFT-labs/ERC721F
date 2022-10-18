@@ -122,6 +122,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     }
     
     function allowBurn(uint256 tokenId, bool allowed) public onlyOwnerOrApproved(msg.sender, tokenId) {
+        require(_exists(tokenId), "Invalid token ID");
         ownerIsAllowedToBurn[tokenId] = allowed;
     } 
 
