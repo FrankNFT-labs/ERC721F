@@ -23,9 +23,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     modifier onlyOwnerOrApproved(address spender, uint256 tokenId) {
         address ownerToken = ERC721.ownerOf(tokenId);
         require(
-            spender == owner() ||
-                isApprovedForAll(ownerToken, spender) ||
-                getApproved(tokenId) == spender,
+            isOwnerOrApproved(spender, tokenId),
             "Address is neither owner of contract nor approved for token/tokenowner"
         );
         _;
@@ -120,11 +118,14 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
             _burnCounter++;
         }
     }
-    
-    function allowBurn(uint256 tokenId, bool allowed) public onlyOwnerOrApproved(msg.sender, tokenId) {
+
+    function allowBurn(uint256 tokenId, bool allowed)
+        public
+        onlyOwnerOrApproved(msg.sender, tokenId)
+    {
         require(_exists(tokenId), "Invalid token ID");
         ownerIsAllowedToBurn[tokenId] = allowed;
-    } 
+    }
 
     /**
      * @notice Transfers `tokenId` from `from` to `to`
@@ -195,5 +196,17 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
      */
     function _totalBurned() internal view virtual returns (uint256) {
         return _burnCounter;
+    }
+
+    function isOwnerOrApproved(address spender, uint256 tokenId)
+        public
+        view
+        returns (bool)
+    {
+        address ownerToken = ERC721.ownerOf(tokenId);
+        return
+            spender == owner() ||
+            isApprovedForAll(ownerToken, spender) ||
+            getApproved(tokenId) == spender;
     }
 }
