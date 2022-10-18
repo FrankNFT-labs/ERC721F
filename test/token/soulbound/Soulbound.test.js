@@ -95,14 +95,14 @@ describe("Soulbound", function () {
         });
     });
 
-    describe("allowBurn", function() {
-        it("Shouldn't allow invalid tokens", async function() {
+    describe("allowBurn", function () {
+        it("Shouldn't allow invalid tokens", async function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
             await expect(hardhatToken.allowBurn(0, true)).to.be.revertedWith("ERC721: invalid token ID");
         });
 
-        it("Should be executable by the owner of the contract", async function() {
+        it("Should be executable by the owner of the contract", async function () {
             const { hardhatToken, addr2 } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.mint(addr2.address, tokenURI);
@@ -110,7 +110,7 @@ describe("Soulbound", function () {
             await expect(hardhatToken.allowBurn(0, true)).to.not.be.reverted;
         });
 
-        it("Shouldn't be executable by unapproved addresses", async function() {
+        it("Shouldn't be executable by unapproved addresses", async function () {
             const { hardhatToken, addr2 } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.mint(addr2.address, tokenURI);
@@ -118,7 +118,7 @@ describe("Soulbound", function () {
             await expect(hardhatToken.connect(addr2).allowBurn(0, true)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
         });
 
-        it("Should be executable by approved addresses", async function() {
+        it("Should be executable by approved addresses", async function () {
             const { hardhatToken, addr1, addr2 } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.mint(addr2.address, tokenURI);
@@ -127,7 +127,7 @@ describe("Soulbound", function () {
             await expect(hardhatToken.connect(addr1).allowBurn(0, true)).to.not.be.reverted;
         });
 
-        it("Should be executable by approved-all addresses", async function() {
+        it("Should be executable by approved-all addresses", async function () {
             const { hardhatToken, addr1, addr2 } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.mint(addr2.address, tokenURI);
@@ -136,7 +136,7 @@ describe("Soulbound", function () {
             await expect(hardhatToken.connect(addr1).allowBurn(0, true)).to.not.be.reverted;
         });
 
-        it("Should change the allowal of a tokenholder when setting to true/false", async function() {
+        it("Should change the allowal of a tokenholder when setting to true/false", async function () {
             const { hardhatToken, addr2 } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.mint(addr2.address, tokenURI);
@@ -401,7 +401,7 @@ describe("Soulbound", function () {
             await expect(token.connect(addressToBeApproved).burn(0)).to.not.be.reverted;
         });
 
-        it("Should allow burns by allowed token holder", async function() {
+        it("Should allow burns by allowed token holder", async function () {
             await token.allowBurn(0, true);
 
             await expect(token.connect(otherAddress).burn(0)).to.not.be.reverted;
