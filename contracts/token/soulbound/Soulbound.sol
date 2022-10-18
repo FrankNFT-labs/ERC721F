@@ -11,6 +11,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
 
     // Mapping from owner to operator approvals
     mapping(address => mapping(address => bool)) private _operatorApprovals;
+    bool private _tokenHolderIsAllowedToBurn;
 
     constructor(string memory name_, string memory symbol_)
         ERC721(name_, symbol_)
@@ -22,9 +23,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     modifier onlyOwnerOrApproved(address spender, uint256 tokenId) {
         address ownerToken = ERC721.ownerOf(tokenId);
         require(
-            spender == owner() ||
-                isApprovedForAll(ownerToken, spender) ||
-                getApproved(tokenId) == spender,
+            isOwnerOrApproved(spender, tokenId),
             "Address is neither owner of contract nor approved for token/tokenowner"
         );
         _;
@@ -110,13 +109,50 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
      */
     function _burn(uint256 tokenId)
         internal
+        virtual
         override(ERC721, ERC721URIStorage)
-        onlyOwnerOrApproved(msg.sender, tokenId)
     {
+        if (
+            !isOwnerOrApproved(msg.sender, tokenId) &&
+            !(ownerOf(tokenId) == msg.sender && _tokenHolderIsAllowedToBurn)
+        )
+            revert(
+                "Caller is neither tokenholder which is allowed to burn nor owner of contract nor approved address for token/tokenOwner"
+            );
         super._burn(tokenId);
         unchecked {
             _burnCounter++;
         }
+    }
+
+    /**
+     * @notice Returns whether an address is the owner of the contract or is approved for a specific `tokenId` or has overal approval for the holder of `tokenId`
+     */
+    function isOwnerOrApproved(address spender, uint256 tokenId)
+        public
+        view
+        returns (bool)
+    {
+        address ownerToken = ERC721.ownerOf(tokenId);
+        return
+            spender == owner() ||
+            isApprovedForAll(ownerToken, spender) ||
+            getApproved(tokenId) == spender;
+    }
+
+    /**
+     * @notice Allows whether the contract token holders can burn their tokens
+     * @dev Only executable by the owner of the contract
+     */
+    function allowBurn(bool allowed) public onlyOwner {
+        _tokenHolderIsAllowedToBurn = allowed;
+    }
+
+    /**
+     * @notice Returns whether all token holders are allowed to burn tokens
+     */
+    function tokenHolderIsAllowedToBurn() public view returns (bool) {
+        return _tokenHolderIsAllowedToBurn;
     }
 
     /**

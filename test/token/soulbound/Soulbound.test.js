@@ -95,6 +95,33 @@ describe("Soulbound", function () {
         });
     });
 
+    describe("allowBurn", function () {
+        it("Should be only executable by the owner of the contract", async function () {
+            const { hardhatToken, addr2 } = await loadFixture(deployTokenFixture);
+
+            await hardhatToken.mint(addr2.address, tokenURI);
+
+            await expect(hardhatToken.allowBurn(true)).to.not.be.reverted;
+            await expect(hardhatToken.connect(addr2).allowBurn(true)).to.be.revertedWith("Ownable: caller is not the owner");
+        });
+
+        it("Should change the allowal of a tokenholder when setting to true/false", async function () {
+            const { hardhatToken, addr2 } = await loadFixture(deployTokenFixture);
+
+            await hardhatToken.mint(addr2.address, tokenURI);
+
+            expect(await hardhatToken.tokenHolderIsAllowedToBurn()).to.be.false;
+
+            await hardhatToken.allowBurn(true);
+
+            expect(await hardhatToken.tokenHolderIsAllowedToBurn()).to.be.true;
+
+            await hardhatToken.allowBurn(false);
+
+            expect(await hardhatToken.tokenHolderIsAllowedToBurn()).to.be.false;
+        });
+    });
+
     describe("mint", function () {
         it("Should only be executable by the owner of the contract", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
@@ -327,8 +354,8 @@ describe("Soulbound", function () {
             await expect(token.burn(0)).to.not.be.reverted;
         });
 
-        it("Shouldn't allow burns by unapproved addresses", async function () {
-            await expect(token.connect(addressToBeApproved).burn(0)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
+        it("Shouldn't allow burns by unapproved addresses and non-allowed owners", async function () {
+            await expect(token.connect(addressToBeApproved).burn(0)).to.be.revertedWith("Caller is neither tokenholder which is allowed to burn nor owner of contract nor approved address for token/tokenOwner");
         });
 
         it("Should allow burns by approved addresses", async function () {
@@ -341,6 +368,12 @@ describe("Soulbound", function () {
             await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
 
             await expect(token.connect(addressToBeApproved).burn(0)).to.not.be.reverted;
+        });
+
+        it("Should allow burns by allowed token holder", async function () {
+            await token.allowBurn(true);
+
+            await expect(token.connect(otherAddress).burn(0)).to.not.be.reverted;
         });
 
         it("Shouldn't remove approval status of approved-all address post burn", async function () {
