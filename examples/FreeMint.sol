@@ -57,7 +57,7 @@ contract FreeMint is ERC721FCOMMON {
         }
     }
 
-    function sellNFT(uint256 tokenId, uint256 priceInWei) public {
+    function sellToken(uint256 tokenId, uint256 priceInWei) public {
         require(ownerOf(tokenId) == msg.sender, "Not the tokenowner");
         bytes32 offerHash = keccak256(abi.encodePacked(tokenId));
         offers[offerHash] = Offer({
