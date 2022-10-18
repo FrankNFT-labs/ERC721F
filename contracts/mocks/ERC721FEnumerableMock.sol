@@ -17,7 +17,7 @@ contract ERC721FEnumerableMock is ERC721FEnumerable {
      * @dev Function utilised in testing, don't use in production due to lack of restrictions
      */
     function mint(uint256 numberOfTokens) public {
-        uint256 supply = totalSupply();
+        uint256 supply = _totalMinted();
         for (uint256 i; i < numberOfTokens; ) {
             _mint(msg.sender, supply + i);
             unchecked {
