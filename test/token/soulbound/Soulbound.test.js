@@ -368,7 +368,7 @@ describe("Soulbound", function () {
         });
     });
 
-    describe.only("burn", function () {
+    describe("burn", function () {
         let token;
         let otherAddress;
         let addressToBeApproved;
