@@ -177,7 +177,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     }
 
     /**
-     * @dev Gets total amount of tokens minted by the contract 
+     * @dev Gets total amount of tokens minted by the contract
      */
     function _totalMinted() internal view virtual returns (uint256) {
         return _tokenSupply;

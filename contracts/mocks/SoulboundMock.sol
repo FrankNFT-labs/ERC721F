@@ -53,14 +53,14 @@ contract SoulboundMock is Soulbound {
     /**
      * @dev Helper function for testing of internal function _totalMinted
      */
-    function totalMinted() public view returns(uint256) {
+    function totalMinted() public view returns (uint256) {
         return _totalMinted();
     }
 
     /**
      * @dev Helper function for testing of internal function _totalBurned
      */
-    function totalBurned() public view returns(uint256) {
+    function totalBurned() public view returns (uint256) {
         return _totalBurned();
     }
 }

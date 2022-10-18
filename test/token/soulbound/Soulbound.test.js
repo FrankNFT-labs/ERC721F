@@ -386,7 +386,7 @@ describe("Soulbound", function () {
         });
     });
 
-    describe("totalMinted", function() {
+    describe("totalMinted", function () {
         it("Should display total minted tokens", async function () {
             const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
             await hardhatToken.mint(owner.address, tokenURI);
@@ -405,8 +405,8 @@ describe("Soulbound", function () {
         });
     });
 
-    describe("totalBurned", function() {
-        it("Should increase in value when burning tokens", async function() {
+    describe("totalBurned", function () {
+        it("Should increase in value when burning tokens", async function () {
             const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
             await hardhatToken.mint(owner.address, tokenURI);
 
