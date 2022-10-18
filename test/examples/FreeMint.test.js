@@ -2,6 +2,8 @@ const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
+const tokenPrice = 500;
+
 describe("FreeMint", function () {
     async function deployTokenFixture() {
         const Token = await ethers.getContractFactory("FreeMint");
@@ -55,7 +57,7 @@ describe("FreeMint", function () {
 
         it("Is only executable by the owner of the token", async function() {
             await expect(token.connect(otherAddress).sellToken(0, 500)).to.be.revertedWith("Not the tokenowner");
-            await expect(token.sellToken(0, 500)).to.not.be.reverted;
+            await expect(token.sellToken(0, tokenPrice)).to.not.be.reverted;
         });
 
         it("Does not allow a sale with a price of 0", async function() {
@@ -65,9 +67,9 @@ describe("FreeMint", function () {
         it("Creates an offering listing", async function() {
             expect(await token.offers(0)).to.be.equal(0);
 
-            await token.sellToken(0, 500);
+            await token.sellToken(0, tokenPrice);
 
-            expect((await token.offers(0))).to.be.equal(500);
+            expect((await token.offers(0))).to.be.equal(tokenPrice);
         });
     });
 
@@ -83,7 +85,7 @@ describe("FreeMint", function () {
             otherAddress = addr1;
 
             await hardhatToken.mint(1);
-            await hardhatToken.sellToken(0, 500);
+            await hardhatToken.sellToken(0, tokenPrice);
         });
     })
 
