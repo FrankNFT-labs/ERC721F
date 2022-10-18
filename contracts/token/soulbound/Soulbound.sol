@@ -11,6 +11,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
 
     // Mapping from owner to operator approvals
     mapping(address => mapping(address => bool)) private _operatorApprovals;
+    mapping(uint256 => bool) ownerIsAllowedToBurn;
 
     constructor(string memory name_, string memory symbol_)
         ERC721(name_, symbol_)
