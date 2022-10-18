@@ -71,6 +71,22 @@ describe("FreeMint", function () {
         });
     });
 
+    describe("buyToken", function() {
+        let token;
+        let ownerAddress; 
+        let otherAddress;
+
+        beforeEach(async () => {
+            const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
+            token = hardhatToken;
+            ownerAddress = owner;
+            otherAddress = addr1;
+
+            await hardhatToken.mint(1);
+            await hardhatToken.sellToken(0, 500);
+        });
+    })
+
     describe.skip("Max tokens minted in ONE TRX", function () {
         let totalMint = 1120; // Lower limit of tokens that'll increase in amount and be minted
         this.retries(10); // Amount of times the test will be attempted after failure
