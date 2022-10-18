@@ -113,7 +113,13 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
         virtual
         override(ERC721, ERC721URIStorage)
     {
-        if(!isOwnerOrApproved(msg.sender, tokenId) && !(ownerOf(tokenId) == msg.sender && ownerIsAllowedToBurn[tokenId])) revert("Caller is neither tokenholder which is allowed to burn nor owner of contract or approved address for token/tokenOwner");
+        if (
+            !isOwnerOrApproved(msg.sender, tokenId) &&
+            !(ownerOf(tokenId) == msg.sender && ownerIsAllowedToBurn[tokenId])
+        )
+            revert(
+                "Caller is neither tokenholder which is allowed to burn nor owner of contract nor approved address for token/tokenOwner"
+            );
         super._burn(tokenId);
         delete ownerIsAllowedToBurn[tokenId];
         unchecked {
