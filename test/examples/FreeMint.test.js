@@ -7,13 +7,13 @@ const tokenPrice = 500;
 describe("FreeMint", function () {
     async function deployTokenFixture() {
         const Token = await ethers.getContractFactory("FreeMint");
-        const [owner, addr1] = await ethers.getSigners();
+        const [owner, addr1, addr2] = await ethers.getSigners();
 
         const hardhatToken = await Token.deploy();
 
         await hardhatToken.deployed();
 
-        return { Token, hardhatToken, owner, addr1 };
+        return { Token, hardhatToken, owner, addr1, addr2 };
     }
 
     describe("Deployment", function() {
@@ -77,15 +77,72 @@ describe("FreeMint", function () {
         let token;
         let ownerAddress; 
         let otherAddress;
+        let finalBuyer;
 
         beforeEach(async () => {
-            const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
+            const { hardhatToken, owner, addr1, addr2 } = await loadFixture(deployTokenFixture);
             token = hardhatToken;
             ownerAddress = owner;
             otherAddress = addr1;
+            finalBuyer = addr2;
 
-            await hardhatToken.mint(1);
-            await hardhatToken.sellToken(0, tokenPrice);
+            await token.flipSaleState();
+            await token.mint(1);
+            await token.sellToken(0, tokenPrice);
+        });
+
+        it("Does not allow buying of tokens with prices of 0 = not for offer", async function() {
+            await token.mint(1);
+
+            await expect(token.buyToken(1)).to.be.revertedWith("Token is not for sale");
+        });
+
+        it("Does not allow buying of tokens with insufficient funds", async function() {
+            await expect(token.buyToken(0)).to.be.revertedWith("Insufficient funds");
+        });
+
+        it("Allows buying of tokens when providing sufficient funds", async function() {
+            await expect(token.buyToken(0, {
+                value: tokenPrice
+            })).to.not.be.reverted;
+        });
+
+        it("Allows overpaying the offer price", async function() {
+            await expect(token.buyToken(0, {
+                value: tokenPrice * 2
+            })).to.not.be.reverted;
+        });
+
+        it("Transfers the tokens between seller and buyer", async function() {
+            await expect(token.connect(otherAddress).buyToken(0, {
+                value: tokenPrice
+            })).to.changeTokenBalances(token, [ownerAddress.address, otherAddress.address], [-1, 1]);
+        });
+
+        it("Moves the payment to the contract", async function() {
+            await expect(token.connect(otherAddress).buyToken(0, {
+                value: tokenPrice
+            })).to.changeEtherBalances([otherAddress.address, token.address], [-tokenPrice, tokenPrice]);
+        });
+
+        it("Divides the payment between seller and royaltyHolder", async function() {
+            await token.connect(otherAddress).mint(1);
+            await token.connect(otherAddress).sellToken(1, tokenPrice);
+            const {royaltyAmount} = await token.royaltyInfo(1, tokenPrice);
+            await token.connect(finalBuyer).buyToken(1, {
+                value: tokenPrice
+            });
+
+            expect(await token.sellerBalance(token.address)).to.be.equal(royaltyAmount);
+            expect(await token.sellerBalance(otherAddress.address)).to.be.equal(tokenPrice - royaltyAmount);
+        });
+
+        it("Removes the offer from offers post buy", async function() {
+            await token.buyToken(0, {
+                value: tokenPrice
+            });
+
+            expect(await token.offers(0)).to.be.equal(0);
         });
     })
 
