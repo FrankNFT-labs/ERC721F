@@ -15,6 +15,7 @@ contract FreeMint is ERC721FCOMMON {
     }
 
     mapping(bytes32 => Offer) public offers;
+    mapping(address => uint256) private sellerBalance;
 
     uint256 public constant MAX_TOKENS = 10000;
     uint public constant MAX_PURCHASE = 31; // Theoretical limit 1100
@@ -58,11 +59,29 @@ contract FreeMint is ERC721FCOMMON {
     }
 
     function sellToken(uint256 tokenId, uint256 priceInWei) public {
+        require(msg.sender == tx.origin, "No Contracts allowed.");
         require(ownerOf(tokenId) == msg.sender, "Not the tokenowner");
         bytes32 offerHash = keccak256(abi.encodePacked(tokenId));
         offers[offerHash] = Offer({
             tokenId: tokenId,
             priceInWei: priceInWei
         });
+    }
+
+    function buyToken(bytes32 offerHash) public payable {
+        Offer memory offer = offers[offerHash];
+        require(msg.value >= offer.priceInWei, "Insufficient funds");
+
+        uint256 tokenId = offer.tokenId;
+        uint256 priceInWei = offer.priceInWei;
+        address tokenOwner = ownerOf(tokenId);
+        (address royaltyReceiver, uint256 royaltyAmount) = royaltyInfo(tokenId, priceInWei);
+
+        delete offers[offerHash];
+
+        sellerBalance[royaltyReceiver] = royaltyAmount;
+        sellerBalance[tokenOwner] = priceInWei - royaltyAmount;
+
+        transferFrom(tokenOwner, msg.sender, tokenId);
     }
 }
