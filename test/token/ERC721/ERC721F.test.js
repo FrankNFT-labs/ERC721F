@@ -34,41 +34,54 @@ describe("ERC721F", function () {
         });
     });
 
-    describe("Minting", function () {
-        it("Should increase total supply", async function () {
+    describe("totalSupply", function() {
+        it("Should increase in value after minting", async function() {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
-            const initialTotalSupply = await hardhatToken.totalSupply();
+            expect(await hardhatToken.totalSupply()).to.be.equal(0);
 
             await hardhatToken.mint(1);
 
-            expect(await hardhatToken.totalSupply()).to.not.equal(initialTotalSupply);
+            expect(await hardhatToken.totalSupply()).to.be.equal(1);
         });
 
-        it("Should assign the token to the wallet of the owner", async function () {
-            const totalMintedTokens = 5;
-            const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
+        it("Should take burned tokens into account", async function() {
+            const { hardhatToken } = await loadFixture(deployTokenFixture);
 
-            await hardhatToken.mint(totalMintedTokens);
+            await hardhatToken.mint(2);
+            await hardhatToken.burn(0);
 
-            const walletOfOwner = await hardhatToken.walletOfOwner(owner.address);
+            expect(await hardhatToken.totalSupply()).to.be.equal(1);
+        })
+    });
 
-            expect(Object.keys(walletOfOwner).length).to.equal(totalMintedTokens);
-        });
+    describe("walletOfOwner", function() {
+        let token;
+        let ownerAddress;
+        let otherAddress;
 
-        it("Shouldn't assign non-owner mints to owner however should increase totalSupply", async function () {
-            const totalOwnerMints = 3;
-            const totalNonOwerMints = 4;
+        beforeEach(async () => {
             const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
+            token = hardhatToken;
+            ownerAddress = owner;
+            otherAddress = addr1;
 
-            await hardhatToken.mint(totalOwnerMints);
-            await hardhatToken.connect(addr1).mint(totalNonOwerMints);
+            await token.mint(2);
+            await token.connect(otherAddress).mint(1);
+        });
 
-            const walletOfOwner = await hardhatToken.walletOfOwner(owner.address);
-            const totalSupply = await hardhatToken.totalSupply();
+        it("Should include the tokens minted by the sender", async function() {
+            const walletOfOwner = await token.walletOfOwner(ownerAddress.address);
+            
+            expect(walletOfOwner.map(t => t.toNumber())).to.have.members([0, 1]);
+        });
 
-            expect(totalSupply).to.equal(totalOwnerMints + totalNonOwerMints);
-            expect(Object.keys(walletOfOwner).length).to.equal(totalSupply - totalNonOwerMints);
+        it("Shouldn't assign minted tokens by another address to the owner of the contract", async function() {
+            const walletOwner = await token.walletOfOwner(ownerAddress.address);
+            const walletOther = await token.walletOfOwner(otherAddress.address);
+
+            expect(walletOwner.map(t => t.toNumber())).to.not.include.members([2]);
+            expect(walletOther.map(t => t.toNumber())).to.have.members([2]);
         });
     });
 });
