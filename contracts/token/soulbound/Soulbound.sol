@@ -111,6 +111,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
      */
     function _burn(uint256 tokenId)
         internal
+        virtual
         override(ERC721, ERC721URIStorage)
         onlyOwnerOrApproved(msg.sender, tokenId)
     {
