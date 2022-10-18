@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     uint256 _tokenSupply;
+    uint256 _burnCounter;
 
     // Mapping from owner to operator approvals
     mapping(address => mapping(address => bool)) private _operatorApprovals;
@@ -105,7 +106,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     }
 
     /**
-     * @dev Burn function is only executable by the owner of the contract or approved addresses
+     * @dev Burn function is only executable by the owner of the contract or approved addresses, increases `_burnCounter` for proper functionality of totalSupply
      */
     function _burn(uint256 tokenId)
         internal
@@ -113,6 +114,9 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
         onlyOwnerOrApproved(msg.sender, tokenId)
     {
         super._burn(tokenId);
+        unchecked {
+            _burnCounter++;
+        }
     }
 
     /**
@@ -165,10 +169,10 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     }
 
     /**
-     * @dev Gets the total amount of tokens stored by the contract
+     * @dev Gets the total amount of tokens stored by the contract, uses _burnCounter to take burned tokens into consideration
      * @return uint256 representing the total amount of tokens
      */
     function totalSupply() public view virtual returns (uint256) {
-        return _tokenSupply;
+        return _tokenSupply - _burnCounter;
     }
 }
