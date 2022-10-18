@@ -77,6 +77,6 @@ contract FreeMint is ERC721FCOMMON {
         sellerBalance[royaltyReceiver] = royaltyAmount;
         sellerBalance[tokenOwner] = buyPrice - royaltyAmount;
 
-        transferFrom(tokenOwner, msg.sender, tokenId);
+        _transfer(tokenOwner, msg.sender, tokenId);
     }
 }
