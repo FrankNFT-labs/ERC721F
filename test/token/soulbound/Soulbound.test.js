@@ -95,6 +95,64 @@ describe("Soulbound", function () {
         });
     });
 
+    describe.only("allowBurn", function() {
+        it("Shouldn't allow invalid tokens", async function() {
+            const { hardhatToken } = await loadFixture(deployTokenFixture);
+
+            await expect(hardhatToken.allowBurn(0, true)).to.be.revertedWith("ERC721: invalid token ID");
+        });
+
+        it("Should be executable by the owner of the contract", async function() {
+            const { hardhatToken, addr2 } = await loadFixture(deployTokenFixture);
+
+            await hardhatToken.mint(addr2.address, tokenURI);
+
+            await expect(hardhatToken.allowBurn(0, true)).to.not.be.reverted;
+        });
+
+        it("Shouldn't be executable by unapproved addresses", async function() {
+            const { hardhatToken, addr2 } = await loadFixture(deployTokenFixture);
+
+            await hardhatToken.mint(addr2.address, tokenURI);
+
+            await expect(hardhatToken.connect(addr2).allowBurn(0, true)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
+        });
+
+        it("Should be executable by approved addresses", async function() {
+            const { hardhatToken, addr1, addr2 } = await loadFixture(deployTokenFixture);
+
+            await hardhatToken.mint(addr2.address, tokenURI);
+            await hardhatToken.approve(addr1.address, 0);
+
+            await expect(hardhatToken.connect(addr1).allowBurn(0, true)).to.not.be.reverted;
+        });
+
+        it("Should be executable by approved-all addresses", async function() {
+            const { hardhatToken, addr1, addr2 } = await loadFixture(deployTokenFixture);
+
+            await hardhatToken.mint(addr2.address, tokenURI);
+            await hardhatToken.setApprovalForAllOwner(addr2.address, addr1.address, true);
+
+            await expect(hardhatToken.connect(addr1).allowBurn(0, true)).to.not.be.reverted;
+        });
+
+        it("Should change the allowal of a tokenholder when setting to true/false", async function() {
+            const { hardhatToken, addr2 } = await loadFixture(deployTokenFixture);
+
+            await hardhatToken.mint(addr2.address, tokenURI);
+
+            expect(await hardhatToken.isOwnerAllowedToBurn(0)).to.be.false;
+
+            await hardhatToken.allowBurn(0, true);
+
+            expect(await hardhatToken.isOwnerAllowedToBurn(0)).to.be.true;
+
+            await hardhatToken.allowBurn(0, false);
+
+            expect(await hardhatToken.isOwnerAllowedToBurn(0)).to.be.false;
+        });
+    });
+
     describe("mint", function () {
         it("Should only be executable by the owner of the contract", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
