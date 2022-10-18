@@ -5,7 +5,7 @@ import "../token/ERC721/ERC721F.sol";
 
 /**
  * @title ERC721FMock
- * This mock provides a public helper functions for testing purposes
+ * This mock provides public helper functions for testing purposes
  */
 contract ERC721FMock is ERC721F {
     constructor(string memory name_, string memory symbol_)
