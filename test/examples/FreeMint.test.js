@@ -42,13 +42,11 @@ describe("FreeMint", function () {
 
     describe("sellToken", function() {
         let token;
-        let ownerAddress;
         let otherAddress;
 
         beforeEach(async () => {
-            const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
             token = hardhatToken;
-            ownerAddress = owner;
             otherAddress = addr1;
 
             await token.flipSaleState();
