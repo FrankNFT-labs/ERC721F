@@ -11,7 +11,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
 
     // Mapping from owner to operator approvals
     mapping(address => mapping(address => bool)) private _operatorApprovals;
-    mapping(uint256 => bool) private ownerIsAllowedToBurn;
+    bool private _tokenHolderIsAllowedToBurn;
 
     constructor(string memory name_, string memory symbol_)
         ERC721(name_, symbol_)
@@ -114,13 +114,12 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     {
         if (
             !isOwnerOrApproved(msg.sender, tokenId) &&
-            !(ownerOf(tokenId) == msg.sender && ownerIsAllowedToBurn[tokenId])
+            !(ownerOf(tokenId) == msg.sender && _tokenHolderIsAllowedToBurn)
         )
             revert(
                 "Caller is neither tokenholder which is allowed to burn nor owner of contract nor approved address for token/tokenOwner"
             );
         super._burn(tokenId);
-        delete ownerIsAllowedToBurn[tokenId];
         unchecked {
             _burnCounter++;
         }
@@ -142,24 +141,21 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     }
 
     /**
-     * @notice Allows whether the holder of `tokenId` is allowed to burn token
-     * @dev Requires that `tokenId` exists, only executable by owner of the contract or approved address of token/tokenOwner
+     * @notice Allows whether the contract token holders can burn their tokens
+     * @dev Only executable by the owner of the contract
      */
-    function allowBurn(uint256 tokenId, bool allowed)
+    function allowBurn(bool allowed)
         public
-        onlyOwnerOrApproved(msg.sender, tokenId)
+        onlyOwner
     {
-        _requireMinted(tokenId);
-        ownerIsAllowedToBurn[tokenId] = allowed;
+        _tokenHolderIsAllowedToBurn = allowed;
     }
 
     /**
-     * @notice Returns whether the holder of `tokenId` is allowed to burn
-     * @dev Requires that `tokenId` exists
+     * @notice Returns whether all token holders are allowed to burn tokens
      */
-    function isOwnerAllowedToBurn(uint256 tokenId) public view returns (bool) {
-        _requireMinted(tokenId);
-        return ownerIsAllowedToBurn[tokenId];
+    function tokenHolderIsAllowedToBurn() public view returns (bool) {
+        return _tokenHolderIsAllowedToBurn;
     }
 
     /**
