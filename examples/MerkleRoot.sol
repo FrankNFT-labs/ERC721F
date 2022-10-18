@@ -74,7 +74,7 @@ contract MerkleRoot is ERC721F, ERC721Payable {
     {
         require(msg.sender == tx.origin, "No Contracts allowed.");
         require(saleIsActive, "Sale NOT active yet");
-        uint256 supply = totalSupply();
+        uint256 supply = _totalMinted();
         require(
             supply + numberOfTokens <= MAX_TOKENS,
             "Purchase would exceed max supply of Tokens"
@@ -100,7 +100,7 @@ contract MerkleRoot is ERC721F, ERC721Payable {
         validMintRequest(numberOfTokens)
     {
         require(preSaleIsActive, "PreSale is not active yet");
-        uint256 supply = totalSupply();
+        uint256 supply = _totalMinted();
         require(
             supply + numberOfTokens <= MAX_TOKENS,
             "Purchase would exceed max supply of Tokens"
