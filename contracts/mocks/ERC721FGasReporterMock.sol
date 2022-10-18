@@ -40,7 +40,7 @@ contract ERC721FGasReporterMock is ERC721F {
      * @notice Mints any number of tokens and transfers them to `to`
      */
     function mint(address to, uint256 numberOfTokens) internal {
-        uint256 supply = totalSupply();
+        uint256 supply = _totalMinted();
         for (uint256 i = 0; i < numberOfTokens; ) {
             _mint(to, supply + i);
             unchecked {
@@ -120,7 +120,7 @@ contract ERC721FGasReporterMock is ERC721F {
         view
         returns (uint firstOwnedTokenId)
     {
-        uint totalSupply = totalSupply();
+        uint totalSupply = _totalMinted();
         for (uint i = 0; i < totalSupply; ) {
             if (ownerOf(i) == msg.sender) {
                 return i;
@@ -135,7 +135,7 @@ contract ERC721FGasReporterMock is ERC721F {
      * @dev Returns last id that is encountered which is owned by the sender
      */
     function retrieveLastToken() internal view returns (uint lastOwnedTokenId) {
-        uint totalSupply = totalSupply();
+        uint totalSupply = _totalMinted();
         for (uint i = totalSupply - 1; i > 0; ) {
             if (ownerOf(i) == msg.sender) {
                 return i;

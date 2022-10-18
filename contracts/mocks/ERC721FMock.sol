@@ -5,7 +5,7 @@ import "../token/ERC721/ERC721F.sol";
 
 /**
  * @title ERC721FMock
- * This mock provides a public mint function for testing purposes
+ * This mock provides public helper functions for testing purposes
  */
 contract ERC721FMock is ERC721F {
     constructor(string memory name_, string memory symbol_)
@@ -17,12 +17,33 @@ contract ERC721FMock is ERC721F {
      * @dev Function utilised in testing, don't use in production due to lack of restrictions
      */
     function mint(uint256 numberOfTokens) public {
-        uint256 supply = totalSupply();
+        uint256 supply = _totalMinted();
         for (uint256 i; i < numberOfTokens; ) {
             _mint(msg.sender, supply + i);
             unchecked {
                 i++;
             }
         }
+    }
+
+    /**
+     * @notice Burns `tokenId`
+     */
+    function burn(uint256 tokenId) public {
+        _burn(tokenId);
+    }
+
+    /**
+     * @dev Helper function for testing of internal function _totalMinted
+     */
+    function totalMinted() public view returns (uint256) {
+        return _totalMinted();
+    }
+
+    /**
+     * @dev Helper function for testing of internal function _totalBurned
+     */
+    function totalBurned() public view returns (uint256) {
+        return _totalBurned();
     }
 }
