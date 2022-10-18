@@ -40,6 +40,39 @@ describe("FreeMint", function () {
         });
     });
 
+    describe("sellToken", function() {
+        let token;
+        let ownerAddress;
+        let otherAddress;
+
+        beforeEach(async () => {
+            const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
+            token = hardhatToken;
+            ownerAddress = owner;
+            otherAddress = addr1;
+
+            await token.flipSaleState();
+            await token.mint(1);
+        });
+
+        it("Is only executable by the owner of the token", async function() {
+            await expect(token.connect(otherAddress).sellToken(0, 500)).to.be.revertedWith("Not the tokenowner");
+            await expect(token.sellToken(0, 500)).to.not.be.reverted;
+        });
+
+        it("Does not allow a sale with a price of 0", async function() {
+            await expect(token.sellToken(0, 0)).to.be.revertedWith("token price must be larger than 0");
+        });
+
+        it("Creates an offering listing", async function() {
+            expect(await token.offers(0)).to.be.equal(0);
+
+            await token.sellToken(0, 500);
+
+            expect((await token.offers(0))).to.be.equal(500);
+        });
+    });
+
     describe.skip("Max tokens minted in ONE TRX", function () {
         let totalMint = 1120; // Lower limit of tokens that'll increase in amount and be minted
         this.retries(10); // Amount of times the test will be attempted after failure
