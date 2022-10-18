@@ -95,7 +95,7 @@ describe("Soulbound", function () {
         });
     });
 
-    describe.only("allowBurn", function() {
+    describe("allowBurn", function() {
         it("Shouldn't allow invalid tokens", async function() {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
@@ -368,7 +368,7 @@ describe("Soulbound", function () {
         });
     });
 
-    describe("burn", function () {
+    describe.only("burn", function () {
         let token;
         let otherAddress;
         let addressToBeApproved;
@@ -399,6 +399,12 @@ describe("Soulbound", function () {
             await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
 
             await expect(token.connect(addressToBeApproved).burn(0)).to.not.be.reverted;
+        });
+
+        it("Should allow burns by allowed token holder", async function() {
+            await token.allowBurn(0, true);
+
+            await expect(token.connect(otherAddress).burn(0)).to.not.be.reverted;
         });
 
         it("Shouldn't remove approval status of approved-all address post burn", async function () {
