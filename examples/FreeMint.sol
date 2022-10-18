@@ -37,7 +37,7 @@ contract FreeMint is ERC721F {
             numberOfTokens < MAX_PURCHASE,
             "Can only mint 30 tokens at a time"
         );
-        uint256 supply = totalSupply();
+        uint256 supply = _totalMinted();
         require(
             supply + numberOfTokens <= MAX_TOKENS,
             "Purchase would exceed max supply of Tokens"
