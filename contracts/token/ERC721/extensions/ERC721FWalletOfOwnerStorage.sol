@@ -55,7 +55,7 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
     }
 
     /**
-     * @dev Moves all tokens from wallet of `sender` one index lower starting from index where `tokenId` is at and pops last element. Removes `tokenId` from wallet
+     * @dev Copies last token from wallet of `sender` to the index where `tokenId` is at and pops last element. Removes `tokenId` from wallet
      */
     function removeTokenFromWallet(uint256 tokenId) internal virtual {
         address owner = msg.sender;
