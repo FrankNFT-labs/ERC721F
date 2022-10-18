@@ -63,7 +63,7 @@ contract AllowListExample is ERC721FCOMMON, AllowList {
     {
         require(msg.sender == tx.origin, "No contracts allowed");
         require(saleIsActive, "Sale NOT active yet");
-        uint256 supply = totalSupply();
+        uint256 supply = _totalMinted();
         require(
             supply + numberOfTokens <= MAX_TOKENS,
             "Purchase would exceed max supply of tokens"
@@ -89,7 +89,7 @@ contract AllowListExample is ERC721FCOMMON, AllowList {
         onlyAllowList
     {
         require(preSaleIsActive, "PreSale is NOT active yet");
-        uint256 supply = totalSupply();
+        uint256 supply = _totalMinted();
         require(
             supply + numberOfTokens <= MAX_TOKENS,
             "Purchase would exceed max supply of tokens"
