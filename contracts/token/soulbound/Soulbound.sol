@@ -4,6 +4,7 @@ pragma solidity ^0.8.9 <0.9.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "hardhat/console.sol";
 
 contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     uint256 _tokenSupply;
@@ -111,12 +112,24 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
         internal
         virtual
         override(ERC721, ERC721URIStorage)
-        onlyOwnerOrApproved(msg.sender, tokenId)
     {
+        if(!isOwnerOrApproved(msg.sender, tokenId) && !(ownerOf(tokenId) == msg.sender && ownerIsAllowedToBurn[tokenId])) revert("Caller is neither tokenholder which is allowed to burn nor owner of contract or approved address for token/tokenOwner");
         super._burn(tokenId);
         unchecked {
             _burnCounter++;
         }
+    }
+
+    function isOwnerOrApproved(address spender, uint256 tokenId)
+        public
+        view
+        returns (bool)
+    {
+        address ownerToken = ERC721.ownerOf(tokenId);
+        return
+            spender == owner() ||
+            isApprovedForAll(ownerToken, spender) ||
+            getApproved(tokenId) == spender;
     }
 
     function allowBurn(uint256 tokenId, bool allowed)
@@ -196,17 +209,5 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
      */
     function _totalBurned() internal view virtual returns (uint256) {
         return _burnCounter;
-    }
-
-    function isOwnerOrApproved(address spender, uint256 tokenId)
-        public
-        view
-        returns (bool)
-    {
-        address ownerToken = ERC721.ownerOf(tokenId);
-        return
-            spender == owner() ||
-            isApprovedForAll(ownerToken, spender) ||
-            getApproved(tokenId) == spender;
     }
 }
