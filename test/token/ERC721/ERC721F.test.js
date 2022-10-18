@@ -2,12 +2,12 @@ const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-describe("Token contract", function () {
+describe("ERC721F", function () {
     async function deployTokenFixture() {
-        const Token = await ethers.getContractFactory("FreeMint");
+        const Token = await ethers.getContractFactory("ERC721FMock");
         const [owner, addr1] = await ethers.getSigners();
 
-        const hardhatToken = await Token.deploy();
+        const hardhatToken = await Token.deploy("ERC721F", "ERC721F");
 
         await hardhatToken.deployed();
 
@@ -40,7 +40,6 @@ describe("Token contract", function () {
 
             const initialTotalSupply = await hardhatToken.totalSupply();
 
-            await hardhatToken.flipSaleState();
             await hardhatToken.mint(1);
 
             expect(await hardhatToken.totalSupply()).to.not.equal(initialTotalSupply);
@@ -50,7 +49,6 @@ describe("Token contract", function () {
             const totalMintedTokens = 5;
             const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
 
-            await hardhatToken.flipSaleState();
             await hardhatToken.mint(totalMintedTokens);
 
             const walletOfOwner = await hardhatToken.walletOfOwner(owner.address);
@@ -63,7 +61,6 @@ describe("Token contract", function () {
             const totalNonOwerMints = 4;
             const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
 
-            await hardhatToken.flipSaleState();
             await hardhatToken.mint(totalOwnerMints);
             await hardhatToken.connect(addr1).mint(totalNonOwerMints);
 
@@ -73,23 +70,5 @@ describe("Token contract", function () {
             expect(totalSupply).to.equal(totalOwnerMints + totalNonOwerMints);
             expect(Object.keys(walletOfOwner).length).to.equal(totalSupply - totalNonOwerMints);
         });
-    });
-
-    // In order to properly run this test the mint restriction of FreeMint.sol should be disabled
-    describe.skip("Max tokens minted in ONE TRX", function () {
-        let totalMint = 1120; // Lower limit of tokens that'll increase in amount and be minted
-        this.retries(10); // Amount of times the test will be attempted after failure
-
-        beforeEach(function () {
-            totalMint = totalMint + 1; // Increase total amount of tokens that are getting minted
-        })
-
-        // Test passes when `totalMint` is high enough to transcend the gas limit of a single transaction, this amount will then be displayed in the console 
-        it("Should eventually fail indicating the total tokens minted", async function () {
-            const { hardhatToken } = await loadFixture(deployTokenFixture);
-            await hardhatToken.flipSaleState();
-            await expect(hardhatToken.mint(totalMint)).to.be.reverted;
-            console.log(totalMint);
-        })
     });
 });
