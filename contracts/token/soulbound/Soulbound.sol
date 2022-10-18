@@ -140,6 +140,10 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
         ownerIsAllowedToBurn[tokenId] = allowed;
     }
 
+    function isOwnerAllowedToBurn(uint256 tokenId) public view returns (bool) {
+        return ownerIsAllowedToBurn[tokenId];
+    }
+
     /**
      * @notice Transfers `tokenId` from `from` to `to`
      * @dev Only executable by owner or approved addresses
