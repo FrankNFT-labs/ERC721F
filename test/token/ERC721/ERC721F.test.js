@@ -52,7 +52,7 @@ describe("ERC721F", function () {
             await hardhatToken.burn(0);
 
             expect(await hardhatToken.totalSupply()).to.be.equal(1);
-        })
+        });
     });
 
     describe("walletOfOwner", function() {
@@ -82,6 +82,27 @@ describe("ERC721F", function () {
 
             expect(walletOwner.map(t => t.toNumber())).to.not.include.members([2]);
             expect(walletOther.map(t => t.toNumber())).to.have.members([2]);
+        });
+    });
+
+    describe("totalMinted", function() {
+        it("Should increase in value after minting", async function() {
+            const { hardhatToken } = await loadFixture(deployTokenFixture);
+
+            expect(await hardhatToken.totalMinted()).to.be.equal(0);
+
+            await hardhatToken.mint(1);
+
+            expect(await hardhatToken.totalMinted()).to.be.equal(1);
+        });
+
+        it("Shouldn't be influenced by burned tokens", async function() {
+            const { hardhatToken } = await loadFixture(deployTokenFixture);
+            
+            await hardhatToken.mint(2);
+            await hardhatToken.burn(0);
+
+            expect(await hardhatToken.totalMinted()).to.be.equal(2);
         });
     });
 });
