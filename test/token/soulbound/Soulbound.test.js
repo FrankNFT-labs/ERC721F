@@ -386,7 +386,7 @@ describe("Soulbound", function () {
         });
 
         it("Shouldn't allow burns by unapproved addresses and non-allowed owners", async function () {
-            await expect(token.connect(addressToBeApproved).burn(0)).to.be.revertedWith("Caller is neither tokenholder which is allowed to burn nor owner of contract or approved address for token/tokenOwner");
+            await expect(token.connect(addressToBeApproved).burn(0)).to.be.revertedWith("Caller is neither tokenholder which is allowed to burn nor owner of contract nor approved address for token/tokenOwner");
         });
 
         it("Should allow burns by approved addresses", async function () {
