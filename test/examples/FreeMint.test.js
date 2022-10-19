@@ -2,18 +2,16 @@ const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-const tokenPrice = 500;
-
 describe("FreeMint", function () {
     async function deployTokenFixture() {
         const Token = await ethers.getContractFactory("FreeMint");
-        const [owner, addr1, addr2] = await ethers.getSigners();
+        const [owner] = await ethers.getSigners();
 
         const hardhatToken = await Token.deploy();
 
         await hardhatToken.deployed();
 
-        return { Token, hardhatToken, owner, addr1, addr2 };
+        return { Token, hardhatToken, owner };
     }
 
     describe("Deployment", function () {
@@ -39,6 +37,16 @@ describe("FreeMint", function () {
 
             const { royaltyAmount } = await hardhatToken.royaltyInfo(0, 100);
             expect(royaltyAmount).to.be.equal(5);
+        });
+
+        it("Has the owner of the contract as the royalties recipient", async function() {
+            const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
+
+            await hardhatToken.flipSaleState();
+            await hardhatToken.mint(1);
+
+            const { receiver } = await hardhatToken.royaltyInfo(0, 100);
+            expect(receiver).to.be.equal(owner.address);
         });
     });
 
