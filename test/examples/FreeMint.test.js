@@ -39,7 +39,7 @@ describe("FreeMint", function () {
             expect(royaltyAmount).to.be.equal(5);
         });
 
-        it("Has the owner of the contract as the royalties recipient", async function() {
+        it("Has the owner of the contract as the royalties recipient", async function () {
             const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
 
             await hardhatToken.flipSaleState();
