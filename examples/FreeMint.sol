@@ -10,7 +10,6 @@ import "@openzeppelin/contracts/token/common/ERC2981.sol";
  * @dev Example implementation of [ERC721F] and [ERC2981]
  */
 contract FreeMint is ERC721F, ERC2981 {
-    mapping(uint256 => uint256) public offers;
     uint16 private royalties = 500;
 
     uint256 public constant MAX_TOKENS = 10000;
@@ -108,47 +107,5 @@ contract FreeMint is ERC721F, ERC2981 {
                 i++;
             }
         }
-    }
-
-    /**
-     * @notice Puts `tokenId` up for sale
-     * @param priceInWei Lowest offer required to purchase `tokenId`, must be larger than 0
-     */
-    function sellToken(uint256 tokenId, uint256 priceInWei) public {
-        require(ownerOf(tokenId) == msg.sender, "Not the tokenowner");
-        require(priceInWei > 0, "token price must be larger than 0");
-        offers[tokenId] = priceInWei;
-    }
-
-    /**
-     * @notice Removes `tokenId` for sale offer
-     */
-    function unlistToken(uint256 tokenId) public {
-        require(ownerOf(tokenId) == msg.sender, "Not the tokenowner");
-        delete offers[tokenId];
-    }
-
-    /**
-     * @notice Purchases `tokenId`
-     * @dev Requires at least the tokenPrice for the transaction to go through, pays contractowner a percentage in royalties
-     */
-    function buyToken(uint256 tokenId) public payable {
-        uint256 tokenPrice = offers[tokenId];
-        uint256 buyPrice = msg.value;
-        require(tokenPrice > 0, "Token is not for sale");
-        require(buyPrice >= tokenPrice, "Insufficient funds");
-
-        address tokenOwner = ownerOf(tokenId);
-        (address royaltyReceiver, uint256 royaltyAmount) = royaltyInfo(
-            tokenId,
-            buyPrice
-        );
-
-        delete offers[tokenId];
-
-        Address.sendValue(payable(royaltyReceiver), royaltyAmount);
-        Address.sendValue(payable(tokenOwner), buyPrice - royaltyAmount);
-
-        _transfer(tokenOwner, msg.sender, tokenId);
     }
 }
