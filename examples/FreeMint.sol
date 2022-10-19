@@ -130,11 +130,8 @@ contract FreeMint is ERC721F, ERC2981 {
 
         delete offers[tokenId];
 
-        address payable walletRoyaltyReceiver = payable(royaltyReceiver);
-        address payable walletTokenOwner = payable(tokenOwner);
-
-        Address.sendValue(walletRoyaltyReceiver, royaltyAmount);
-        Address.sendValue(walletTokenOwner, buyPrice - royaltyAmount);
+        Address.sendValue(payable(royaltyReceiver), royaltyAmount);
+        Address.sendValue(payable(tokenOwner), buyPrice - royaltyAmount);
 
         _transfer(tokenOwner, msg.sender, tokenId);
     }
