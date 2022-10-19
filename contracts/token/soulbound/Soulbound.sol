@@ -1,20 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9 <0.9.0;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "../ERC721/ERC721F.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Soulbound is ERC721, ERC721URIStorage, Ownable {
-    uint256 _tokenSupply;
-    uint256 _burnCounter;
-
+contract Soulbound is ERC721F, ERC721URIStorage {
     // Mapping from owner to operator approvals
     mapping(address => mapping(address => bool)) private _operatorApprovals;
     bool private _tokenHolderIsAllowedToBurn;
 
     constructor(string memory name_, string memory symbol_)
-        ERC721(name_, symbol_)
+        ERC721F(name_, symbol_)
     {}
 
     /**
@@ -110,7 +106,7 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     function _burn(uint256 tokenId)
         internal
         virtual
-        override(ERC721, ERC721URIStorage)
+        override(ERC721F, ERC721URIStorage)
     {
         if (
             !isOwnerOrApproved(msg.sender, tokenId) &&
@@ -204,25 +200,11 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
         return super.tokenURI(tokenId);
     }
 
-    /**
-     * @dev Gets the total amount of existing tokens stored by the contract, uses _burnCounter to take burned tokens into consideration
-     * @return uint256 representing the total amount of tokens
-     */
-    function totalSupply() public view virtual returns (uint256) {
-        return _tokenSupply - _burnCounter;
+    function _baseURI() internal view virtual override(ERC721, ERC721F) returns (string memory) {
+        return ERC721F._baseURI();
     }
 
-    /**
-     * @dev Gets total amount of tokens minted by the contract
-     */
-    function _totalMinted() internal view virtual returns (uint256) {
-        return _tokenSupply;
-    }
-
-    /**
-     * @dev Gets total amount of burned tokens
-     */
-    function _totalBurned() internal view virtual returns (uint256) {
-        return _burnCounter;
+    function _mint(address to, uint256 tokenId) internal virtual override(ERC721, ERC721F) {
+        ERC721F._mint(to, tokenId);
     }
 }
