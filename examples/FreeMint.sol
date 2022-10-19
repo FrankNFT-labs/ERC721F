@@ -120,6 +120,11 @@ contract FreeMint is ERC721F, ERC2981 {
         offers[tokenId] = priceInWei;
     }
 
+    function unlistToken(uint256 tokenId) public {
+        require(ownerOf(tokenId) == msg.sender, "Not the tokenowner");
+        delete offers[tokenId];
+    }
+
     /**
      * @notice Purchases `tokenId`
      * @dev Requires at least the tokenPrice for the transaction to go through, pays contractowner a percentage in royalties
