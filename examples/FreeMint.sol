@@ -112,7 +112,6 @@ contract FreeMint is ERC721F, ERC2981 {
     }
 
     function sellToken(uint256 tokenId, uint256 priceInWei) public {
-        require(msg.sender == tx.origin, "No Contracts allowed.");
         require(ownerOf(tokenId) == msg.sender, "Not the tokenowner");
         require(priceInWei > 0, "token price must be larger than 0");
         offers[tokenId] = priceInWei;
