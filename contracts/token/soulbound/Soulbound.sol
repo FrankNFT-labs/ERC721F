@@ -195,11 +195,21 @@ contract Soulbound is ERC721F, ERC721URIStorage {
         return super.tokenURI(tokenId);
     }
 
-    function _baseURI() internal view virtual override(ERC721, ERC721F) returns (string memory) {
+    function _baseURI()
+        internal
+        view
+        virtual
+        override(ERC721, ERC721F)
+        returns (string memory)
+    {
         return ERC721F._baseURI();
     }
 
-    function _mint(address to, uint256 tokenId) internal virtual override(ERC721, ERC721F) {
+    function _mint(address to, uint256 tokenId)
+        internal
+        virtual
+        override(ERC721, ERC721F)
+    {
         ERC721F._mint(to, tokenId);
     }
 }
