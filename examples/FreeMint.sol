@@ -83,4 +83,11 @@ contract FreeMint is ERC721FCOMMON {
     function sellerBalance(address seller) public view returns (uint256) {
         return _sellerBalance[seller];
     }
+
+    function withdraw() public {
+        address caller = msg.sender;
+        require(_sellerBalance[caller] > 0, "No funds to withdraw");
+        _withdraw(msg.sender, _sellerBalance[caller]);
+        delete _sellerBalance[caller];
+    }
 }
