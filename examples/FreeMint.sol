@@ -8,9 +8,6 @@ import "../contracts/token/ERC721/ERC721FCOMMON.sol";
  *
  * @dev Example implementation of [ERC721F]
  */
-
-
-
 contract FreeMint is ERC721FCOMMON {
     mapping(uint256 => uint256) public offers;
     mapping(address => uint256) private _sellerBalance;
@@ -70,7 +67,10 @@ contract FreeMint is ERC721FCOMMON {
         require(buyPrice >= tokenPrice, "Insufficient funds");
 
         address tokenOwner = ownerOf(tokenId);
-        (address royaltyReceiver, uint256 royaltyAmount) = royaltyInfo(tokenId, buyPrice);
+        (address royaltyReceiver, uint256 royaltyAmount) = royaltyInfo(
+            tokenId,
+            buyPrice
+        );
 
         delete offers[tokenId];
 
