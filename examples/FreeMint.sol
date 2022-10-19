@@ -11,10 +11,9 @@ import "@openzeppelin/contracts/token/common/ERC2981.sol";
  */
 contract FreeMint is ERC721F, ERC2981 {
     mapping(uint256 => uint256) public offers;
-    mapping(address => uint256) private _sellerBalance;
+    uint16 private royalties = 500;
 
     uint256 public constant MAX_TOKENS = 10000;
-    uint16 private royalties = 500;
     uint public constant MAX_PURCHASE = 31; // Theoretical limit 1100
     bool public saleIsActive;
 
@@ -131,13 +130,9 @@ contract FreeMint is ERC721F, ERC2981 {
 
         delete offers[tokenId];
 
-        _sellerBalance[royaltyReceiver] = royaltyAmount;
-        _sellerBalance[tokenOwner] = buyPrice - royaltyAmount;
+        //_sellerBalance[royaltyReceiver] = royaltyAmount;
+        //_sellerBalance[tokenOwner] = buyPrice - royaltyAmount;
 
         _transfer(tokenOwner, msg.sender, tokenId);
-    }
-
-    function sellerBalance(address seller) public view returns (uint256) {
-        return _sellerBalance[seller];
     }
 }
