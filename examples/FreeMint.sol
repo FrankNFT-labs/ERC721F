@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/common/ERC2981.sol";
 /**
  * @title FreeMint
  *
- * @dev Example implementation of [ERC721F]
+ * @dev Example implementation of [ERC721F] and [ERC2981]
  */
 contract FreeMint is ERC721F, ERC2981 {
     mapping(uint256 => uint256) public offers;
