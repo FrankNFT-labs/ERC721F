@@ -69,7 +69,7 @@ describe("FreeMint", function () {
 
             await token.sellToken(0, tokenPrice);
 
-            expect((await token.offers(0))).to.be.equal(tokenPrice);
+            expect(await token.offers(0)).to.be.equal(tokenPrice);
         });
     });
 
