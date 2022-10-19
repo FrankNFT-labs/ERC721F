@@ -87,6 +87,13 @@ contract Soulbound is ERC721F {
     }
 
     /**
+     * @dev Mint function is only executable by the owner of the contract
+     */
+    function _mint(address to, uint256 tokenId) internal virtual override onlyOwner {
+        super._mint(to, tokenId);
+    }
+
+    /**
      * @dev Burn function is only executable by the owner of the contract or approved addresses, increases `_burnCounter` for proper functionality of totalSupply
      */
     function _burn(uint256 tokenId)
