@@ -77,7 +77,7 @@ contract FreeMint is ERC721F, ERC2981 {
             _exists(_tokenId),
             "ERC2981RoyaltyStandard: Royalty info for nonexistent token"
         );
-        return (address(this), (_salePrice * royalties) / 10000);
+        return (owner(), (_salePrice * royalties) / 10000);
     }
 
     /**
