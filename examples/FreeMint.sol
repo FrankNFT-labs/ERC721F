@@ -120,6 +120,10 @@ contract FreeMint is ERC721F, ERC2981 {
         offers[tokenId] = priceInWei;
     }
 
+    /**
+     * @notice Purchases `tokenId`
+     * @dev Requires at least the tokenPrice for the transaction to go through, pays contractowner a percentage in royalties
+     */
     function buyToken(uint256 tokenId) public payable {
         uint256 tokenPrice = offers[tokenId];
         uint256 buyPrice = msg.value;
