@@ -93,11 +93,9 @@ contract Soulbound is ERC721F, ERC721URIStorage {
      * @param uri string in which the name, svg image, properties, etc are stored
      */
     function _mint(address to, string memory uri) internal virtual onlyOwner {
-        _mint(to, _tokenSupply);
-        _setTokenURI(_tokenSupply, uri);
-        unchecked {
-            _tokenSupply++;
-        }
+        uint256 tokenSupply = _totalMinted();
+        _mint(to, tokenSupply);
+        _setTokenURI(tokenSupply, uri);
     }
 
     /**
@@ -115,10 +113,7 @@ contract Soulbound is ERC721F, ERC721URIStorage {
             revert(
                 "Caller is neither tokenholder which is allowed to burn nor owner of contract nor approved address for token/tokenOwner"
             );
-        super._burn(tokenId);
-        unchecked {
-            _burnCounter++;
-        }
+        ERC721F._burn(tokenId);
     }
 
     /**
