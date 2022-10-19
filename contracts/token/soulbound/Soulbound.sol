@@ -2,9 +2,8 @@
 pragma solidity ^0.8.9 <0.9.0;
 
 import "../ERC721/ERC721F.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-contract Soulbound is ERC721F, ERC721URIStorage {
+contract Soulbound is ERC721F {
     // Mapping from owner to operator approvals
     mapping(address => mapping(address => bool)) private _operatorApprovals;
     bool private _tokenHolderIsAllowedToBurn;
@@ -88,23 +87,12 @@ contract Soulbound is ERC721F, ERC721URIStorage {
     }
 
     /**
-     * @dev Mint function is only executable by the owner of the contract or approved addresses who are responsible for the uri provided and can decide for who the token is
-     * @param to address which receives the mint
-     * @param uri string in which the name, svg image, properties, etc are stored
-     */
-    function _mint(address to, string memory uri) internal virtual onlyOwner {
-        uint256 tokenSupply = _totalMinted();
-        _mint(to, tokenSupply);
-        _setTokenURI(tokenSupply, uri);
-    }
-
-    /**
      * @dev Burn function is only executable by the owner of the contract or approved addresses, increases `_burnCounter` for proper functionality of totalSupply
      */
     function _burn(uint256 tokenId)
         internal
         virtual
-        override(ERC721F, ERC721URIStorage)
+        override
     {
         if (
             !isOwnerOrApproved(msg.sender, tokenId) &&
@@ -113,7 +101,7 @@ contract Soulbound is ERC721F, ERC721URIStorage {
             revert(
                 "Caller is neither tokenholder which is allowed to burn nor owner of contract nor approved address for token/tokenOwner"
             );
-        ERC721F._burn(tokenId);
+        super._burn(tokenId);
     }
 
     /**
@@ -181,35 +169,5 @@ contract Soulbound is ERC721F, ERC721URIStorage {
         bytes memory data
     ) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
         _safeTransfer(from, to, tokenId, data);
-    }
-
-    /**
-     * @notice Returns tokenURI of `tokenId`
-     */
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override(ERC721, ERC721URIStorage)
-        returns (string memory)
-    {
-        return super.tokenURI(tokenId);
-    }
-
-    function _baseURI()
-        internal
-        view
-        virtual
-        override(ERC721, ERC721F)
-        returns (string memory)
-    {
-        return ERC721F._baseURI();
-    }
-
-    function _mint(address to, uint256 tokenId)
-        internal
-        virtual
-        override(ERC721, ERC721F)
-    {
-        ERC721F._mint(to, tokenId);
     }
 }
