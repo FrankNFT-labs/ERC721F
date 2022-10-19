@@ -144,7 +144,7 @@ describe("FreeMint", function () {
 
             expect(await token.offers(0)).to.be.equal(0);
         });
-    })
+    });
 
     describe.skip("Max tokens minted in ONE TRX", function () {
         let totalMint = 1120; // Lower limit of tokens that'll increase in amount and be minted
