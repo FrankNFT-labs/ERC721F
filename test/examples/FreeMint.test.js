@@ -116,25 +116,23 @@ describe("FreeMint", function () {
         it("Transfers the tokens between seller and buyer", async function() {
             await expect(token.connect(otherAddress).buyToken(0, {
                 value: tokenPrice
-            })).to.changeTokenBalances(token, [ownerAddress.address, otherAddress.address], [-1, 1]);
+            })).to.changeTokenBalances(token, [ownerAddress, otherAddress], [-1, 1]);
         });
 
-        it("Moves the payment to the contract", async function() {
+        it("Retrieves the payment from the buyer", async function() {
             await expect(token.connect(otherAddress).buyToken(0, {
                 value: tokenPrice
-            })).to.changeEtherBalances([otherAddress.address, token.address], [-tokenPrice, tokenPrice]);
+            })).to.changeEtherBalance(otherAddress, -tokenPrice, tokenPrice);
         });
 
         it("Divides the payment between seller and royaltyHolder", async function() {
             await token.connect(otherAddress).mint(1);
             await token.connect(otherAddress).sellToken(1, tokenPrice);
             const {royaltyAmount} = await token.royaltyInfo(1, tokenPrice);
-            await token.connect(finalBuyer).buyToken(1, {
-                value: tokenPrice
-            });
 
-            expect(await token.sellerBalance(token.address)).to.be.equal(royaltyAmount);
-            expect(await token.sellerBalance(otherAddress.address)).to.be.equal(tokenPrice - royaltyAmount);
+            await expect(token.connect(finalBuyer).buyToken(1, {
+                value: tokenPrice
+            })).to.changeEtherBalances([ownerAddress, otherAddress], [royaltyAmount, (tokenPrice - royaltyAmount)]);
         });
 
         it("Removes the offer from offers post buy", async function() {
