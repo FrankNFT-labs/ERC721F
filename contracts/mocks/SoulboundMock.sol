@@ -16,8 +16,9 @@ contract SoulboundMock is Soulbound {
      * @notice Mint your tokens here
      * @dev Function utilised in testing, don't use in production due to lack of restrictions
      */
-    function mint(address to, string memory uri) public {
-        _mint(to, uri);
+    function mint(address to) public {
+        uint256 totalSupply = _totalMinted();
+        _mint(to, totalSupply);
     }
 
     /**

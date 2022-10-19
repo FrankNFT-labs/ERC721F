@@ -2,8 +2,6 @@ const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-const tokenURI = "TestingURI";
-
 describe("Soulbound", function () {
     async function deployTokenFixture() {
         const Token = await ethers.getContractFactory("SoulboundMock");
@@ -20,7 +18,7 @@ describe("Soulbound", function () {
         it("Should only be executable by owner of the contract", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
-            await hardhatToken.mint(addr1.address, tokenURI);
+            await hardhatToken.mint(addr1.address);
 
             await expect(hardhatToken.approve(addr1.address, 0)).to.not.be.reverted;
             await expect(hardhatToken.connect(addr1).approve(addr1.address, 0)).to.be.revertedWith("Ownable: caller is not the owner");
@@ -29,7 +27,7 @@ describe("Soulbound", function () {
         it("Should set the address as the approved of the token", async function () {
             const { hardhatToken, addr1, addr2 } = await loadFixture(deployTokenFixture);
 
-            await hardhatToken.mint(addr1.address, tokenURI);
+            await hardhatToken.mint(addr1.address);
             await hardhatToken.approve(addr2.address, 0);
 
             expect(await hardhatToken.getApproved(0)).to.be.equal(addr2.address);
@@ -38,7 +36,7 @@ describe("Soulbound", function () {
         it("Should allow that the owner of the token can be the ones being approved", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
-            await hardhatToken.mint(addr1.address, tokenURI);
+            await hardhatToken.mint(addr1.address);
 
             await expect(hardhatToken.approve(addr1.address, 0)).to.not.be.reverted;
             expect(await hardhatToken.getApproved(0)).to.be.equal(addr1.address);
@@ -47,7 +45,7 @@ describe("Soulbound", function () {
         it("Should remove the approval status when assigning another address to the token", async function () {
             const { hardhatToken, owner, addr1, addr2 } = await loadFixture(deployTokenFixture);
 
-            await hardhatToken.mint(addr1.address, tokenURI);
+            await hardhatToken.mint(addr1.address);
 
             await hardhatToken.approve(owner.address, 0);
             expect(await hardhatToken.getApproved(0)).to.be.equal(owner.address);
@@ -99,7 +97,7 @@ describe("Soulbound", function () {
         it("Should be only executable by the owner of the contract", async function () {
             const { hardhatToken, addr2 } = await loadFixture(deployTokenFixture);
 
-            await hardhatToken.mint(addr2.address, tokenURI);
+            await hardhatToken.mint(addr2.address);
 
             await expect(hardhatToken.allowBurn(true)).to.not.be.reverted;
             await expect(hardhatToken.connect(addr2).allowBurn(true)).to.be.revertedWith("Ownable: caller is not the owner");
@@ -108,7 +106,7 @@ describe("Soulbound", function () {
         it("Should change the allowal of a tokenholder when setting to true/false", async function () {
             const { hardhatToken, addr2 } = await loadFixture(deployTokenFixture);
 
-            await hardhatToken.mint(addr2.address, tokenURI);
+            await hardhatToken.mint(addr2.address);
 
             expect(await hardhatToken.tokenHolderIsAllowedToBurn()).to.be.false;
 
@@ -126,22 +124,14 @@ describe("Soulbound", function () {
         it("Should only be executable by the owner of the contract", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
-            await expect(hardhatToken.mint(addr1.address, tokenURI)).to.not.be.reverted;
-            await expect(hardhatToken.connect(addr1).mint(addr1.address, tokenURI)).to.be.revertedWith("Ownable: caller is not the owner");
+            await expect(hardhatToken.mint(addr1.address)).to.not.be.reverted;
+            await expect(hardhatToken.connect(addr1).mint(addr1.address)).to.be.revertedWith("Ownable: caller is not the owner");
         });
 
         it("Should increase the tokenbalance of the recipient", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
-            await expect(hardhatToken.mint(addr1.address, tokenURI)).to.changeTokenBalance(hardhatToken, addr1.address, 1);
-        });
-
-        it("Should set the tokenURI of the minted token", async function () {
-            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
-
-            await hardhatToken.mint(addr1.address, tokenURI);
-
-            expect(await hardhatToken.tokenURI(0)).to.be.equal(tokenURI);
+            await expect(hardhatToken.mint(addr1.address)).to.changeTokenBalance(hardhatToken, addr1.address, 1);
         });
     });
 
@@ -157,7 +147,7 @@ describe("Soulbound", function () {
             ownerAdress = owner;
             otherAddress = addr1;
             addressToBeApproved = addr2;
-            await token.mint(otherAddress.address, tokenURI);
+            await token.mint(otherAddress.address);
         });
 
         it("Should allow transfers done by owner", async function () {
@@ -225,7 +215,7 @@ describe("Soulbound", function () {
             ownerAdress = owner;
             otherAddress = addr1;
             addressToBeApproved = addr2;
-            await token.mint(otherAddress.address, tokenURI);
+            await token.mint(otherAddress.address);
         });
 
         context("Without data parameter", function (t) {
@@ -347,7 +337,7 @@ describe("Soulbound", function () {
             token = hardhatToken;
             otherAddress = addr1;
             addressToBeApproved = addr2;
-            await token.mint(otherAddress.address, tokenURI);
+            await token.mint(otherAddress.address);
         });
 
         it("Should allow burns done by owner", async function () {
@@ -403,16 +393,16 @@ describe("Soulbound", function () {
     describe("totalSupply", function () {
         it("Should display total minted tokens", async function () {
             const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
-            await hardhatToken.mint(owner.address, tokenURI);
-            await hardhatToken.mint(owner.address, tokenURI);
+            await hardhatToken.mint(owner.address);
+            await hardhatToken.mint(owner.address);
 
             expect(await hardhatToken.totalSupply()).to.be.equal(2);
         });
 
         it("Should take burned tokens into account when displaying totalSupply", async function () {
             const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
-            await hardhatToken.mint(owner.address, tokenURI);
-            await hardhatToken.mint(owner.address, tokenURI);
+            await hardhatToken.mint(owner.address);
+            await hardhatToken.mint(owner.address);
             await hardhatToken.burn(0);
 
             expect(await hardhatToken.totalSupply()).to.be.equal(1);
@@ -422,16 +412,16 @@ describe("Soulbound", function () {
     describe("totalMinted", function () {
         it("Should display total minted tokens", async function () {
             const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
-            await hardhatToken.mint(owner.address, tokenURI);
-            await hardhatToken.mint(owner.address, tokenURI);
+            await hardhatToken.mint(owner.address);
+            await hardhatToken.mint(owner.address);
 
             expect(await hardhatToken.totalMinted()).to.be.equal(2);
         });
 
         it("Shouldn't be influenced by burned tokens", async function () {
             const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
-            await hardhatToken.mint(owner.address, tokenURI);
-            await hardhatToken.mint(owner.address, tokenURI);
+            await hardhatToken.mint(owner.address);
+            await hardhatToken.mint(owner.address);
             await hardhatToken.burn(0);
 
             expect(await hardhatToken.totalMinted()).to.be.equal(2);
@@ -441,7 +431,7 @@ describe("Soulbound", function () {
     describe("totalBurned", function () {
         it("Should increase in value when burning tokens", async function () {
             const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
-            await hardhatToken.mint(owner.address, tokenURI);
+            await hardhatToken.mint(owner.address);
 
             expect(await hardhatToken.totalBurned()).to.be.equal(0);
 

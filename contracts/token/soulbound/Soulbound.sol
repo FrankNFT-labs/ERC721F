@@ -1,20 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9 <0.9.0;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "../ERC721/ERC721F.sol";
 
-contract Soulbound is ERC721, ERC721URIStorage, Ownable {
-    uint256 _tokenSupply;
-    uint256 _burnCounter;
-
+contract Soulbound is ERC721F {
     // Mapping from owner to operator approvals
     mapping(address => mapping(address => bool)) private _operatorApprovals;
     bool private _tokenHolderIsAllowedToBurn;
 
     constructor(string memory name_, string memory symbol_)
-        ERC721(name_, symbol_)
+        ERC721F(name_, symbol_)
     {}
 
     /**
@@ -92,26 +87,21 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
     }
 
     /**
-     * @dev Mint function is only executable by the owner of the contract or approved addresses who are responsible for the uri provided and can decide for who the token is
-     * @param to address which receives the mint
-     * @param uri string in which the name, svg image, properties, etc are stored
+     * @dev Mint function is only executable by the owner of the contract
      */
-    function _mint(address to, string memory uri) internal virtual onlyOwner {
-        _mint(to, _tokenSupply);
-        _setTokenURI(_tokenSupply, uri);
-        unchecked {
-            _tokenSupply++;
-        }
+    function _mint(address to, uint256 tokenId)
+        internal
+        virtual
+        override
+        onlyOwner
+    {
+        super._mint(to, tokenId);
     }
 
     /**
      * @dev Burn function is only executable by the owner of the contract or approved addresses, increases `_burnCounter` for proper functionality of totalSupply
      */
-    function _burn(uint256 tokenId)
-        internal
-        virtual
-        override(ERC721, ERC721URIStorage)
-    {
+    function _burn(uint256 tokenId) internal virtual override {
         if (
             !isOwnerOrApproved(msg.sender, tokenId) &&
             !(ownerOf(tokenId) == msg.sender && _tokenHolderIsAllowedToBurn)
@@ -120,9 +110,6 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
                 "Caller is neither tokenholder which is allowed to burn nor owner of contract nor approved address for token/tokenOwner"
             );
         super._burn(tokenId);
-        unchecked {
-            _burnCounter++;
-        }
     }
 
     /**
@@ -190,39 +177,5 @@ contract Soulbound is ERC721, ERC721URIStorage, Ownable {
         bytes memory data
     ) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
         _safeTransfer(from, to, tokenId, data);
-    }
-
-    /**
-     * @notice Returns tokenURI of `tokenId`
-     */
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override(ERC721, ERC721URIStorage)
-        returns (string memory)
-    {
-        return super.tokenURI(tokenId);
-    }
-
-    /**
-     * @dev Gets the total amount of existing tokens stored by the contract, uses _burnCounter to take burned tokens into consideration
-     * @return uint256 representing the total amount of tokens
-     */
-    function totalSupply() public view virtual returns (uint256) {
-        return _tokenSupply - _burnCounter;
-    }
-
-    /**
-     * @dev Gets total amount of tokens minted by the contract
-     */
-    function _totalMinted() internal view virtual returns (uint256) {
-        return _tokenSupply;
-    }
-
-    /**
-     * @dev Gets total amount of burned tokens
-     */
-    function _totalBurned() internal view virtual returns (uint256) {
-        return _burnCounter;
     }
 }
