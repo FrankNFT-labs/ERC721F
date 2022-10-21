@@ -141,6 +141,16 @@ describe("AllowListWithAmount", function() {
                 })).to.be.revertedWith("Purchase would exceed max available tokens within allowList");
             });
 
+            it("shouldn't allow minting when a whitelisted address used up all their available tokens", async function() {
+                await expect(token.connect(whitelistedAddress).mintPreSale(5, {
+                    value: ethers.utils.parseEther("5")
+                })).to.not.be.reverted;
+
+                await expect(token.connect(whitelistedAddress).mintPreSale(5, {
+                    value: ethers.utils.parseEther("5")
+                })).to.be.revertedWith("Address does not have any tokens available within allowList");
+            });
+
             it("should increase the total cost when requesting more tokens to be minted", async function () {
                 await expect(token.connect(whitelistedAddress).mintPreSale(5, {
                     value: transferAmount
