@@ -122,7 +122,7 @@ describe("ChainLink", function () {
 async function retrieveRequestId(tx) {
     const { events } = await tx.wait();
 
-    const [requestId] = events.filter(x => x.event === "RequestedRandomness")[0].args;
+    const [requestId] = events.filter(x => x.event === "REQUESTEDRANDOMNESS")[0].args;
 
     return requestId;
 }
