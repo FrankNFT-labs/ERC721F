@@ -28,4 +28,8 @@ abstract contract AllowList is Ownable {
             }
         }
     }
+
+    function disallowAddress(address _address) public onlyOwner {
+        delete allowList[_address];
+    }
 }
