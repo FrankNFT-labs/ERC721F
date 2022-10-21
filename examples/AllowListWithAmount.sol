@@ -61,6 +61,28 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
         }
     }
 
+    function mintPreSale(uint256 numberOfTokens)
+        external
+        payable
+        validMintRequest(numberOfTokens)
+        onlyAllowListWithAvailableTokens
+    {
+        require(preSaleIsActive, "PreSale is NOT active yet");
+        uint256 supply = _totalMinted();
+        require(
+            supply + numberOfTokens <= MAX_TOKENS,
+            "Purchase would exceed max supply of tokens"
+        );
+
+        for (uint256 i; i < numberOfTokens; ) {
+            _safeMint(msg.sender, supply + i);
+            decreaseAddressAvailableTokens(msg.sender, 1);
+            unchecked {
+                i++;
+            }
+        }
+    }
+
     function withdraw() external onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0, "Insufficient balance");
