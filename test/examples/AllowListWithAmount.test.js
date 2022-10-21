@@ -158,6 +158,16 @@ describe("AllowListWithAmount", function() {
                     value: ethers.utils.parseEther("5")
                 })).to.changeTokenBalance(token, whitelistedAddress, 5);
             });
+
+            it("should decrease the total avaiable funds for an account post mint", async function() {
+                expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
+            
+                await token.connect(whitelistedAddress).mintPreSale(1, {
+                    value: transferAmount
+                });
+
+                expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(4);
+            });
         });
     });
 
