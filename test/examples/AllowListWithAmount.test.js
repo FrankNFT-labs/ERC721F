@@ -123,10 +123,10 @@ describe("AllowListWithAmount", function() {
                 })).to.be.revertedWith("Ether value sent is not correct");
             });
 
-            it("shouldn't allow minting by unwhitelisted accounts during pre-sale period", async function () {
+            it("shouldn't allow minting by unwhitelisted accounts or whitelisted accounts without available tokens during pre-sale period", async function () {
                 await expect(token.connect(nonWhitelistedAddress).mintPreSale(1, {
                     value: transferAmount
-                })).to.be.revertedWith("Address is not within allowList");
+                })).to.be.revertedWith("Address does not have any tokens available within allowList");
             });
 
             it("should allow minting by whitelisted accounts during active pre-sale period", async function () {
