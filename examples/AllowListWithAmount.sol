@@ -14,7 +14,7 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
     uint public tokenPrice = 1 ether;
     bool public preSaleIsActive;
     bool public saleIsActive;
-    
+
     constructor() ERC721FCOMMON("AllowListWithAmount", "ALA") {
         setBaseTokenURI(
             "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
@@ -33,7 +33,7 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
         );
         _;
     }
-    
+
     /**
      * @notice Changes the state of preSaleIsActive from true to false and false to true
      */
@@ -88,7 +88,10 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
         validMintRequest(numberOfTokens)
         onlyAllowListWithAvailableTokens
     {
-        require(numberOfTokens <= getAllowListFunds(msg.sender), "Purchase would exceed max available tokens within allowList");
+        require(
+            numberOfTokens <= getAllowListFunds(msg.sender),
+            "Purchase would exceed max available tokens within allowList"
+        );
         require(preSaleIsActive, "PreSale is NOT active yet");
         uint256 supply = _totalMinted();
         require(
