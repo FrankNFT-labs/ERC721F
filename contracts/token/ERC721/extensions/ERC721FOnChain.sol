@@ -10,7 +10,7 @@ import "../ERC721F.sol";
  * Extension of ERC721F which contains foundation for OnChain tokenURI generation
  */
 abstract contract ERC721FOnChain is IERC4883, ERC721F {
-    string description;
+    string private description;
 
     constructor(
         string memory name_,
