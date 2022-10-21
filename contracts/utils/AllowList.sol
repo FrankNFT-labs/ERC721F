@@ -4,7 +4,7 @@ pragma solidity ^0.8.9 <0.9.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 abstract contract AllowList is Ownable {
-    mapping(address => bool) allowList;
+    mapping(address => bool) private allowList;
 
     modifier onlyAllowList() {
         require(isAllowList(msg.sender), "Address is not within allowList");
