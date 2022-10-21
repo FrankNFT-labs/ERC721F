@@ -319,7 +319,42 @@ describe("AllowListWithAmount", function() {
     
                 expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(2);
             });
-    
         });
+
+        describe("disallowAddress", function() {
+            it("should only be executable by owner", async function () {
+                await expect(token.disallowAddress(nonWhitelistedAddress.address)).to.not.be.reverted;
+                await expect(token.connect(nonWhitelistedAddress).disallowAddress(nonWhitelistedAddress.address)).to.be.reverted;
+            });
+    
+            it("should remove all available tokens from the address", async function () {
+                expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
+    
+                await token.disallowAddress(whitelistedAddress.address);
+    
+                expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(0);
+            });
+        });
+
+        describe("getAllowListFunds", function() {
+            it("should be executable by anyone", async function() {
+                await expect(token.getAllowListFunds(whitelistedAddress.address)).to.not.be.reverted;
+                await expect(token.connect(nonWhitelistedAddress.address).getAllowListFunds(whitelistedAddress.address)).to.not.be.reverted;
+            });
+
+            it("should return the amount of available tokens a whitelisted address has", async function() {
+                expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
+            });
+
+            it("should return 0 for non-existing addresses", async function() {
+                expect(await token.getAllowListFunds(nonWhitelistedAddress.address)).to.be.equal(0);
+            });
+
+            it("should return 0 for disallowed addresses", async function() {
+                await token.disallowAddress(whitelistedAddress.address);
+
+                expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(0);
+            });
+        })
     });
 });
