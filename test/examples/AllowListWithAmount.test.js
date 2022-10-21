@@ -126,7 +126,7 @@ describe("AllowListWithAmount", function () {
             it("shouldn't allow minting by unwhitelisted accounts or whitelisted accounts without available tokens during pre-sale period", async function () {
                 await expect(token.connect(nonWhitelistedAddress).mintPreSale(1, {
                     value: transferAmount
-                })).to.be.revertedWith("Address does not have any tokens available within allowList");
+                })).to.be.revertedWith("Address does not have sufficient tokens available within allowList");
             });
 
             it("should allow minting by whitelisted accounts during active pre-sale period", async function () {
@@ -138,7 +138,7 @@ describe("AllowListWithAmount", function () {
             it("shouldn't allow minting when requesting more than their remaining available tokens", async function () {
                 await expect(token.connect(whitelistedAddress).mintPreSale(6, {
                     value: ethers.utils.parseEther("6")
-                })).to.be.revertedWith("Purchase would exceed max available tokens within allowList");
+                })).to.be.revertedWith("Address does not have sufficient tokens available within allowList");
             });
 
             it("shouldn't allow minting when a whitelisted address used up all their available tokens", async function () {
@@ -148,7 +148,7 @@ describe("AllowListWithAmount", function () {
 
                 await expect(token.connect(whitelistedAddress).mintPreSale(5, {
                     value: ethers.utils.parseEther("5")
-                })).to.be.revertedWith("Address does not have any tokens available within allowList");
+                })).to.be.revertedWith("Address does not have sufficient tokens available within allowList");
             });
 
             it("should increase the total cost when requesting more tokens to be minted", async function () {
