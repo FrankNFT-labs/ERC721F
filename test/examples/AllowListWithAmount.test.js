@@ -259,5 +259,28 @@ describe("AllowListWithAmount", function() {
             nonWhitelistedAddress = addr6;
             secondNonWhitelistedAddress = addr7
         });
+
+        describe("allowAddress", function() {
+            it("should only be executable by the owner", async function() {
+                await expect(token.allowAddress(nonWhitelistedAddress.address, 1)).to.not.be.reverted;
+                await expect(token.connect(nonWhitelistedAddress).allowAddress(nonWhitelistedAddress.address, 1)).to.be.reverted;
+            });
+
+            it("should set the available tokens to the address in the allowList", async function() {
+                expect(await token.getAllowListFunds(nonWhitelistedAddress.address)).to.be.equal(0);
+
+                await token.allowAddress(nonWhitelistedAddress.address, 5);
+
+                expect(await token.getAllowListFunds(nonWhitelistedAddress.address)).to.be.equal(5);
+            });
+
+            it("shouldn't revert or disallow when address already has available tokens", async function() {
+                expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
+
+                await expect(token.allowAddress(whitelistedAddress.address, 2)).to.not.be.reverted;
+
+                expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(2);
+            });
+        });
     });
 });
