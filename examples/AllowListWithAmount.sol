@@ -7,6 +7,7 @@ import "../contracts/utils/AllowListWithAmount.sol";
 contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
     uint256 public constant MAX_TOKENS = 10000;
     uint public constant MAX_PURCHASE = 31;
+    uint public tokenPrice = 1 ether;
     bool public preSaleIsActive;
     bool public saleIsActive;
     
