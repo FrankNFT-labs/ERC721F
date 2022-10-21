@@ -80,7 +80,7 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
     /**
      * @notice Mints a certain number of tokens
      * @param numberOfTokens Total tokens to be minted, must be larger than 0 and at most 30. Can't exceed available tokens of account within allowList
-     * @dev Uses AllowList.onlyAllowListWithAvaibleTokens modifier for whitelist functionality
+     * @dev Uses AllowList.onlyAllowListWithSufficientAvailableTokens modifier for whitelist functionality
      */
     function mintPreSale(uint256 numberOfTokens)
         external
