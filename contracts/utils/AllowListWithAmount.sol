@@ -3,7 +3,7 @@ pragma solidity ^0.8.9 <0.9.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-abstract contract AllowList is Ownable {
+abstract contract AllowListWithAmount is Ownable {
     mapping(address => uint256) private allowList;
 
     modifier onlyAllowListWithAvailableTokens() {
