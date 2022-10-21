@@ -274,7 +274,7 @@ describe("AllowListWithAmount", function() {
                 expect(await token.getAllowListFunds(nonWhitelistedAddress.address)).to.be.equal(5);
             });
 
-            it("shouldn't revert or disallow when address already has available tokens", async function() {
+            it("shouldn't revert when address already has available tokens", async function() {
                 expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
 
                 await expect(token.allowAddress(whitelistedAddress.address, 2)).to.not.be.reverted;
@@ -287,6 +287,38 @@ describe("AllowListWithAmount", function() {
 
                 expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(2);
             }); 
+        });
+        
+        describe("allowAddresses", async function() {
+            it("should only be executable by the owner", async function() {
+                await expect(token.allowAddresses([nonWhitelistedAddress.address], 1)).to.not.be.reverted;
+                await expect(token.connect(nonWhitelistedAddress).allowAddresses([nonWhitelistedAddress.address], 1)).to.be.reverted;
+            });
+
+            it("should set the available tokens to the addresses in the allowList", async function() {
+                expect(await token.getAllowListFunds(nonWhitelistedAddress.address)).to.be.equal(0);
+                expect(await token.getAllowListFunds(secondNonWhitelistedAddress.address)).to.be.equal(0);
+
+                await token.allowAddresses([nonWhitelistedAddress.address, secondNonWhitelistedAddress.address], 1);
+
+                expect(await token.getAllowListFunds(nonWhitelistedAddress.address)).to.be.equal(1);
+                expect(await token.getAllowListFunds(secondNonWhitelistedAddress.address)).to.be.equal(1);
+            });
+        });
+
+        it("shouldn't revert when an address already has availabe tokens", async function() {
+            expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
+            expect(await token.getAllowListFunds(nonWhitelistedAddress.address)).to.be.equal(0);
+
+            await expect(token.allowAddresses([whitelistedAddress.address, nonWhitelistedAddress.address], 1)).to.not.be.reverted;
+        });
+
+        it("should overwrite the available tokens of an address with already available tokens", async function() {
+            expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
+
+            await token.allowAddresses([whitelistedAddress.address], 2);
+
+            expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(2);
         });
     });
 });
