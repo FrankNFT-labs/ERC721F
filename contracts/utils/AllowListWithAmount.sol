@@ -7,21 +7,30 @@ abstract contract AllowListWithAmount is Ownable {
     mapping(address => uint256) private allowList;
 
     modifier onlyAllowListWithAvailableTokens() {
-        require(getAllowListFunds(msg.sender) > 0, "Address does not have any tokens available within allowList");
+        require(
+            getAllowListFunds(msg.sender) > 0,
+            "Address does not have any tokens available within allowList"
+        );
         _;
     }
 
     /**
      * @notice Adds an address to the allowList and sets `totalTokens` as their token amount
      */
-    function allowAddress(address _address, uint256 totalTokens) public onlyOwner {
+    function allowAddress(address _address, uint256 totalTokens)
+        public
+        onlyOwner
+    {
         allowList[_address] = totalTokens;
     }
 
     /**
      * @notice Adds an array of addresses to the allowList and sets `totalTokens` as their token amount
      */
-    function allowAddresses(address[] calldata _addresses, uint256 totalTokens) external onlyOwner {
+    function allowAddresses(address[] calldata _addresses, uint256 totalTokens)
+        external
+        onlyOwner
+    {
         uint length = _addresses.length;
         for (uint i; i < length; ) {
             allowAddress(_addresses[i], totalTokens);
@@ -49,8 +58,14 @@ abstract contract AllowListWithAmount is Ownable {
     /**
      * @dev Decreases the total available tokens by a certain amount, can't take more than address has
      */
-    function decreaseAddressAvailableTokens(address _address, uint256 totalDecrease) internal {
-        require(totalDecrease <= allowList[_address], "It's not possible to take more than an address their available funds");
+    function decreaseAddressAvailableTokens(
+        address _address,
+        uint256 totalDecrease
+    ) internal {
+        require(
+            totalDecrease <= allowList[_address],
+            "It's not possible to take more than an address their available funds"
+        );
         allowList[_address] = allowList[_address] - totalDecrease;
     }
 }
