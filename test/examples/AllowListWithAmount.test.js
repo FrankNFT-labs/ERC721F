@@ -278,9 +278,15 @@ describe("AllowListWithAmount", function() {
                 expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
 
                 await expect(token.allowAddress(whitelistedAddress.address, 2)).to.not.be.reverted;
+            });
+
+            it("should overwrite the available tokens of an address with available tokens", async function() {
+                expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
+
+                await token.allowAddress(whitelistedAddress.address, 2);
 
                 expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(2);
-            });
+            }); 
         });
     });
 });
