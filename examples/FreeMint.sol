@@ -16,7 +16,7 @@ contract FreeMint is ERC721F, ERC2981 {
     uint public constant MAX_PURCHASE = 31; // Theoretical limit 1100
     bool public saleIsActive;
 
-    event RoyaltiesUpdated(uint256 royalties);
+    event ROYALTIESUPDATED(uint256 royalties);
 
     constructor() ERC721F("FreeMint", "Free") {
         setBaseTokenURI(
@@ -57,7 +57,7 @@ contract FreeMint is ERC721F, ERC2981 {
 
         royalties = (_royalties * 100);
 
-        emit RoyaltiesUpdated(_royalties);
+        emit ROYALTIESUPDATED(_royalties);
     }
 
     /**
