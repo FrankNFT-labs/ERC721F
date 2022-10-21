@@ -55,7 +55,7 @@ describe("Soulbound", function () {
         });
     });
 
-    describe("setApproveForAll", function () {
+    describe("setApproveForAllOwner", function () {
         it("Should only be executable by the owner of the contract", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
