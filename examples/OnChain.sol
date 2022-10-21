@@ -67,8 +67,7 @@ contract OnChain is ERC721FOnChain {
      * @notice Overridden function to display description change in tokenURI
      */
     function getDescription() public view override returns (string memory) {
-        return
-            string(abi.encodePacked(description, " - Overwrote description"));
+        return string(abi.encodePacked(super.getDescription(), " - Overwrote description"));
     }
 
     /**
