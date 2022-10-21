@@ -64,13 +64,13 @@ contract Soulbound is ERC721F {
     /**
      * @dev See {IERC721-setApprovalForAll}.
      */
-    function setApprovalForAll(address, bool)
+    function setApprovalForAll(address operator, bool approved)
         public
         virtual
         override
         onlyOwner
     {
-        revert("Use setApprovalForAllOwner");
+        _setApprovalForAll(owner(), operator, approved);
     }
 
     /**
