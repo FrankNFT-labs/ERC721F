@@ -6,10 +6,10 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 abstract contract AllowListWithAmount is Ownable {
     mapping(address => uint256) private allowList;
 
-    modifier onlyAllowListWithAvailableTokens() {
+    modifier onlyAllowListWithSufficientAvailableTokens(uint256 numberOfTokens) {
         require(
-            getAllowListFunds(msg.sender) > 0,
-            "Address does not have any tokens available within allowList"
+            numberOfTokens <= allowList[msg.sender],
+            "Address does not have sufficient tokens available within allowList"
         );
         _;
     }
