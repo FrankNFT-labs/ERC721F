@@ -55,12 +55,15 @@ describe("Soulbound", function () {
         });
     });
 
-    describe("setApproveForAllOwner", function () {
+    describe("setApprovalForAll", function() {
+    });
+
+    describe("setApprovalForAllOwner", function () {
         it("Should only be executable by the owner of the contract", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
 
             await expect(hardhatToken.setApprovalForAllOwner(addr1.address, addr1.address, true)).to.not.be.reverted;
-            await expect(hardhatToken.connect(addr1).setApprovalForAllOwner(addr1.address, addr1.address, true)).be.revertedWith("Ownable: caller is not the owner");
+            await expect(hardhatToken.connect(addr1).setApprovalForAllOwner(addr1.address, addr1.address, true)).to.be.revertedWith("Ownable: caller is not the owner");
         });
 
         it("Should allow that the owner of the token can be the one being approved", async function () {
