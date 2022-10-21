@@ -56,6 +56,34 @@ describe("Soulbound", function () {
     });
 
     describe("setApprovalForAll", function() {
+        it("should only be executable by the owner of the contract", async function() {
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+
+            await expect(hardhatToken.setApprovalForAll(addr1.address, true)).to.not.be.reverted;
+            await expect(hardhatToken.connect(addr1).setApprovalForAll(addr1.address, true)).to.be.revertedWith("Ownable: caller is not the owner");
+        });
+
+        it("Should set the address as the approved of the owner address", async function() {
+            const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
+
+            expect(await hardhatToken.isApprovedForAll(owner.address, addr1.address)).to.be.false;
+
+            await hardhatToken.setApprovalForAll(addr1.address, true);
+
+            expect(await hardhatToken.isApprovedForAll(owner.address, addr1.address)).to.be.true;
+        });
+
+        it("Should remove the approval status when setting approval to false", async function () {
+            const { hardhatToken, owner, addr1 } = await loadFixture(deployTokenFixture);
+
+            await hardhatToken.setApprovalForAll(addr1.address, true);
+
+            expect(await hardhatToken.isApprovedForAll(owner.address, addr1.address)).to.be.true;
+
+            await hardhatToken.setApprovalForAll(addr1.address, false);
+
+            expect(await hardhatToken.isApprovedForAll(owner.address, addr1.address)).to.be.false;
+        });
     });
 
     describe("setApprovalForAllOwner", function () {
