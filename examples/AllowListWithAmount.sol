@@ -4,6 +4,10 @@ pragma solidity ^0.8.9 <0.9.0;
 import "../contracts/token/ERC721/ERC721FCOMMON.sol";
 import "../contracts/utils/AllowListWithAmount.sol";
 
+/**
+ * @title AllowListWithAmountExample
+ * @dev Example implementation of [ERC721] with AllowListWithAmount validation using the AllowListsWithAmount.sol library
+ */
 contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
     uint256 public constant MAX_TOKENS = 10000;
     uint public constant MAX_PURCHASE = 31;
@@ -30,10 +34,17 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
         _;
     }
     
+    /**
+     * @notice Changes the state of preSaleIsActive from true to false and false to true
+     */
     function flipPreSaleState() external onlyOwner {
         preSaleIsActive = !preSaleIsActive;
     }
 
+    /**
+     * @notice Changes the state of saleIsActive from true to false and false to true
+     * @dev If saleIsActive becomes `true` sets preSaleIsActive to `false`
+     */
     function flipSaleState() external onlyOwner {
         saleIsActive = !saleIsActive;
         if (saleIsActive) {
@@ -41,6 +52,10 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
         }
     }
 
+    /**
+     * @notice Mints a certain number of tokens
+     * @param numberOfTokens Total tokens to be minted, must be larger than 0 and at most 30
+     */
     function mint(uint256 numberOfTokens)
         external
         payable
@@ -62,6 +77,11 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
         }
     }
 
+    /**
+     * @notice Mints a certain number of tokens
+     * @param numberOfTokens Total tokens to be minted, must be larger than 0 and at most 30. Can't exceed available tokens of account within allowList
+     * @dev Uses AllowList.onlyAllowListWithAvaibleTokens modifier for whitelist functionality
+     */
     function mintPreSale(uint256 numberOfTokens)
         external
         payable
