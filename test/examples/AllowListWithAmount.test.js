@@ -304,21 +304,22 @@ describe("AllowListWithAmount", function() {
                 expect(await token.getAllowListFunds(nonWhitelistedAddress.address)).to.be.equal(1);
                 expect(await token.getAllowListFunds(secondNonWhitelistedAddress.address)).to.be.equal(1);
             });
-        });
 
-        it("shouldn't revert when an address already has availabe tokens", async function() {
-            expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
-            expect(await token.getAllowListFunds(nonWhitelistedAddress.address)).to.be.equal(0);
-
-            await expect(token.allowAddresses([whitelistedAddress.address, nonWhitelistedAddress.address], 1)).to.not.be.reverted;
-        });
-
-        it("should overwrite the available tokens of an address with already available tokens", async function() {
-            expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
-
-            await token.allowAddresses([whitelistedAddress.address], 2);
-
-            expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(2);
+            it("shouldn't revert when an address already has availabe tokens", async function() {
+                expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
+                expect(await token.getAllowListFunds(nonWhitelistedAddress.address)).to.be.equal(0);
+    
+                await expect(token.allowAddresses([whitelistedAddress.address, nonWhitelistedAddress.address], 1)).to.not.be.reverted;
+            });
+    
+            it("should overwrite the available tokens of an address with already available tokens", async function() {
+                expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
+    
+                await token.allowAddresses([whitelistedAddress.address], 2);
+    
+                expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(2);
+            });
+    
         });
     });
 });
