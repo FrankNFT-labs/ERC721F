@@ -18,4 +18,14 @@ abstract contract AllowList is Ownable {
     function allowAddress(address _address, uint256 totalTokens) public onlyOwner {
         allowList[_address] = totalTokens;
     }
+
+    function allowAddresses(address[] calldata _addresses, uint256 totalTokens) external onlyOwner {
+        uint length = _addresses.length;
+        for (uint i; i < length; ) {
+            allowAddress(_addresses[i], totalTokens);
+            unchecked {
+                i++;
+            }
+        }
+    }
 }
