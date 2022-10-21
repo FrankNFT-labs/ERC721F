@@ -32,4 +32,9 @@ abstract contract AllowListWithAmount is Ownable {
     function getAllowListFunds(address _address) public view returns (uint256) {
         return allowList[_address];
     }
+
+    function decreaseAddressTotalFunds(address _address, uint256 totalDecrease) internal {
+        require(totalDecrease <= allowList[_address]);
+        allowList[_address] = allowList[_address] - totalDecrease;
+    }
 }
