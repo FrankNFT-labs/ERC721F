@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/common/ERC2981.sol";
 contract ERC721FCOMMON is ERC721F, ERC721Payable, ERC2981 {
     uint16 private royalties = 500;
 
-    event RoyaltiesUpdated(uint256 royalties);
+    event ROYALTIESUPDATED(uint256 royalties);
 
     constructor(string memory name_, string memory symbol_) ERC721F(name_, symbol_) {
     }
@@ -46,7 +46,7 @@ contract ERC721FCOMMON is ERC721F, ERC721Payable, ERC2981 {
 
         royalties = (_royalties * 100);
 
-        emit RoyaltiesUpdated(_royalties);
+        emit ROYALTIESUPDATED(_royalties);
     }
 
     /**
