@@ -4,7 +4,8 @@
   "version": "4.7.1",
   "files": [
     "/contracts/**/*.sol",
-    "!/contracts/mocks/**/*"
+    "!/contracts/mocks/**/*",
+    "!/contracts/token/ERC721/artifacts/**/*"
   ],
   "scripts": {
     "compile": "npx hardhat compile",
