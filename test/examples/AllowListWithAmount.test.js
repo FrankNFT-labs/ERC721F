@@ -4,7 +4,7 @@ const { ethers } = require("hardhat");
 
 const transferAmount = ethers.utils.parseEther("1");
 
-describe("AllowListWithAmount", function() {
+describe("AllowListWithAmount", function () {
     async function deployTokenFixture() {
         const Token = await ethers.getContractFactory("AllowListWithAmountExample");
         const [owner, addr1, addr2, addr3, addr4, addr5, addr6, addr7] = await ethers.getSigners();
@@ -135,13 +135,13 @@ describe("AllowListWithAmount", function() {
                 })).to.not.be.reverted;
             });
 
-            it("shouldn't allow minting when requesting more than their remaining available tokens", async function() {
+            it("shouldn't allow minting when requesting more than their remaining available tokens", async function () {
                 await expect(token.connect(whitelistedAddress).mintPreSale(6, {
                     value: ethers.utils.parseEther("6")
                 })).to.be.revertedWith("Purchase would exceed max available tokens within allowList");
             });
 
-            it("shouldn't allow minting when a whitelisted address used up all their available tokens", async function() {
+            it("shouldn't allow minting when a whitelisted address used up all their available tokens", async function () {
                 await expect(token.connect(whitelistedAddress).mintPreSale(5, {
                     value: ethers.utils.parseEther("5")
                 })).to.not.be.reverted;
@@ -175,9 +175,9 @@ describe("AllowListWithAmount", function() {
                 })).to.changeTokenBalance(token, whitelistedAddress, 5);
             });
 
-            it("should decrease the total avaiable funds for an account post mint", async function() {
+            it("should decrease the total avaiable funds for an account post mint", async function () {
                 expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
-            
+
                 await token.connect(whitelistedAddress).mintPreSale(1, {
                     value: transferAmount
                 });
@@ -256,7 +256,7 @@ describe("AllowListWithAmount", function() {
         });
     });
 
-    context("AllowListWithAmount imported functions", function() {
+    context("AllowListWithAmount imported functions", function () {
         let token;
         let whitelistedAddress;
         let nonWhitelistedAddress;
@@ -270,13 +270,13 @@ describe("AllowListWithAmount", function() {
             secondNonWhitelistedAddress = addr7
         });
 
-        describe("allowAddress", function() {
-            it("should only be executable by the owner", async function() {
+        describe("allowAddress", function () {
+            it("should only be executable by the owner", async function () {
                 await expect(token.allowAddress(nonWhitelistedAddress.address, 1)).to.not.be.reverted;
                 await expect(token.connect(nonWhitelistedAddress).allowAddress(nonWhitelistedAddress.address, 1)).to.be.reverted;
             });
 
-            it("should set the available tokens to the address in the allowList", async function() {
+            it("should set the available tokens to the address in the allowList", async function () {
                 expect(await token.getAllowListFunds(nonWhitelistedAddress.address)).to.be.equal(0);
 
                 await token.allowAddress(nonWhitelistedAddress.address, 5);
@@ -284,28 +284,28 @@ describe("AllowListWithAmount", function() {
                 expect(await token.getAllowListFunds(nonWhitelistedAddress.address)).to.be.equal(5);
             });
 
-            it("shouldn't revert when address already has available tokens", async function() {
+            it("shouldn't revert when address already has available tokens", async function () {
                 expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
 
                 await expect(token.allowAddress(whitelistedAddress.address, 2)).to.not.be.reverted;
             });
 
-            it("should overwrite the available tokens of an address with available tokens", async function() {
+            it("should overwrite the available tokens of an address with available tokens", async function () {
                 expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
 
                 await token.allowAddress(whitelistedAddress.address, 2);
 
                 expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(2);
-            }); 
+            });
         });
-        
-        describe("allowAddresses", async function() {
-            it("should only be executable by the owner", async function() {
+
+        describe("allowAddresses", async function () {
+            it("should only be executable by the owner", async function () {
                 await expect(token.allowAddresses([nonWhitelistedAddress.address], 1)).to.not.be.reverted;
                 await expect(token.connect(nonWhitelistedAddress).allowAddresses([nonWhitelistedAddress.address], 1)).to.be.reverted;
             });
 
-            it("should set the available tokens to the addresses in the allowList", async function() {
+            it("should set the available tokens to the addresses in the allowList", async function () {
                 expect(await token.getAllowListFunds(nonWhitelistedAddress.address)).to.be.equal(0);
                 expect(await token.getAllowListFunds(secondNonWhitelistedAddress.address)).to.be.equal(0);
 
@@ -315,52 +315,52 @@ describe("AllowListWithAmount", function() {
                 expect(await token.getAllowListFunds(secondNonWhitelistedAddress.address)).to.be.equal(1);
             });
 
-            it("shouldn't revert when an address already has availabe tokens", async function() {
+            it("shouldn't revert when an address already has availabe tokens", async function () {
                 expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
                 expect(await token.getAllowListFunds(nonWhitelistedAddress.address)).to.be.equal(0);
-    
+
                 await expect(token.allowAddresses([whitelistedAddress.address, nonWhitelistedAddress.address], 1)).to.not.be.reverted;
             });
-    
-            it("should overwrite the available tokens of an address with already available tokens", async function() {
+
+            it("should overwrite the available tokens of an address with already available tokens", async function () {
                 expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
-    
+
                 await token.allowAddresses([whitelistedAddress.address], 2);
-    
+
                 expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(2);
             });
         });
 
-        describe("disallowAddress", function() {
+        describe("disallowAddress", function () {
             it("should only be executable by owner", async function () {
                 await expect(token.disallowAddress(nonWhitelistedAddress.address)).to.not.be.reverted;
                 await expect(token.connect(nonWhitelistedAddress).disallowAddress(nonWhitelistedAddress.address)).to.be.reverted;
             });
-    
+
             it("should remove all available tokens from the address", async function () {
                 expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
-    
+
                 await token.disallowAddress(whitelistedAddress.address);
-    
+
                 expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(0);
             });
         });
 
-        describe("getAllowListFunds", function() {
-            it("should be executable by anyone", async function() {
+        describe("getAllowListFunds", function () {
+            it("should be executable by anyone", async function () {
                 await expect(token.getAllowListFunds(whitelistedAddress.address)).to.not.be.reverted;
                 await expect(token.connect(nonWhitelistedAddress.address).getAllowListFunds(whitelistedAddress.address)).to.not.be.reverted;
             });
 
-            it("should return the amount of available tokens a whitelisted address has", async function() {
+            it("should return the amount of available tokens a whitelisted address has", async function () {
                 expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(5);
             });
 
-            it("should return 0 for non-existing addresses", async function() {
+            it("should return 0 for non-existing addresses", async function () {
                 expect(await token.getAllowListFunds(nonWhitelistedAddress.address)).to.be.equal(0);
             });
 
-            it("should return 0 for disallowed addresses", async function() {
+            it("should return 0 for disallowed addresses", async function () {
                 await token.disallowAddress(whitelistedAddress.address);
 
                 expect(await token.getAllowListFunds(whitelistedAddress.address)).to.be.equal(0);
