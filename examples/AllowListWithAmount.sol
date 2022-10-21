@@ -68,7 +68,7 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
         validMintRequest(numberOfTokens)
         onlyAllowListWithAvailableTokens
     {
-        require(numberOfTokens <= getAllowListFunds(msg.sender), "Purchase would exceed max avaiable tokens within allowList");
+        require(numberOfTokens <= getAllowListFunds(msg.sender), "Purchase would exceed max available tokens within allowList");
         require(preSaleIsActive, "PreSale is NOT active yet");
         uint256 supply = _totalMinted();
         require(
