@@ -135,6 +135,12 @@ describe("AllowListWithAmount", function() {
                 })).to.not.be.reverted;
             });
 
+            it("shouldn't allow minting when requesting more than their remaining available tokens", async function() {
+                await expect(token.connect(whitelistedAddress).mintPreSale(6, {
+                    value: ethers.utils.parseEther("6")
+                })).to.be.revertedWith("Purchase would exceed max available tokens within allowList");
+            });
+
             it("should increase the total cost when requesting more tokens to be minted", async function () {
                 await expect(token.connect(whitelistedAddress).mintPreSale(5, {
                     value: transferAmount
