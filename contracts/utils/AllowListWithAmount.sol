@@ -33,7 +33,7 @@ abstract contract AllowListWithAmount is Ownable {
         return allowList[_address];
     }
 
-    function decreaseAddressTotalFunds(address _address, uint256 totalDecrease) internal {
+    function decreaseAddressAvailableTokens(address _address, uint256 totalDecrease) internal {
         require(totalDecrease <= allowList[_address]);
         allowList[_address] = allowList[_address] - totalDecrease;
     }
