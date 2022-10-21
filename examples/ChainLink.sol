@@ -37,7 +37,7 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
     bool public saleIsActive;
 
     // Event utilised in hardhat testing to retrieve requestId from ChainLink request
-    event RequestedRandomness(uint256 requestId);
+    event REQUESTEDRANDOMNESS(uint256 requestId);
 
     constructor(uint64 _subscriptionId, address _vrfCoordinator)
         VRFConsumerBaseV2(_vrfCoordinator)
@@ -77,7 +77,7 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
             numWords
         );
 
-        emit RequestedRandomness(requestId);
+        emit REQUESTEDRANDOMNESS(requestId);
     }
 
     /**
