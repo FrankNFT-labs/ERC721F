@@ -11,10 +11,6 @@ abstract contract AllowList is Ownable {
         _;
     }
 
-    function getAllowListFunds(address _address) public view returns (uint256) {
-        return allowList[_address];
-    }
-
     function allowAddress(address _address, uint256 totalTokens) public onlyOwner {
         allowList[_address] = totalTokens;
     }
@@ -31,5 +27,9 @@ abstract contract AllowList is Ownable {
 
     function disallowAddress(address _address) public onlyOwner {
         delete allowList[_address];
+    }
+
+    function getAllowListFunds(address _address) public view returns (uint256) {
+        return allowList[_address];
     }
 }
