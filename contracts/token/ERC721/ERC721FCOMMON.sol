@@ -58,6 +58,7 @@ contract ERC721FCOMMON is ERC721F, ERC721Payable, ERC2981 {
     function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
         public
         view
+        virtual
         override
         returns (address receiver, uint256 royaltyAmount)
     {
