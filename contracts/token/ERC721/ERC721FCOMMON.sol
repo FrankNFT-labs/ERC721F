@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/common/ERC2981.sol";
 
 contract ERC721FCOMMON is ERC721F, ERC721Payable, ERC2981 {
     uint16 private royalties = 500;
+    address private royaltyReceiver;
 
     event ROYALTIESUPDATED(uint256 royalties);
 
@@ -64,6 +65,6 @@ contract ERC721FCOMMON is ERC721F, ERC721Payable, ERC2981 {
             _exists(_tokenId),
             "ERC2981RoyaltyStandard: Royalty info for nonexistent token"
         );
-        return (address(this), (_salePrice * royalties) / 10000);
+        return (royaltyReceiver, (_salePrice * royalties) / 10000);
     }
 }
