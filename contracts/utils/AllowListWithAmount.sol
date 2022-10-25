@@ -58,16 +58,16 @@ abstract contract AllowListWithAmount is Ownable {
     }
 
     /**
-     * @dev Decreases the total available tokens by a certain amount, can't take more than address has
+     * @dev Decreases the total available tokens by a certain amount, defaults to 0 when `totalDecrease` is larger or equal to total availableTokens of `_address`
      */
     function decreaseAddressAvailableTokens(
         address _address,
         uint256 totalDecrease
     ) internal {
-        require(
-            totalDecrease <= allowList[_address],
-            "It's not possible to take more than an address their available funds"
-        );
-        allowList[_address] = allowList[_address] - totalDecrease;
+        if (totalDecrease >= allowList[_address]) {
+            allowList[_address] = 0;
+        } else {
+            allowList[_address] = allowList[_address] - totalDecrease;
+        }
     }
 }
