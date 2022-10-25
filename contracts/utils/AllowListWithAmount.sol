@@ -64,7 +64,10 @@ abstract contract AllowListWithAmount is Ownable {
         address _address,
         uint256 totalDecrease
     ) internal {
-        if (totalDecrease >= allowList[_address]) allowList[_address] = 0;
-        else allowList[_address] = allowList[_address] - totalDecrease;
+        if (totalDecrease >= allowList[_address]) {
+            allowList[_address] = 0;
+        } else {
+            allowList[_address] = allowList[_address] - totalDecrease;
+        }
     }
 }
