@@ -12,6 +12,7 @@ contract ERC721FCOMMON is ERC721F, ERC721Payable, ERC2981 {
     event ROYALTIESUPDATED(uint256 royalties);
 
     constructor(string memory name_, string memory symbol_) ERC721F(name_, symbol_) {
+        setRoyaltyReceiver(address(this));
     }
 
     /**
