@@ -64,10 +64,7 @@ abstract contract AllowListWithAmount is Ownable {
         address _address,
         uint256 totalDecrease
     ) internal {
-        require(
-            totalDecrease <= allowList[_address],
-            "It's not possible to take more than an address their available funds"
-        );
-        allowList[_address] = allowList[_address] - totalDecrease;
+        if (totalDecrease >= allowList[_address]) allowList[_address] = 0;
+        else allowList[_address] = allowList[_address] - totalDecrease;
     }
 }
