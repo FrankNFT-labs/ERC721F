@@ -7,9 +7,9 @@ import "@openzeppelin/contracts/interfaces/IERC165.sol";
 interface IERC4883 is IERC165 {
     /**
      * @dev Generates the SVG image of `id`
-     * 
+     *
      * Requirements:
-     * 
+     *
      * - `id` must exist
      * - must return the SVG body for the specified token `id`
      * - must either be an empty string or a valid SVG element(s)
