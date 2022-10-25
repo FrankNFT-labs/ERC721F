@@ -67,4 +67,8 @@ contract ERC721FCOMMON is ERC721F, ERC721Payable, ERC2981 {
         );
         return (royaltyReceiver, (_salePrice * royalties) / 10000);
     }
+
+    function setRoyaltyReceiver(address receiver) public {
+        royaltyReceiver = receiver;
+    }
 }
