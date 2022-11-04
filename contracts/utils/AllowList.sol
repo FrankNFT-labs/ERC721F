@@ -42,7 +42,7 @@ abstract contract AllowList is Ownable {
      * @dev Sets `_address` to `false` in allowList
      */
     function _disallowAddress(address _address) internal {
-        allowList[_address] = false;
+        delete allowList[_address];
     }
 
     /**
