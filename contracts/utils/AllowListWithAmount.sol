@@ -45,7 +45,7 @@ abstract contract AllowListWithAmount is Ownable {
     /**
      * @notice Removes an address off the allowList
      */
-    function disallowAddress(address _address) public onlyOwner {
+    function disallowAddress(address _address) external onlyOwner {
         _disallowAddress(_address);
     }
 
