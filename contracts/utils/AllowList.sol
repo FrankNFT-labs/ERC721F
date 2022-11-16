@@ -34,8 +34,15 @@ abstract contract AllowList is Ownable {
     /**
      * @notice Removes an address off the allowList
      */
-    function disallowAddress(address _address) public onlyOwner {
-        allowList[_address] = false;
+    function disallowAddress(address _address) external onlyOwner {
+        _disallowAddress(_address);
+    }
+
+    /**
+     * @dev Sets `_address` to `false` in allowList
+     */
+    function _disallowAddress(address _address) internal {
+        delete allowList[_address];
     }
 
     /**

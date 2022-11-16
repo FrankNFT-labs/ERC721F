@@ -7,10 +7,12 @@ import "@openzeppelin/contracts/token/common/ERC2981.sol";
 
 contract ERC721FCOMMON is ERC721F, ERC721Payable, ERC2981 {
     uint16 private royalties = 500;
+    address private royaltyReceiver;
 
     event ROYALTIESUPDATED(uint256 royalties);
 
     constructor(string memory name_, string memory symbol_) ERC721F(name_, symbol_) {
+        setRoyaltyReceiver(address(this));
     }
 
     /**
@@ -57,6 +59,7 @@ contract ERC721FCOMMON is ERC721F, ERC721Payable, ERC2981 {
     function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
         public
         view
+        virtual
         override
         returns (address receiver, uint256 royaltyAmount)
     {
@@ -64,6 +67,13 @@ contract ERC721FCOMMON is ERC721F, ERC721Payable, ERC2981 {
             _exists(_tokenId),
             "ERC2981RoyaltyStandard: Royalty info for nonexistent token"
         );
-        return (address(this), (_salePrice * royalties) / 10000);
+        return (royaltyReceiver, (_salePrice * royalties) / 10000);
+    }
+
+    /**
+     * @notice Sets `receiver` as royaltyReceiver
+     */
+    function setRoyaltyReceiver(address receiver) public virtual onlyOwner {
+        royaltyReceiver = receiver;
     }
 }
