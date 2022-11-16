@@ -16,7 +16,7 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
      * @return tokens id owned by `_owner`
      */
     function walletOfOwner(address _owner)
-        external
+        public
         view
         virtual
         override
