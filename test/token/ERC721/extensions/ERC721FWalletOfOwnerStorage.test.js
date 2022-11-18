@@ -98,33 +98,5 @@ describe("ERC721FWalletOfOwnerStorage", function () {
                 expect(walletOfOwner.map(t => t.toNumber())).to.have.members([0, 1, 2, 4]);
             });
         });
-
-        describe("RemoveTokenFromWallet", async function() {
-            let token;
-            let otherAddress;
-
-            beforeEach(async () => {
-                const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
-                token = hardhatToken;
-                otherAddress = addr1;
-                await token.connect(otherAddress).mint(5);
-            });
-
-            it("Should remove the token from the wallet", async function() {
-                await token.removeTokenFromWallet(3, otherAddress.address);
-
-                const walletOfOwner = await token.walletOfOwner(otherAddress.address);
-
-                expect(walletOfOwner.map(t => t.toNumber())).to.not.have.members([0, 1, 2, 3, 4]);
-            });
-
-            it("Shouldn't remove the non-specified tokens from the wallet", async function() {
-                await token.removeTokenFromWallet(3, otherAddress.address);
-
-                const walletOfOwner = await token.walletOfOwner(otherAddress.address);
-
-                expect(walletOfOwner.map(t => t.toNumber())).to.have.members([0, 1, 2, 4]);
-            });
-        });
     });
 });
