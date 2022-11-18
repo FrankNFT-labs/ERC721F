@@ -59,17 +59,7 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
      */
     function _removeTokenFromWallet(uint256 tokenId) internal virtual {
         address owner = msg.sender;
-        uint length = _walletOfOwner[owner].length;
-        for (uint i; i < length; ) {
-            if (_walletOfOwner[owner][i] == tokenId) {
-                _walletOfOwner[owner][i] = _walletOfOwner[owner][length - 1];
-                _walletOfOwner[owner].pop();
-                break;
-            }     
-            unchecked {
-                i++;
-            }
-        }
+        _removeTokenFromWallet(tokenId, owner);
     }
 
     /**
