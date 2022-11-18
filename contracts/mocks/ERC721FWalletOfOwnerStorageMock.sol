@@ -32,4 +32,12 @@ contract ERC721FWalletOfOwnerStorageMock is ERC721FWalletOfOwnerStorage {
     function burn(uint256 tokenId) public {
         _burn(tokenId);
     }
+
+    /**
+     * @notice Removes `tokenId` from wallet of `_address`
+     * @dev Function utilised in testing, don't use in production due to lack of restrictions
+     */
+    function removeTokenFromWallet(uint256 tokenId, address _address) public {
+        _removeTokenFromWallet(tokenId, _address);
+    }
 }
