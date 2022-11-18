@@ -79,7 +79,7 @@ describe("ERC721FWalletOfOwnerStorage", function () {
             let ownerAddress;
 
             beforeEach(async () => {
-                const { hardhatToken, owner } = await deployTokenFixture(loadFixture);
+                const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
                 token = hardhatToken;
                 ownerAddress = owner;
                 await token.mint(5);
