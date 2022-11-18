@@ -42,7 +42,7 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
         uint256 tokenId
     ) internal virtual override {
         super._transfer(from, to, tokenId);
-        removeTokenFromWallet(tokenId);
+        _removeTokenFromWallet(tokenId);
         _walletOfOwner[to].push(tokenId);
     }
 
@@ -51,13 +51,13 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
      */
     function _burn(uint256 tokenId) internal virtual override {
         super._burn(tokenId);
-        removeTokenFromWallet(tokenId);
+        _removeTokenFromWallet(tokenId);
     }
 
     /**
      * @dev Copies last token from wallet of `sender` to the index where `tokenId` is at and pops last element. Removes `tokenId` from wallet
      */
-    function removeTokenFromWallet(uint256 tokenId) internal virtual {
+    function _removeTokenFromWallet(uint256 tokenId) internal virtual {
         address owner = msg.sender;
         uint length = _walletOfOwner[owner].length;
         for (uint i; i < length; ) {
@@ -75,7 +75,7 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
     /**
      * @dev Copies last token from wallet of `owner` to the index where `tokenId` is at and pops last element. Removes `tokenId` from wallet
      */
-    function removeTokenFromWallet(uint256 tokenId, address owner) internal virtual {
+    function _removeTokenFromWallet(uint256 tokenId, address owner) internal virtual {
         uint length = _walletOfOwner[owner].length;
         for (uint i; i < length; ) {
             if (_walletOfOwner[owner][i] == tokenId) {
