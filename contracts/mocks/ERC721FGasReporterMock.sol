@@ -136,7 +136,7 @@ contract ERC721FGasReporterMock is ERC721F {
      */
     function retrieveLastToken() internal view returns (uint lastOwnedTokenId) {
         uint totalSupply = _totalMinted();
-        for (uint i = totalSupply - 1; i > 0; ) {
+        for (uint i = totalSupply - 1; i >= 0; ) {
             if (ownerOf(i) == msg.sender) {
                 return i;
             }
