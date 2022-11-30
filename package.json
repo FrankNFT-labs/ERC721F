@@ -1,5 +1,5 @@
 {
-  "name": "@hyp3rlabs/erc721f", 
+  "name": "erc721-f", 
   "description": "ERC721F contract for Solidity",
   "version": "4.7.2",
   "files": [
