@@ -6,14 +6,20 @@ import "../contracts/token/ERC721/ERC721FCOMMON.sol";
 import "operator-filter-registry/src/RevokableDefaultOperatorFilterer.sol";
 import "operator-filter-registry/src/UpdatableOperatorFilterer.sol";
 
-contract RevokableDefaultOperatorFiltererERC721F is ERC721FCOMMON, AllowList, RevokableDefaultOperatorFilterer {
+contract RevokableDefaultOperatorFiltererERC721F is
+    ERC721FCOMMON,
+    AllowList,
+    RevokableDefaultOperatorFilterer
+{
     uint256 public constant MAX_TOKENS = 10000;
-    uint public constant MAX_PURCHASE = 31;
-    uint public tokenPrice = 1 ether;
+    uint256 public constant MAX_PURCHASE = 31;
+    uint256 public tokenPrice = 1 ether;
     bool public preSaleIsActive;
     bool public saleIsActive;
 
-    constructor() ERC721FCOMMON("RevokableDefaultOperatorFiltererERC721F", "RDOF") {
+    constructor()
+        ERC721FCOMMON("RevokableDefaultOperatorFiltererERC721F", "RDOF")
+    {
         setBaseTokenURI(
             "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
         );
@@ -54,11 +60,9 @@ contract RevokableDefaultOperatorFiltererERC721F is ERC721FCOMMON, AllowList, Re
      * @notice Mints a certain number of tokens
      * @param numberOfTokens Total tokens to be minted, must be larger than 0 and at most 30
      */
-    function mint(uint256 numberOfTokens)
-        external
-        payable
-        validMintRequest(numberOfTokens)
-    {
+    function mint(
+        uint256 numberOfTokens
+    ) external payable validMintRequest(numberOfTokens) {
         require(msg.sender == tx.origin, "No contracts allowed");
         require(saleIsActive, "Sale NOT active yet");
         uint256 supply = _totalMinted();
@@ -80,12 +84,9 @@ contract RevokableDefaultOperatorFiltererERC721F is ERC721FCOMMON, AllowList, Re
      * @param numberOfTokens Total tokens to be minted, must be larger than 0 and at most 30
      * @dev Uses AllowList.onlyAllowList modifier for whitelist functionality
      */
-    function mintPreSale(uint256 numberOfTokens)
-        external
-        payable
-        validMintRequest(numberOfTokens)
-        onlyAllowList
-    {
+    function mintPreSale(
+        uint256 numberOfTokens
+    ) external payable validMintRequest(numberOfTokens) onlyAllowList {
         require(preSaleIsActive, "PreSale is NOT active yet");
         uint256 supply = _totalMinted();
         require(
@@ -107,31 +108,52 @@ contract RevokableDefaultOperatorFiltererERC721F is ERC721FCOMMON, AllowList, Re
         _withdraw(owner(), balance);
     }
 
-    function setApprovalForAll(address operator, bool approved) public override onlyAllowedOperatorApproval(operator) {
+    function setApprovalForAll(
+        address operator,
+        bool approved
+    ) public override onlyAllowedOperatorApproval(operator) {
         super.setApprovalForAll(operator, approved);
     }
 
-    function approve(address operator, uint256 tokenId) public override onlyAllowedOperatorApproval(operator) {
+    function approve(
+        address operator,
+        uint256 tokenId
+    ) public override onlyAllowedOperatorApproval(operator) {
         super.approve(operator, tokenId);
     }
 
-    function transferFrom(address from, address to, uint256 tokenId) public override onlyAllowedOperator(from) {
+    function transferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public override onlyAllowedOperator(from) {
         super.transferFrom(from, to, tokenId);
     }
 
-    function safeTransferFrom(address from, address to, uint256 tokenId) public override onlyAllowedOperator(from) {
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public override onlyAllowedOperator(from) {
         super.safeTransferFrom(from, to, tokenId);
     }
 
-    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data)
-        public
-        override
-        onlyAllowedOperator(from)
-    {
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId,
+        bytes memory data
+    ) public override onlyAllowedOperator(from) {
         super.safeTransferFrom(from, to, tokenId, data);
     }
 
-    function owner() public view virtual override(Ownable, UpdatableOperatorFilterer) returns (address) {
+    function owner()
+        public
+        view
+        virtual
+        override(Ownable, UpdatableOperatorFilterer)
+        returns (address)
+    {
         return Ownable.owner();
     }
 }
