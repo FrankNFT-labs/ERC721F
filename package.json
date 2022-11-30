@@ -26,14 +26,14 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^1.0.2",
     "hardhat": "^2.11.1",
-    "hardhat-gas-reporter": "^1.0.9"
-  },
-  "dependencies": {
-    "@chainlink/contracts": "^0.4.1",
-    "@openzeppelin/contracts": "^4.7.3",
+    "hardhat-gas-reporter": "^1.0.9",
     "dotenv": "^16.0.2",
     "keccak256": "^1.0.6",
     "merkletreejs": "^0.2.32"
+  },
+  "dependencies": {
+    "@chainlink/contracts": "^0.4.1",
+    "@openzeppelin/contracts": "^4.7.3"
   },
   "bugs": {
     "url": "https://github.com/FrankNFT-labs/ERC721F/issues"
