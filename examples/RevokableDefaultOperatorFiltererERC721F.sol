@@ -6,6 +6,11 @@ import "../contracts/token/ERC721/ERC721FCOMMON.sol";
 import "operator-filter-registry/src/RevokableDefaultOperatorFilterer.sol";
 import "operator-filter-registry/src/UpdatableOperatorFilterer.sol";
 
+
+/**
+ * @title RevokableDefaultOperatorFiltererERC721F
+ * @dev Example implementation of [ERC721F] with AllowList validation and RevokableDefaultOperatorFilterer for automatic subscription to Opensea's curated filters
+ */
 contract RevokableDefaultOperatorFiltererERC721F is
     ERC721FCOMMON,
     AllowList,
@@ -108,6 +113,10 @@ contract RevokableDefaultOperatorFiltererERC721F is
         _withdraw(owner(), balance);
     }
 
+    /**
+     * @notice Gives `operator` permissions to call {transferFrom} or {safeTransferFrom} for any token owned by the caller
+     * @dev Reverts if `operator` is filtered in OperatorFilterRegistry
+     */
     function setApprovalForAll(
         address operator,
         bool approved
