@@ -124,6 +124,10 @@ contract RevokableDefaultOperatorFiltererERC721F is
         super.setApprovalForAll(operator, approved);
     }
 
+    /**
+     * @notice Gives `operator` permission to transfer `tokenId` to another account
+     * @dev Reverts if `operator` is filtered in OperatorFilterRegistry
+     */
     function approve(
         address operator,
         uint256 tokenId
@@ -131,6 +135,10 @@ contract RevokableDefaultOperatorFiltererERC721F is
         super.approve(operator, tokenId);
     }
 
+    /**
+     * @notice Transfers `tokenId` token from `from` to `to` 
+     * @dev Reverts if caller is filtered in OperatorFilterRegistry or non-approved by `from`
+     */
     function transferFrom(
         address from,
         address to,
