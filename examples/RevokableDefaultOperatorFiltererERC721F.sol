@@ -147,6 +147,10 @@ contract RevokableDefaultOperatorFiltererERC721F is
         super.transferFrom(from, to, tokenId);
     }
 
+    /**
+     * @notice Safely transfers `tokenId` token from `from`, to `to`
+     * @dev Reverts if caller is filtered in OperatorFilterRegistry or non-approved by `from`
+     */
     function safeTransferFrom(
         address from,
         address to,
@@ -155,6 +159,10 @@ contract RevokableDefaultOperatorFiltererERC721F is
         super.safeTransferFrom(from, to, tokenId);
     }
 
+    /**
+     * @notice Safely transfers `tokenId` token from `from`, to `to`
+     * @dev Reverts if caller is filtered in OperatorFilterRegistry or non-approved by `from`
+     */
     function safeTransferFrom(
         address from,
         address to,
@@ -164,6 +172,9 @@ contract RevokableDefaultOperatorFiltererERC721F is
         super.safeTransferFrom(from, to, tokenId, data);
     }
 
+    /**
+     * @dev Returns the address of the current owner.
+     */
     function owner()
         public
         view
