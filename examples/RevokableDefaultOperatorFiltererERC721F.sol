@@ -6,7 +6,6 @@ import "../contracts/token/ERC721/ERC721FCOMMON.sol";
 import "operator-filter-registry/src/RevokableDefaultOperatorFilterer.sol";
 import "operator-filter-registry/src/UpdatableOperatorFilterer.sol";
 
-
 /**
  * @title RevokableDefaultOperatorFiltererERC721F
  * @dev Example implementation of [ERC721F] with AllowList validation and RevokableDefaultOperatorFilterer for automatic subscription to Opensea's curated filters
@@ -136,7 +135,7 @@ contract RevokableDefaultOperatorFiltererERC721F is
     }
 
     /**
-     * @notice Transfers `tokenId` token from `from` to `to` 
+     * @notice Transfers `tokenId` token from `from` to `to`
      * @dev Reverts if caller is filtered in OperatorFilterRegistry or non-approved by `from`
      */
     function transferFrom(
