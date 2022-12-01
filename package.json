@@ -1,15 +1,43 @@
 {
+  "name": "erc721-f", 
+  "description": "ERC721F contract for Solidity",
+  "version": "4.7.2",
+  "files": [
+    "/contracts/**/*.sol",
+    "!/contracts/mocks/**/*",
+    "!/contracts/token/ERC721/artifacts/**/*"
+  ],
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "coverage": "npx hardhat coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FrankNFT-labs/ERC721F"
+  },
+  "keywords": [
+    "solidity",
+    "ethereum",
+    "erc721"
+  ],
+  "author": "FrankNFT-labs",
+  "license": "MIT",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^1.0.2",
     "hardhat": "^2.11.1",
-    "hardhat-gas-reporter": "^1.0.9"
-  },
-  "dependencies": {
-    "@chainlink/contracts": "^0.4.1",
-    "@openzeppelin/contracts": "^4.7.3",
+    "hardhat-gas-reporter": "^1.0.9",
     "dotenv": "^16.0.2",
     "keccak256": "^1.0.6",
     "merkletreejs": "^0.2.32",
     "operator-filter-registry": "^1.3.1"
-  }
+  },
+  "dependencies": {
+    "@chainlink/contracts": "^0.4.1",
+    "@openzeppelin/contracts": "^4.7.3"
+  },
+  "bugs": {
+    "url": "https://github.com/FrankNFT-labs/ERC721F/issues"
+  },
+  "homepage": "https://github.com/FrankNFT-labs/ERC721F#readme"
 }
