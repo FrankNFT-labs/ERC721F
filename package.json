@@ -4,7 +4,7 @@
   "version": "4.8.0",
   "files": [
     "/contracts/**/*.sol",
-    "!/contracts/mocks/**/*",
+    "!/contracts/mocks/**",
     "!/contracts/token/ERC721/artifacts/**/*"
   ],
   "scripts": {

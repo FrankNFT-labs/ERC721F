@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9 <0.9.0;
 
-abstract contract ERC721Payable {
+abstract contract Payable {
     /**
     * Helper method to allow ETH withdraws.
     */
