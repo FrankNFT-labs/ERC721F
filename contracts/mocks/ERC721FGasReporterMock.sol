@@ -11,9 +11,10 @@ import "hardhat/console.sol";
  */
 
 contract ERC721FGasReporterMock is ERC721F {
-    constructor(string memory name_, string memory symbol_)
-        ERC721F(name_, symbol_)
-    {}
+    constructor(
+        string memory name_,
+        string memory symbol_
+    ) ERC721F(name_, symbol_) {}
 
     /**
      * @notice Mints a single token
@@ -41,9 +42,9 @@ contract ERC721FGasReporterMock is ERC721F {
      */
     function mint(address to, uint256 numberOfTokens) internal {
         uint256 supply = _totalMinted();
-        for (uint256 i = 0; i < numberOfTokens; ) {
-            _mint(to, supply + i);
-            unchecked {
+        unchecked {
+            for (uint256 i; i < numberOfTokens; ) {
+                _mint(to, supply + i);
                 i++;
             }
         }
@@ -86,7 +87,6 @@ contract ERC721FGasReporterMock is ERC721F {
             }
         }
     }
-
 
     /**
      * @notice Transfers the first token owned by the sender to `to`, does this fifty times
