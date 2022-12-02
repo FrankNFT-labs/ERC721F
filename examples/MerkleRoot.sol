@@ -2,7 +2,7 @@
 pragma solidity ^0.8.9 <0.9.0;
 
 import "../contracts/token/ERC721/ERC721F.sol";
-import "../contracts/token/ERC721/extensions/ERC721Payable.sol";
+import "../contracts/utils/ERC721Payable.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 /**
