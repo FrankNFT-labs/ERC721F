@@ -24,7 +24,7 @@ See the [open issues](https://github.com/FrankNFT-labs/ERC721F/issues) for a ful
 ## Usage
 ### Installation
 ```
-npm install @franknft.eth/erc721-f
+npm install '@franknft.eth/erc721-f'
 ```
 
 Just import the file from the package like this:
