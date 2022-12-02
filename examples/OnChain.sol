@@ -113,11 +113,41 @@ contract OnChain is ERC721FOnChain {
     }
 
     /**
-     * @notice Overridden function to show how to disable traits being included in the URI
+     * @dev Creates two example traits, one static and one dynamic, override function for custom traits (leave empty when no traits are wanted)
      */
     function getTraits(
-        uint256 /*id*/
+        uint256 id
     ) public pure override returns (string memory) {
-        return "";
+        require(_exists(id), "Non-Existing token");
+        string[2] memory traits;
+        traits[0] = string(
+            abi.encodePacked(
+                "{"
+                "\n",
+                '"trait_type": "TypeName",',
+                "\n",
+                '"value": "',
+                "testValue",
+                '"',
+                "\n",
+                "}"
+                "\n"
+            )
+        );
+        traits[1] = string(
+            abi.encodePacked(
+                ",{",
+                "\n",
+                '"trait_type": "Id",',
+                "\n",
+                '"value": "',
+                Strings.toString(id),
+                '"',
+                "\n",
+                "}"
+                "\n"
+            )
+        );
+        return string(abi.encodePacked("[", traits[0], traits[1], "]"));
     }
 }

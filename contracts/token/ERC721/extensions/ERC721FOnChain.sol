@@ -87,39 +87,7 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
 
     /**
      * @notice Returns the traits that are associated with `id`
-     * @dev Creates two example traits, one static and one dynamic, override function for custom traits (leave empty when no traits are wanted)
+     * @dev override and return "" to not have any traits in collection
      */
-    function getTraits(uint256 id) public view virtual returns (string memory) {
-        require(_exists(id), "Non-Existing token");
-        string[2] memory traits;
-        traits[0] = string(
-            abi.encodePacked(
-                "{"
-                "\n",
-                '"trait_type": "TypeName",',
-                "\n",
-                '"value": "',
-                "testValue",
-                '"',
-                "\n",
-                "}"
-                "\n"
-            )
-        );
-        traits[1] = string(
-            abi.encodePacked(
-                ",{",
-                "\n",
-                '"trait_type": "Id",',
-                "\n",
-                '"value": "',
-                Strings.toString(id),
-                '"',
-                "\n",
-                "}"
-                "\n"
-            )
-        );
-        return string(abi.encodePacked("[", traits[0], traits[1], "]"));
-    }
+    function getTraits(uint256) public view virtual returns (string memory) {}
 }
