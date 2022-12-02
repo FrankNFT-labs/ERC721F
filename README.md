@@ -22,13 +22,18 @@ See the [open issues](https://github.com/FrankNFT-labs/ERC721F/issues) for a ful
 <!-- USAGE EXAMPLES -->
 
 ## Usage
-Just import the file directly from Gitlab like this:
+### Installation
+```
+npm install @franknft.eth/erc721-f
+```
+
+Just import the file from the package like this:
 
 ```solidity
 // SPDX-License-Identifier: MIT 
 pragma solidity ^0.8.9 <0.9.0;
 
-import "https://github.com/FrankNFT-labs/ERC721F/blob/v4.7.1/contracts/token/ERC721/ERC721FCOMMON.sol";
+import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721FCOMMON.sol";
 
 contract Example is ERC721F {
     constructor() ERC721F("Example", "Example") {
@@ -47,6 +52,16 @@ contract Example is ERC721F {
         }
     }
 }
+```
+
+Or just import the file directly from Gitlab like this:
+
+
+```solidity
+// SPDX-License-Identifier: MIT 
+pragma solidity ^0.8.9 <0.9.0;
+
+import "https://github.com/FrankNFT-labs/ERC721F/blob/v4.7.1/contracts/token/ERC721/ERC721FCOMMON.sol";
 ```
 
 
