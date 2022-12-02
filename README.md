@@ -56,7 +56,6 @@ contract Example is ERC721F {
 
 Or just import the file directly from Gitlab like this:
 
-
 ```solidity
 // SPDX-License-Identifier: MIT 
 pragma solidity ^0.8.9 <0.9.0;
