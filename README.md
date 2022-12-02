@@ -89,4 +89,4 @@ These can be created by changing the the sources path in hardhat.config.js to ".
 [license-shield]: https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge
 [license-url]: https://github.com/FrankNFT-labs/ERC721F/blob/main/LICENSE
 [npm-shield]: https://img.shields.io/npm/v/erc721a.svg?style=for-the-badge
-[npm-url]: https://www.npmjs.com/package/erc721a
+[npm-url]: https://www.npmjs.com/package/erc721f
