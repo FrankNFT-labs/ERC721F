@@ -117,7 +117,7 @@ contract OnChain is ERC721FOnChain {
      */
     function getTraits(
         uint256 id
-    ) public pure override returns (string memory) {
+    ) public view override returns (string memory) {
         require(_exists(id), "Non-Existing token");
         string[2] memory traits;
         traits[0] = string(
