@@ -63,7 +63,6 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
 
     /**
      * @notice Generates the SVG image of the tokenId
-     * @dev override for custom svg
      */
     function renderTokenById(uint256)
         public
