@@ -2,7 +2,7 @@
 pragma solidity ^0.8.9 <0.9.0;
 
 import "../contracts/token/ERC721/ERC721F.sol";
-import "../contracts/utils/ERC721Payable.sol";
+import "../contracts/utils/Payable.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 /**
@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
  *
  * @dev Example implementation of [ERC721F] with MerkleRoot validation for whitelisted accounts that can take part in the pre-sale
  */
-contract MerkleRoot is ERC721F, ERC721Payable {
+contract MerkleRoot is ERC721F, Payable {
     uint256 public constant MAX_TOKENS = 10000;
     uint public constant MAX_PURCHASE = 31;
     uint public tokenPrice = 1 ether;
