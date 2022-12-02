@@ -67,19 +67,22 @@ contract OnChain is ERC721FOnChain {
      * @notice Overridden function to display description change in tokenURI
      */
     function getDescription() public view override returns (string memory) {
-        return string(abi.encodePacked(super.getDescription(), " - Overwrote description"));
+        return
+            string(
+                abi.encodePacked(
+                    super.getDescription(),
+                    " - Overwrote description"
+                )
+            );
     }
 
     /**
      * @notice Overridden function which creates custom SVG image
      * @dev `id` changes the displayed name in `parts[3]`, every 100th you get mew
      */
-    function renderTokenById(uint256 id)
-        public
-        view
-        override
-        returns (string memory)
-    {
+    function renderTokenById(
+        uint256 id
+    ) public view override returns (string memory) {
         require(_exists(id), "Non-Existing token");
         string[9] memory parts;
         parts[0] = svgHead;
@@ -113,11 +116,41 @@ contract OnChain is ERC721FOnChain {
     }
 
     /**
-     * @notice Overridden function to show how to disable traits being included in the URI
+     * @dev Creates two example traits, one static and one dynamic, override function for custom traits (leave empty when no traits are wanted)
      */
     function getTraits(
-        uint256 /*id*/
-    ) public pure override returns (string memory) {
-        return "";
+        uint256 id
+    ) public view override returns (string memory) {
+        require(_exists(id), "Non-Existing token");
+        string[2] memory traits;
+        traits[0] = string(
+            abi.encodePacked(
+                "{"
+                "\n",
+                '"trait_type": "TypeName",',
+                "\n",
+                '"value": "',
+                "testValue",
+                '"',
+                "\n",
+                "}"
+                "\n"
+            )
+        );
+        traits[1] = string(
+            abi.encodePacked(
+                ",{",
+                "\n",
+                '"trait_type": "Id",',
+                "\n",
+                '"value": "',
+                Strings.toString(id),
+                '"',
+                "\n",
+                "}"
+                "\n"
+            )
+        );
+        return string(abi.encodePacked("[", traits[0], traits[1], "]"));
     }
 }
