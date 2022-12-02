@@ -30,12 +30,9 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
     /**
      * @notice Creates the tokenURI which contains the name, description, generated SVG image and token traits
      */
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override
-        returns (string memory)
-    {
+    function tokenURI(
+        uint256 tokenId
+    ) public view override returns (string memory) {
         require(_exists(tokenId), "Non-Existing token");
         string memory svgData = renderTokenById(tokenId);
         string memory traits = getTraits(tokenId);
@@ -64,12 +61,9 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
     /**
      * @notice Generates the SVG image of the tokenId
      */
-    function renderTokenById(uint256)
-        public
-        view
-        virtual
-        returns (string memory)
-    {}
+    function renderTokenById(
+        uint256
+    ) public view virtual returns (string memory) {}
 
     /**
      * @notice Returns the traits that are associated with `id`

@@ -67,19 +67,22 @@ contract OnChain is ERC721FOnChain {
      * @notice Overridden function to display description change in tokenURI
      */
     function getDescription() public view override returns (string memory) {
-        return string(abi.encodePacked(super.getDescription(), " - Overwrote description"));
+        return
+            string(
+                abi.encodePacked(
+                    super.getDescription(),
+                    " - Overwrote description"
+                )
+            );
     }
 
     /**
      * @notice Overridden function which creates custom SVG image
      * @dev `id` changes the displayed name in `parts[3]`, every 100th you get mew
      */
-    function renderTokenById(uint256 id)
-        public
-        view
-        override
-        returns (string memory)
-    {
+    function renderTokenById(
+        uint256 id
+    ) public view override returns (string memory) {
         require(_exists(id), "Non-Existing token");
         string[9] memory parts;
         parts[0] = svgHead;
