@@ -83,6 +83,13 @@ describe("ERC721F", function () {
             expect(walletOwner.map(t => t.toNumber())).to.not.include.members([2]);
             expect(walletOther.map(t => t.toNumber())).to.have.members([2]);
         });
+
+        it('Should jump the 0 address', async function() {
+            await token.burn(0);
+            const walletOwner = await token.walletOfOwner(ownerAddress.address);
+
+            expect(walletOwner.map((t => t.toNumber()))).to.have.members([1]);
+        });
     });
 
     describe("totalMinted", function () {
