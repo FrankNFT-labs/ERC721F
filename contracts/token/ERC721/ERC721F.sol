@@ -44,7 +44,6 @@ contract ERC721F is Ownable, ERC721 {
             ownedTokenIndex < ownerTokenCount && currentTokenId < _tokenSupply
         ) {
             address owner = _ownerOf(currentTokenId);
-            require(owner != address(0), "ERC721: invalid token ID");
             if (owner == _owner) {
                 ownedTokenIds[ownedTokenIndex] = currentTokenId;
                 unchecked {
