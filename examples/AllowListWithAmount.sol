@@ -56,11 +56,9 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
      * @notice Mints a certain number of tokens
      * @param numberOfTokens Total tokens to be minted, must be larger than 0 and at most 30
      */
-    function mint(uint256 numberOfTokens)
-        external
-        payable
-        validMintRequest(numberOfTokens)
-    {
+    function mint(
+        uint256 numberOfTokens
+    ) external payable validMintRequest(numberOfTokens) {
         require(msg.sender == tx.origin, "No contracts allowed");
         require(saleIsActive, "Sale NOT active yet");
         uint256 supply = _totalMinted();
@@ -69,9 +67,9 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
             "Purchase would exceed max supply of tokens"
         );
 
-        for (uint256 i; i < numberOfTokens; ) {
-            _mint(msg.sender, supply + i);
-            unchecked {
+        unchecked {
+            for (uint256 i; i < numberOfTokens; ) {
+                _mint(msg.sender, supply + i);
                 i++;
             }
         }
@@ -82,7 +80,9 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
      * @param numberOfTokens Total tokens to be minted, must be larger than 0 and at most 30. Can't exceed available tokens of account within allowList
      * @dev Uses AllowList.onlyAllowListWithSufficientAvailableTokens modifier for whitelist functionality
      */
-    function mintPreSale(uint256 numberOfTokens)
+    function mintPreSale(
+        uint256 numberOfTokens
+    )
         external
         payable
         validMintRequest(numberOfTokens)
@@ -95,10 +95,10 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
             "Purchase would exceed max supply of tokens"
         );
 
-        for (uint256 i; i < numberOfTokens; ) {
-            _safeMint(msg.sender, supply + i);
-            decreaseAddressAvailableTokens(msg.sender, 1);
-            unchecked {
+        unchecked {
+            for (uint256 i; i < numberOfTokens; ) {
+                _safeMint(msg.sender, supply + i);
+                decreaseAddressAvailableTokens(msg.sender, 1);
                 i++;
             }
         }

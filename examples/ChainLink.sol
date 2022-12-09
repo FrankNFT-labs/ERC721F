@@ -39,13 +39,15 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
     // Event utilised in hardhat testing to retrieve requestId from ChainLink request
     event REQUESTEDRANDOMNESS(uint256 requestId);
 
-    constructor(uint64 _subscriptionId, address _vrfCoordinator)
-        VRFConsumerBaseV2(_vrfCoordinator)
-        ERC721F("ChainLink", "Chain")
-    {
+    constructor(
+        uint64 _subscriptionId,
+        address _vrfCoordinator
+    ) VRFConsumerBaseV2(_vrfCoordinator) ERC721F("ChainLink", "Chain") {
         COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
         subscriptionId = _subscriptionId;
-        setBaseTokenURI("ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/");
+        setBaseTokenURI(
+            "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
+        );
     }
 
     /**
@@ -99,9 +101,9 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
             "Purchase would exceed max supply of Tokens"
         );
 
-        for (uint256 i; i < numberOfTokens; ) {
-            _mint(msg.sender, (startingIndex + supply + i) % MAX_TOKENS); // no need to use safeMint as we don't allow contracts.
-            unchecked {
+        unchecked {
+            for (uint256 i; i < numberOfTokens; ) {
+                _mint(msg.sender, (startingIndex + supply + i) % MAX_TOKENS); // no need to use safeMint as we don't allow contracts.
                 i++;
             }
         }
@@ -111,10 +113,10 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
      * @notice Assigns first index of `randomWords` to `startingIndex`, altered to be between 1 and `MAX_TOKENS`
      * @dev Function which receives response of setRandomIndex
      */
-    function fulfillRandomWords(uint256, uint256[] memory randomWords)
-        internal
-        override
-    {
+    function fulfillRandomWords(
+        uint256,
+        uint256[] memory randomWords
+    ) internal override {
         startingIndex = (randomWords[0] % MAX_TOKENS) + 1;
     }
 
@@ -123,13 +125,9 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
      * @dev Override of walletOfOwner located in ERC721F, using startingIndex as startpoint of counting instead of _startTokenId
      * @return Array of all tokenIds owned by `_owner` starting from startingIndex
      */
-    function walletOfOwner(address _owner)
-        external
-        view
-        virtual
-        override
-        returns (uint256[] memory)
-    {
+    function walletOfOwner(
+        address _owner
+    ) external view virtual override returns (uint256[] memory) {
         uint256 ownerTokenCount = balanceOf(_owner);
         uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
         uint256 currentTokenId = startingIndex;
