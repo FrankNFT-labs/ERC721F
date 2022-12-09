@@ -55,9 +55,9 @@ contract OnChain is ERC721FOnChain {
             "Purchase would exceed max supply of Tokens"
         );
 
-        for (uint256 i; i < numberOfTokens; ) {
-            _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
-            unchecked {
+        unchecked {
+            for (uint256 i; i < numberOfTokens; ) {
+                _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
                 i++;
             }
         }

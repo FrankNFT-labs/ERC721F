@@ -56,11 +56,9 @@ contract AllowListExample is ERC721FCOMMON, AllowList {
      * @notice Mints a certain number of tokens
      * @param numberOfTokens Total tokens to be minted, must be larger than 0 and at most 30
      */
-    function mint(uint256 numberOfTokens)
-        external
-        payable
-        validMintRequest(numberOfTokens)
-    {
+    function mint(
+        uint256 numberOfTokens
+    ) external payable validMintRequest(numberOfTokens) {
         require(msg.sender == tx.origin, "No contracts allowed");
         require(saleIsActive, "Sale NOT active yet");
         uint256 supply = _totalMinted();
@@ -69,9 +67,9 @@ contract AllowListExample is ERC721FCOMMON, AllowList {
             "Purchase would exceed max supply of tokens"
         );
 
-        for (uint256 i; i < numberOfTokens; ) {
-            _mint(msg.sender, supply + i);
-            unchecked {
+        unchecked {
+            for (uint256 i; i < numberOfTokens; ) {
+                _mint(msg.sender, supply + i);
                 i++;
             }
         }
@@ -82,12 +80,9 @@ contract AllowListExample is ERC721FCOMMON, AllowList {
      * @param numberOfTokens Total tokens to be minted, must be larger than 0 and at most 30
      * @dev Uses AllowList.onlyAllowList modifier for whitelist functionality
      */
-    function mintPreSale(uint256 numberOfTokens)
-        external
-        payable
-        validMintRequest(numberOfTokens)
-        onlyAllowList
-    {
+    function mintPreSale(
+        uint256 numberOfTokens
+    ) external payable validMintRequest(numberOfTokens) onlyAllowList {
         require(preSaleIsActive, "PreSale is NOT active yet");
         uint256 supply = _totalMinted();
         require(
@@ -95,9 +90,9 @@ contract AllowListExample is ERC721FCOMMON, AllowList {
             "Purchase would exceed max supply of tokens"
         );
 
-        for (uint256 i; i < numberOfTokens; ) {
-            _safeMint(msg.sender, supply + i);
-            unchecked {
+        unchecked {
+            for (uint256 i; i < numberOfTokens; ) {
+                _safeMint(msg.sender, supply + i);
                 i++;
             }
         }

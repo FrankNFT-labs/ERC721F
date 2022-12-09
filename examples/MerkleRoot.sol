@@ -20,7 +20,9 @@ contract MerkleRoot is ERC721F, Payable {
 
     constructor(bytes32 _root) ERC721F("MerkleRoot Pre-Sale", "Merkle") {
         root = _root;
-        setBaseTokenURI("ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/");
+        setBaseTokenURI(
+            "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
+        );
     }
 
     modifier validMintRequest(uint256 numberOfTokens) {
@@ -67,11 +69,9 @@ contract MerkleRoot is ERC721F, Payable {
      * @notice Mints a certain number of tokens
      * @param numberOfTokens Total tokens to be minted, must be larger than 0 and at most 30
      */
-    function mint(uint256 numberOfTokens)
-        external
-        payable
-        validMintRequest(numberOfTokens)
-    {
+    function mint(
+        uint256 numberOfTokens
+    ) external payable validMintRequest(numberOfTokens) {
         require(msg.sender == tx.origin, "No Contracts allowed.");
         require(saleIsActive, "Sale NOT active yet");
         uint256 supply = _totalMinted();
@@ -80,9 +80,9 @@ contract MerkleRoot is ERC721F, Payable {
             "Purchase would exceed max supply of Tokens"
         );
 
-        for (uint256 i; i < numberOfTokens; ) {
-            _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
-            unchecked {
+        unchecked {
+            for (uint256 i; i < numberOfTokens; ) {
+                _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
                 i++;
             }
         }
@@ -94,11 +94,10 @@ contract MerkleRoot is ERC721F, Payable {
      * @param merkleProof Proof that an address is part of the whitelisted pre-sale addresses
      * @dev Uses MerkleProof to determine whether an address is allowed to mint during the pre-sale, non-mint name is due to hardhat being unable to handle function overloading
      */
-    function mintPreSale(uint256 numberOfTokens, bytes32[] calldata merkleProof)
-        external
-        payable
-        validMintRequest(numberOfTokens)
-    {
+    function mintPreSale(
+        uint256 numberOfTokens,
+        bytes32[] calldata merkleProof
+    ) external payable validMintRequest(numberOfTokens) {
         require(preSaleIsActive, "PreSale is not active yet");
         uint256 supply = _totalMinted();
         require(
@@ -107,19 +106,17 @@ contract MerkleRoot is ERC721F, Payable {
         );
         require(checkValidity(merkleProof), "Invalid Merkle Proof");
 
-        for (uint256 i; i < numberOfTokens; ) {
-            _safeMint(msg.sender, supply + i);
-            unchecked {
+        unchecked {
+            for (uint256 i; i < numberOfTokens; ) {
+                _safeMint(msg.sender, supply + i);
                 i++;
             }
         }
     }
 
-    function checkValidity(bytes32[] calldata merkleProof)
-        internal
-        view
-        returns (bool)
-    {
+    function checkValidity(
+        bytes32[] calldata merkleProof
+    ) internal view returns (bool) {
         bytes32 leafToCheck = keccak256(abi.encodePacked(msg.sender));
         return MerkleProof.verify(merkleProof, root, leafToCheck);
     }

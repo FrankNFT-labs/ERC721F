@@ -75,9 +75,9 @@ contract RevokableDefaultOperatorFiltererERC721F is
             "Purchase would exceed max supply of tokens"
         );
 
-        for (uint256 i; i < numberOfTokens; ) {
-            _mint(msg.sender, supply + i);
-            unchecked {
+        unchecked {
+            for (uint256 i; i < numberOfTokens; ) {
+                _mint(msg.sender, supply + i);
                 i++;
             }
         }
@@ -98,9 +98,9 @@ contract RevokableDefaultOperatorFiltererERC721F is
             "Purchase would exceed max supply of tokens"
         );
 
-        for (uint256 i; i < numberOfTokens; ) {
-            _safeMint(msg.sender, supply + i);
-            unchecked {
+        unchecked {
+            for (uint256 i; i < numberOfTokens; ) {
+                _safeMint(msg.sender, supply + i);
                 i++;
             }
         }

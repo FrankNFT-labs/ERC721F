@@ -33,13 +33,9 @@ contract FreeMint is ERC721F, ERC2981 {
      *
      * @return `true` if the contract implements `interfaceID` or is 0x2a55205a, `false` otherwise
      */
-    function supportsInterface(bytes4 _interfaceId)
-        public
-        view
-        virtual
-        override(ERC721, ERC2981)
-        returns (bool)
-    {
+    function supportsInterface(
+        bytes4 _interfaceId
+    ) public view virtual override(ERC721, ERC2981) returns (bool) {
         return
             _interfaceId == type(IERC2981).interfaceId ||
             super.supportsInterface(_interfaceId);
@@ -65,12 +61,10 @@ contract FreeMint is ERC721F, ERC2981 {
      * exchange. The royalty amount is denominated and should be paid in that same unit of exchange.
      * @param _tokenId is the token being sold and should exist.
      */
-    function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
-        public
-        view
-        override
-        returns (address receiver, uint256 royaltyAmount)
-    {
+    function royaltyInfo(
+        uint256 _tokenId,
+        uint256 _salePrice
+    ) public view override returns (address receiver, uint256 royaltyAmount) {
         require(
             _exists(_tokenId),
             "ERC2981RoyaltyStandard: Royalty info for nonexistent token"
@@ -101,9 +95,9 @@ contract FreeMint is ERC721F, ERC2981 {
             supply + numberOfTokens <= MAX_TOKENS,
             "Purchase would exceed max supply of Tokens"
         );
-        for (uint256 i; i < numberOfTokens; ) {
-            _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
-            unchecked {
+        unchecked {
+            for (uint256 i; i < numberOfTokens; ) {
+                _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
                 i++;
             }
         }
