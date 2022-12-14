@@ -7,3 +7,6 @@ cache
 artifacts
 .deps
 gas-report.txt
+
+#Foundry
+out/
