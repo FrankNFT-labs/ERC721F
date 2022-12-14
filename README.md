@@ -85,7 +85,11 @@ Don't forget to give the project a star! Thanks again!
 2. `npm install`
 3. `npx hardhat compile`
 4. `npx hardhat test`
-   
+
+> **Warning**
+> When running any test of a contract located in /examples, you'll receive a compilation error due to the @franknft.eth/erc721-f library not being installed.
+To prevent this error you must change all imports where @franknft.eth/erc721-f to the location of the local file. For example "../contracts/utils/AllowList.sol" in the AllowList example.
+
 > **Warning**
 > Since hardhat only compiles a single path at once, you'll probably fail every single test that's executed on solutions located in /examples. This is because those artifacts haven't been created yet.
 These can be created by changing the the sources path in hardhat.config.js to "./examples" and executing step 3 again.
