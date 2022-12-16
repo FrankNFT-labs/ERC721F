@@ -4,6 +4,13 @@ pragma solidity ^0.8.9 <0.9.0;
 import "../../../../contracts/mocks/ERC721FGasReporterMock.sol";
 import "../../../../lib/forge-std/src/Test.sol";
 
+/**
+ * Forge section commands
+ * forge test --gas-report --mt '\W*(testMint)\W*'
+ * forge test --gas-report --mt '\W*(testTransferMintOne)\W*'
+ * forge test --gas-report --mt '\W*(testTransferMintTen)\W*'
+ * forge test --gas-report --mt '\W*(testTransferMintHundred)\W*'
+ */
 contract ERC721FGasReporterMockTest is Test {
     ERC721FGasReporterMock t;
     address owner = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
@@ -28,7 +35,7 @@ contract ERC721FGasReporterMockTest is Test {
         t.mintHundred(owner);
     }
 
-    function testMintOneTransferOneAsc() public {
+    function testTransferMintOneAscOne() public {
         t.mintOne(owner);
         vm.prank(owner);
         t.transferOneAsc(other);
@@ -36,7 +43,7 @@ contract ERC721FGasReporterMockTest is Test {
         t.transferOneAsc(owner);
     }
 
-    function testMintOneTransferOneDesc() public {
+    function testTransferMintOneDescOne() public {
         t.mintOne(owner);
         vm.prank(owner);
         t.transferOneDesc(other);
@@ -44,19 +51,19 @@ contract ERC721FGasReporterMockTest is Test {
         t.transferOneDesc(owner);
     }
 
-    function testMintTenTransferOneAsc() public {
+    function testTransferMintTenAscOne() public {
         t.mintTen(owner);
         vm.prank(owner);
         t.transferOneAsc(other);
     }
 
-    function testMintTenTransferOneDesc() public {
+    function testTransferMintTenDescOne() public {
         t.mintTen(owner);
         vm.prank(owner);
         t.transferOneDesc(other);
     }
 
-    function testMintTenTransferTenAsc() public {
+    function testTransferMintTenAscTen() public {
         t.mintTen(owner);
         vm.prank(owner);
         t.transferTenAsc(other);
@@ -64,7 +71,7 @@ contract ERC721FGasReporterMockTest is Test {
         t.transferTenAsc(owner);
     }
 
-    function testMintTenTransferTenDesc() public {
+    function testTransferMintTenDescTen() public {
         t.mintTen(owner);
         vm.prank(owner);
         t.transferTenDesc(other);
@@ -72,32 +79,27 @@ contract ERC721FGasReporterMockTest is Test {
         t.transferTenDesc(owner);
     }
 
-    function testMintHundredTransferTenAsc() public {
+    function testTransferMintHundredAscTen() public {
         t.mintHundred(owner);
         vm.prank(owner);
         t.transferTenAsc(other);
     }
 
-    function testMintHundredTransferTenDesc() public {
+    function testTransferMintHundredDescTen() public {
         t.mintHundred(owner);
         vm.prank(owner);
         t.transferTenDesc(other);
     }
 
-    function testMintHundredTransferFiftyAsc() public {
+    function testTransferMintHundredAscFifty() public {
         t.mintHundred(owner);
         vm.prank(owner);
         t.transferFiftyAsc(other);
     }
 
-    function testMintHundredTransferFiftyDesc() public {
+    function testTransferMintHundredDescFifty() public {
         t.mintHundred(owner);
         vm.prank(owner);
         t.transferFiftyDesc(other);
-    }
-
-    function testWalletOfOwner() public {
-        t.mintHundred(owner);
-        t.walletOfOwner(owner);
     }
 }
