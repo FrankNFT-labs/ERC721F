@@ -81,6 +81,7 @@ Don't forget to give the project a star! Thanks again!
 5. Open a Pull Request
 
 ### Running tests locally
+#### Hardhat
 1. Copy .env.example and rename to .env
 2. `npm install`
 3. `npx hardhat compile`
@@ -96,13 +97,25 @@ These can be created by changing the the sources path in hardhat.config.js to ".
 
 **Note:** `npx hardhat clean` removes the created artifacts
 
-#### Running a single test
+##### Running a single test
 `npx hardhat test ./test/token/ERC721/GasUsage.test.js`
 
-#### Testing gas consumption
+##### Testing gas consumption
 - Enable the creation of a gas report by setting `REPORT_GAS` to `true` in `.env`
 - Toggle the creation of a gas report file by (un)commenting `outputFile` in `hardhat.config.js` 
 - Change the total runs and toggle the optimizer by changing the `solidity` `optimizer` values in `hardhat.config.js`
+
+#### Foundry
+1. Install [Rust](https://www.rust-lang.org/tools/install)
+2. Install [Foundry](https://book.getfoundry.sh/getting-started/installation)
+3. `forge build`
+4. `forge test`
+
+#### Running a single test
+`forge test --match-path test\foundry\token\ERC721\ERC721FGasReporterMock.t.sol` 
+
+#### Testing gas consumption
+`forge test --gas-report`
 
 [license-shield]: https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge
 [license-url]: https://github.com/FrankNFT-labs/ERC721F/blob/main/LICENSE
