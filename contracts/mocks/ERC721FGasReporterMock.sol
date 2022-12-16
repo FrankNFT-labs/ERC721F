@@ -111,6 +111,24 @@ contract ERC721FGasReporterMock is ERC721F {
         }
     }
 
+    function transferAsc(uint256 total, address to) public {
+        unchecked {
+            for (uint i = 0; i < total; ) {
+                transferFrom(msg.sender, to, retrieveFirstToken());
+                i++;
+            }
+        }
+    }
+
+    function transferDesc(uint256 total, address to) public {
+        unchecked {
+            for (uint i = 0; i < total; ) {
+                transferFrom(msg.sender, to, retrieveLastToken());
+                i++;
+            }
+        }
+    }
+
     /**
      * @dev Returns first id that is encountered which is owned by the sender
      */
