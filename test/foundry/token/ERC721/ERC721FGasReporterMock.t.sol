@@ -10,7 +10,7 @@ contract ERC721FGasReporterMockTest is Test {
     address other = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8;
 
     function setUp() public {
-        t = new ERC721FGasReporterMock("Gas", "Gas");
+        t = new ERC721FGasReporterMock("GAS Stress Test", "Gas");
     }
 
     function testMintOne() public {
