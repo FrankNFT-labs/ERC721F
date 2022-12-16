@@ -2,7 +2,6 @@
 pragma solidity ^0.8.9 <0.9.0;
 
 import "../token/ERC721/ERC721F.sol";
-import "hardhat/console.sol";
 
 /**
  * @title ERC721FGasReporterMock
