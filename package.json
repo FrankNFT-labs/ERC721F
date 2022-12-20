@@ -10,7 +10,8 @@
   "scripts": {
     "compile": "npx hardhat compile",
     "test": "npx hardhat test",
-    "coverage": "npx hardhat coverage"
+    "coverage": "npx hardhat coverage",
+    "generate-foundry-snapshots": ".\\scripts\\bat\\generate-snapshots.bat"
   },
   "repository": {
     "type": "git",
