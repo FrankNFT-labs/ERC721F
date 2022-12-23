@@ -11,7 +11,8 @@
     "compile": "npx hardhat compile",
     "test": "npx hardhat test",
     "coverage": "npx hardhat coverage",
-    "generate-foundry-snapshots": ".\\scripts\\bat\\generate-snapshots.bat"
+    "generate-foundry-snapshots": ".\\scripts\\bat\\generate-snapshots.bat",
+    "generate-foundry-breakeven-snapshots": ".\\scripts\\bat\\generate-breakeven-snapshots.bat"
   },
   "repository": {
     "type": "git",
