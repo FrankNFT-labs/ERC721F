@@ -21,7 +21,9 @@
   "keywords": [
     "solidity",
     "ethereum",
-    "erc721"
+    "erc721",
+    "nft",
+    "erc721f"
   ],
   "author": "FrankNFT-labs",
   "license": "MIT",
