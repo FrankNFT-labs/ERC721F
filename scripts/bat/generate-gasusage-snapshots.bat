@@ -2,16 +2,16 @@
 cls
 setlocal enabledelayedexpansion
 
-set SNAPSHOT_FILES[0]=ERC721FGasReporterMock-optimizer-disabled.gas-snapshot
-set SNAPSHOT_FILES[1]=ERC721FGasReporterMock-optimizer-200.gas-snapshot
-set SNAPSHOT_FILES[2]=ERC721FGasReporterMock-optimizer-1000.gas-snapshot
+set SNAPSHOT_FILES[0]=optimizer-disabled.gas.snapshot
+set SNAPSHOT_FILES[1]=optimizer-200.gas.snapshot
+set SNAPSHOT_FILES[2]=optimizer-1000.gas.snapshot
 
-if exist forge-snapshots\ERC721FGasReporterMock-optimizer-disabled.gas-snapshot del forge-snapshots\ERC721FGasReporterMock-optimizer-disabled.gas-snapshot
-if exist forge-snapshots\ERC721FGasReporterMock-optimizer-200.gas-snapshot del forge-snapshots\ERC721FGasReporterMock-optimizer-200.gas-snapshot
-if exist forge-snapshots\ERC721FGasReporterMock-optimizer-1000.gas-snapshot del forge-snapshots\ERC721FGasReporterMock-optimizer-1000.gas-snapshot
+if exist forge-snapshots\ERC721FGasReporterMock\optimizer-disabled.gas.snapshot del forge-snapshots\ERC721FGasReporterMock\optimizer-disabled.gas.snapshot
+if exist forge-snapshots\ERC721FGasReporterMock\optimizer-200.gas.snapshot del forge-snapshots\ERC721FGasReporterMock\optimizer-200.gas.snapshot
+if exist forge-snapshots\ERC721FGasReporterMock\optimizer-1000.gas.snapshot del forge-snapshots\ERC721FGasReporterMock\optimizer-1000.gas.snapshot
 
 for /L %%i in (0,1,2) do (
-    set SNAPSHOT_LOCATION=forge-snapshots/!SNAPSHOT_FILES[%%i]!
+    set SNAPSHOT_LOCATION=forge-snapshots/ERC721FGasReporterMock/!SNAPSHOT_FILES[%%i]!
 
     if %%i == 0 (
         node .\scripts\js\update_foundry_optimizer.js false
