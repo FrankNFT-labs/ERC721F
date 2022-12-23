@@ -7,21 +7,18 @@ set SNAPSHOT_FILES[1]=optimizer-200
 set SNAPSHOT_FILES[2]=optimizer-1000
 
 for /L %%j in (0,1,2) do (
-    set SNAPSHOT_LOCATION_ASCENDED=forge-snapshots/BreakEven/!SNAPSHOT_FILES[%%j]!-ascended.gas.snapshot
-    set SNAPSHOT_LOCATION_DESCENDED=forge-snapshots/BreakEven/!SNAPSHOT_FILES[%%j]!-descended.gas.snapshot
-
+    set SNAPSHOT_LOCATION_ASCENDED=forge-snapshots/BreakEven/!SNAPSHOT_FILES[%%j]!-ascended.gas-snapshot
+    set SNAPSHOT_LOCATION_DESCENDED=forge-snapshots/BreakEven/!SNAPSHOT_FILES[%%j]!-descended.gas-snapshot
+    
     if %%j == 0 (
-        node .\scripts\js\update_foundry_optimizer.js false
+        node .\scripts\js\update_foundry_optimizer.js false 200
         echo == Optimizer Disabled ==
+    ) else if %%j == 1 (
+        node .\scripts\js\update_foundry_optimizer.js true 200
+        echo == Optimizer - 200 runs ==
     ) else (
-        node .\scripts\js\update_foundry_optimizer.js true
-        if %%j == 1 (
-            node .\scripts\js\update_foundry_optimizer_runs.js 200
-            echo == Optimizer - 200 runs ==
-        ) else (
-            node .\scripts\js\update_foundry_optimizer_runs.js 1000
-            echo == Optimizer - 1000 runs ==
-        )
+        node .\scripts\js\update_foundry_optimizer.js true 1000
+        echo == Optimizer - 1000 runs ==
     )
 
     for /L %%i in (0,10,100) do (

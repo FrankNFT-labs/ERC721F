@@ -13,17 +13,14 @@ if exist forge-snapshots\ERC721FGasReporterMock\optimizer-1000.gas-snapshot del 
 for /L %%i in (0,1,2) do (
     set SNAPSHOT_LOCATION=forge-snapshots/ERC721FGasReporterMock/!SNAPSHOT_FILES[%%i]!
     if %%i == 0 (
-        node .\scripts\js\update_foundry_optimizer.js false
+        node .\scripts\js\update_foundry_optimizer.js false 200
         echo == Optimizer Disabled ==
+    ) else if %%i == 1 (
+        node .\scripts\js\update_foundry_optimizer.js true 200
+        echo == Optimizer - 200 runs ==
     ) else (
-        node .\scripts\js\update_foundry_optimizer.js true
-        if %%i == 1 (
-            node .\scripts\js\update_foundry_optimizer_runs.js 200
-            echo == Optimizer - 200 runs ==
-        ) else (
-            node .\scripts\js\update_foundry_optimizer_runs.js 1000
-            echo == Optimizer - 1000 runs ==
-        )
+        node .\scripts\js\update_foundry_optimizer.js true 1000
+        echo == Optimizer - 1000 runs ==
     )
 
     echo ^> Began testing of mint

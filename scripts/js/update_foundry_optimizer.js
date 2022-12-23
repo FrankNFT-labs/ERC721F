@@ -1,7 +1,8 @@
 const fs = require('fs')
 
-// get the new value from the command line arguments
-const newValue = process.argv[2]
+// get the new values from the command line arguments
+const optimizerValue = process.argv[2]
+const optimizerRunsValue = process.argv[3]
 
 // read the foundry.toml file into memory
 const foundry = fs.readFileSync('foundry.toml', 'utf8')
@@ -9,10 +10,12 @@ const foundry = fs.readFileSync('foundry.toml', 'utf8')
 // split the file into lines
 const lines = foundry.split('\n')
 
-// find the line with the optimizer variable and update its value
+// find the lines with the optimizer and optimizer_runs variables and update their values
 const updatedLines = lines.map((line) => {
   if (line.startsWith('optimizer=')) {
-    return `optimizer=${newValue}`
+    return `optimizer=${optimizerValue}`
+  } else if (line.startsWith('optimizer_runs=')) {
+    return `optimizer_runs=${optimizerRunsValue}`
   }
   return line
 })
