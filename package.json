@@ -10,7 +10,9 @@
   "scripts": {
     "compile": "npx hardhat compile",
     "test": "npx hardhat test",
-    "coverage": "npx hardhat coverage"
+    "coverage": "npx hardhat coverage",
+    "generate-foundry-gasusage-snapshots": ".\\scripts\\bat\\generate-gasusage-snapshots.bat",
+    "generate-foundry-breakeven-snapshots": ".\\scripts\\bat\\generate-breakeven-snapshots.bat"
   },
   "repository": {
     "type": "git",
