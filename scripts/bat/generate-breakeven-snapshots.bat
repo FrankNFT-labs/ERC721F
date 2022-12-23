@@ -4,10 +4,10 @@ cls
 for /L %%i in (0,10,100) do (
     if %%i == 0 (
         node .\scripts\js\update_env_breakeven_count.js 1
-        echo ^> Began updating .env with value 1
+        echo ^> Began updating .env BREAK_EVEN_COUNT with value 1
     ) else (
         node .\scripts\js\update_env_breakeven_count.js %%i
-        echo ^> Began updating .env with value %%i
+        echo ^> Began updating .env BREAK_EVEN_COUNT with value %%i
     )
     echo Finished updating .env
 
