@@ -25,44 +25,44 @@ for /L %%j in (0,1,2) do (
     )
 
     for /L %%i in (0,10,100) do (
-    if %%i == 0 (
-        node .\scripts\js\update_env_breakeven_count.js 1
-        echo ^> Began updating .env BREAK_EVEN_COUNT with value 1
-    ) else (
-        node .\scripts\js\update_env_breakeven_count.js %%i
-        echo ^> Began updating .env BREAK_EVEN_COUNT with value %%i
+        if %%i == 0 (
+            node .\scripts\js\update_env_breakeven_count.js 1
+            echo ^> Began updating .env BREAK_EVEN_COUNT with value 1
+        ) else (
+            node .\scripts\js\update_env_breakeven_count.js %%i
+            echo ^> Began updating .env BREAK_EVEN_COUNT with value %%i
+        )
+        echo Finished updating .env
+
+        echo ^> Began executing BreakEven tests
+        if not exist forge-snapshots mkdir forge-snapshots
+        forge test --mc \bBreakEven\b --gas-report > forge-snapshots/temp.gas-snapshot
+        echo Finished executing tests
+
+        echo ^> Began writing results to respective files
+        if not exist forge-snapshots\BreakEven mkdir forge-snapshots\BreakEven
+        if %%i == 0 (
+            for /f "delims=" %%i in ('findstr /C:"Function Name" .\forge-snapshots\temp.gas-snapshot') do (echo       %%i > !SNAPSHOT_LOCATION_ASCENDED!)
+            for /f "delims=" %%i in ('findstr /C:"Function Name" .\forge-snapshots\temp.gas-snapshot') do (echo       %%i > !SNAPSHOT_LOCATION_DESCENDED!)
+            for /f "delims=" %%i in ('findstr /C:"mintHundred" .\forge-snapshots\temp.gas-snapshot') do (echo       %%i >> !SNAPSHOT_LOCATION_ASCENDED!)
+            for /f "delims=" %%i in ('findstr /C:"mintHundred" .\forge-snapshots\temp.gas-snapshot') do (echo       %%i >> !SNAPSHOT_LOCATION_DESCENDED!)
+
+            echo. >> !SNAPSHOT_LOCATION_ASCENDED!
+            echo. >> !SNAPSHOT_LOCATION_DESCENDED!
+            echo Tokens transfered 1 >> !SNAPSHOT_LOCATION_ASCENDED!
+            echo Tokens transfered 1 >> !SNAPSHOT_LOCATION_DESCENDED!
+        ) else (
+            echo. >> !SNAPSHOT_LOCATION_ASCENDED!
+            echo. >> !SNAPSHOT_LOCATION_DESCENDED!
+            echo Tokens transfered %%i >> !SNAPSHOT_LOCATION_ASCENDED!
+            echo Tokens transfered %%i >> !SNAPSHOT_LOCATION_DESCENDED!
+        )
+        for /f "delims=" %%i in ('findstr /C:"transferAsc" .\forge-snapshots\temp.gas-snapshot') do (echo       %%i >> !SNAPSHOT_LOCATION_ASCENDED!)
+        for /f "delims=" %%i in ('findstr /C:"transferDesc" .\forge-snapshots\temp.gas-snapshot') do (echo       %%i >> !SNAPSHOT_LOCATION_DESCENDED!)
+        echo Finished writing results
+
+        echo.
     )
-    echo Finished updating .env
-
-    echo ^> Began executing BreakEven tests
-    forge test --mc \bBreakEven\b --gas-report > forge-snapshots/temp.gas-snapshot
-    echo Finished executing tests
-
-    echo ^> Began writing results to respective files
-    if not exist forge-snapshots mkdir forge-snapshots
-    if not exist forge-snapshots\BreakEven mkdir forge-snapshots\BreakEven
-    if %%i == 0 (
-        for /f "delims=" %%i in ('findstr /C:"Function Name" .\forge-snapshots\temp.gas-snapshot') do (echo       %%i > !SNAPSHOT_LOCATION_ASCENDED!)
-        for /f "delims=" %%i in ('findstr /C:"Function Name" .\forge-snapshots\temp.gas-snapshot') do (echo       %%i > !SNAPSHOT_LOCATION_DESCENDED!)
-        for /f "delims=" %%i in ('findstr /C:"mintHundred" .\forge-snapshots\temp.gas-snapshot') do (echo       %%i >> !SNAPSHOT_LOCATION_ASCENDED!)
-        for /f "delims=" %%i in ('findstr /C:"mintHundred" .\forge-snapshots\temp.gas-snapshot') do (echo       %%i >> !SNAPSHOT_LOCATION_DESCENDED!)
-
-        echo. >> !SNAPSHOT_LOCATION_ASCENDED!
-        echo. >> !SNAPSHOT_LOCATION_DESCENDED!
-        echo Tokens transfered 1 >> !SNAPSHOT_LOCATION_ASCENDED!
-        echo Tokens transfered 1 >> !SNAPSHOT_LOCATION_DESCENDED!
-    ) else (
-        echo. >> !SNAPSHOT_LOCATION_ASCENDED!
-        echo. >> !SNAPSHOT_LOCATION_DESCENDED!
-        echo Tokens transfered %%i >> !SNAPSHOT_LOCATION_ASCENDED!
-        echo Tokens transfered %%i >> !SNAPSHOT_LOCATION_DESCENDED!
-    )
-    for /f "delims=" %%i in ('findstr /C:"transferAsc" .\forge-snapshots\temp.gas-snapshot') do (echo       %%i >> !SNAPSHOT_LOCATION_ASCENDED!)
-    for /f "delims=" %%i in ('findstr /C:"transferDesc" .\forge-snapshots\temp.gas-snapshot') do (echo       %%i >> !SNAPSHOT_LOCATION_DESCENDED!)
-    echo Finished writing results
-
-    echo.
-)
 )
 
 del forge-snapshots\temp.gas-snapshot
