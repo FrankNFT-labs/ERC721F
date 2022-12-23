@@ -13,10 +13,16 @@ contract BreakEven is Test {
     ERC721FGasReporterMock t;
     address owner = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
     address other = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8;
-    uint256 totalTransfered = 42;
+    uint256 totalTransfered;
+    uint256 constant backupTotalTransfered = 100;
 
     function setUp() public {
         t = new ERC721FGasReporterMock("GAS Stress Test", "Gas");
+        try vm.envUint("BREAK_EVEN_COUNT") returns (uint256 result) {
+            totalTransfered = result;
+        } catch {
+            totalTransfered = backupTotalTransfered;
+        }
     }
 
     function testTransferAscMintHundred() public {
