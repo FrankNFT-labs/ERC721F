@@ -2,17 +2,16 @@
 cls
 setlocal enabledelayedexpansion
 
-set SNAPSHOT_FILES[0]=optimizer-disabled.gas.snapshot
-set SNAPSHOT_FILES[1]=optimizer-200.gas.snapshot
-set SNAPSHOT_FILES[2]=optimizer-1000.gas.snapshot
+set SNAPSHOT_FILES[0]=optimizer-disabled.gas-snapshot
+set SNAPSHOT_FILES[1]=optimizer-200.gas-snapshot
+set SNAPSHOT_FILES[2]=optimizer-1000.gas-snapshot
 
-if exist forge-snapshots\ERC721FGasReporterMock\optimizer-disabled.gas.snapshot del forge-snapshots\ERC721FGasReporterMock\optimizer-disabled.gas.snapshot
-if exist forge-snapshots\ERC721FGasReporterMock\optimizer-200.gas.snapshot del forge-snapshots\ERC721FGasReporterMock\optimizer-200.gas.snapshot
-if exist forge-snapshots\ERC721FGasReporterMock\optimizer-1000.gas.snapshot del forge-snapshots\ERC721FGasReporterMock\optimizer-1000.gas.snapshot
+if exist forge-snapshots\ERC721FGasReporterMock\optimizer-disabled.gas-snapshot del forge-snapshots\ERC721FGasReporterMock\optimizer-disabled.gas-snapshot
+if exist forge-snapshots\ERC721FGasReporterMock\optimizer-200.gas-snapshot del forge-snapshots\ERC721FGasReporterMock\optimizer-200.gas-snapshot
+if exist forge-snapshots\ERC721FGasReporterMock\optimizer-1000.gas-snapshot del forge-snapshots\ERC721FGasReporterMock\optimizer-1000.gas-snapshot
 
 for /L %%i in (0,1,2) do (
     set SNAPSHOT_LOCATION=forge-snapshots/ERC721FGasReporterMock/!SNAPSHOT_FILES[%%i]!
-
     if %%i == 0 (
         node .\scripts\js\update_foundry_optimizer.js false
         echo == Optimizer Disabled ==
@@ -28,6 +27,7 @@ for /L %%i in (0,1,2) do (
     )
 
     echo ^> Began testing of mint
+    if not exist forge-snapshots mkdir forge-snapshots
     forge test --mc \bERC721FGasReporterMockTest\b --match-test \W*^(testMint^)\W* --gas-report > forge-snapshots/temp.gas-snapshot
     echo Finished mint tests
     echo ^> Began writing results in respective file

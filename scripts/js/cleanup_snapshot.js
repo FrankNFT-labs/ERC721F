@@ -40,7 +40,5 @@ fs.readFile(inputFilename, 'utf8', (err, data) => {
       console.error(err);
       return;
     }
-
-    console.log(`Successfully written to ${outputFilename}`);
   });
 });
