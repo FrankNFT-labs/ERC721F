@@ -6,5 +6,5 @@ for /L %%i in (0,10,100) do (
     ) else (
         node .\scripts\js\update_env_breakeven_count.js %%i
     )
-    forge test --mc \bBreakEven\b --gas-report -vvv
+    forge test --mc \bBreakEven\b --gas-report > forge-snapshots/temp.gas-snapshot
 )
