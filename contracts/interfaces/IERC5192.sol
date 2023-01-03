@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9 <0.9.0;
 
+/// @title EIP-5192 Non-Fungible Token Standard
+/// Based on https://eips.ethereum.org/EIPS/eip-5192
 interface IERC5192 {
     /// @notice Emitted when the locking status is changed to locked.
     /// @dev If a token is minted and the status is locked, this event should be emitted.
