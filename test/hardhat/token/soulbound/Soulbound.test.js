@@ -395,7 +395,10 @@ describe("Soulbound", function () {
         });
 
         it("Should emit the Locked event when set to false", async function () {
-            await expect(token.unlockedStatus(0, false)).to.emit(token, "Locked");
+            await expect(token.unlockedStatus(0, false)).to.emit(
+                token,
+                "Locked"
+            );
 
             expect(await token.locked(0)).to.be.true;
         });
