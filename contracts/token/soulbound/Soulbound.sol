@@ -115,7 +115,7 @@ contract Soulbound is IERC5192, ERC721F {
         uint256 tokenId
     ) internal virtual override onlyOwner {
         super._mint(to, tokenId);
-        flipLocked(tokenId);
+        lockedStatus(tokenId, true);
     }
 
     /**
@@ -145,14 +145,13 @@ contract Soulbound is IERC5192, ERC721F {
     }
 
     /**
-     * @notice Flips the lockedState of `tokenId` from `false` to `true` and `true` to `false`
+     * @notice Sets the lockedState of `tokenId` to `_lockedStatus`
      * @dev `tokenId` must have been minted before execution
      */
-    function flipLocked(uint256 tokenId) public onlyOwner {
+    function lockedStatus(uint256 tokenId, bool _lockedStatus) public onlyOwner {
         require(_exists(tokenId), "Token has yet to be minted");
-        bool lockedStatus = !_lockedTokens[tokenId];
-        _lockedTokens[tokenId] = lockedStatus;
-        if (lockedStatus) {
+        _lockedTokens[tokenId] = _lockedStatus;
+        if (_lockedStatus) {
             emit Locked(tokenId);
         } else {
             emit Unlocked(tokenId);
@@ -189,7 +188,7 @@ contract Soulbound is IERC5192, ERC721F {
     }
 
     /**
-     * @notice Transfers `tokenId` from `from` to `to`
+     * @notice Transfers `tokenId` from `from` to `to` and locks `tokenId`
      * @dev Only executable on non-locked token by owner or approved addresses
      */
     function transferFrom(
@@ -204,6 +203,7 @@ contract Soulbound is IERC5192, ERC721F {
         onlyOwnerOrApproved(msg.sender, tokenId)
     {
         _transfer(from, to, tokenId);
+        lockedStatus(tokenId, true);
     }
 
     /**
@@ -219,7 +219,7 @@ contract Soulbound is IERC5192, ERC721F {
     }
 
     /**
-     * @dev See {IERC721-safeTransferFrom}.
+     * @dev See {IERC721-safeTransferFrom} and locks `tokenId`
      * @dev Only executable on non-locked token by owner or approved addresses
      */
     function safeTransferFrom(
@@ -235,5 +235,6 @@ contract Soulbound is IERC5192, ERC721F {
         onlyOwnerOrApproved(msg.sender, tokenId)
     {
         _safeTransfer(from, to, tokenId, data);
+        lockedStatus(tokenId, true);
     }
 }
