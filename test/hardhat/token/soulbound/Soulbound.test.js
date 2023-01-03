@@ -318,7 +318,7 @@ describe("Soulbound", function () {
         });
     });
 
-    describe("flipLocked", function () {
+    describe("lockedStatus", function () {
         let token;
         let otherAddress;
         let addressToBeApproved;
@@ -334,13 +334,13 @@ describe("Soulbound", function () {
         });
 
         it("Should only be executable by the owner of the conract", async function () {
-            await expect(token.flipLocked(0)).to.not.be.reverted;
+            await expect(token.lockedStatus(0, true)).to.not.be.reverted;
         });
 
         it("Shouldn't be executable by approved addresses", async function () {
             await token.approve(addressToBeApproved.address, 0);
             await expect(
-                token.connect(addressToBeApproved).flipLocked(0)
+                token.connect(addressToBeApproved).lockedStatus(0, true)
             ).to.be.revertedWith("Ownable: caller is not the owner");
 
             await token.approve(ethers.constants.AddressZero, 0);
@@ -350,45 +350,46 @@ describe("Soulbound", function () {
                 true
             );
             await expect(
-                token.connect(addressToBeApproved).flipLocked(0)
+                token.connect(addressToBeApproved).lockedStatus(0, true)
             ).to.be.revertedWith("Ownable: caller is not the owner");
         });
 
         it("Shouldn't be executable by other addresses", async function () {
             await expect(
-                token.connect(otherAddress).flipLocked(0)
+                token.connect(otherAddress).lockedStatus(0, true)
             ).to.be.revertedWith("Ownable: caller is not the owner");
         });
 
         it("Should revert when token has yet to be minted", async function () {
-            await expect(token.flipLocked(1)).to.be.revertedWith(
+            await expect(token.lockedStatus(1, true)).to.be.revertedWith(
                 "Token has yet to be minted"
             );
         });
 
-        it("Should flip the status of a minted token to false", async function () {
-            await token.flipLocked(0);
+        it("Should set the status of a minted token to false", async function () {
+            await token.lockedStatus(0, false);
 
             expect(await token.locked(0)).to.be.false;
         });
 
-        it("Should flip the status of a minted token to true when double flipping", async function () {
-            await token.flipLocked(0);
-            await token.flipLocked(0);
+        it("Should set the status of a minted token to true when status is false", async function () {
+            await token.lockedStatus(0, false);
+
+            expect(await token.locked(0)).to.be.false;
+
+            await token.lockedStatus(0, true);
 
             expect(await token.locked(0)).to.be.true;
         });
 
-        it("Should emit the Unlocked event when flipping to false", async function () {
-            await expect(token.flipLocked(0)).to.emit(token, "Unlocked");
+        it("Should emit the Unlocked event when set to false", async function () {
+            await expect(token.lockedStatus(0, false)).to.emit(token, "Unlocked");
 
             expect(await token.locked(0)).to.be.false;
         });
 
-        it("Should emit the Locked event when flipping to true", async function () {
-            await token.flipLocked(0);
-
-            await expect(token.flipLocked(0)).to.emit(token, "Locked");
+        it("Should emit the Locked event when set to true", async function () {
+            await expect(token.lockedStatus(0, true)).to.emit(token, "Locked");
 
             expect(await token.locked(0)).to.be.true;
         });
@@ -424,7 +425,7 @@ describe("Soulbound", function () {
                 "Token is owned by zero address"
             );
 
-            await token.flipLocked(0);
+            await token.lockedStatus(0, false);
 
             await expect(token.locked(0)).to.not.be.reverted;
 
@@ -501,8 +502,9 @@ describe("Soulbound", function () {
         });
 
         context("Token is unlocked", function () {
+            
             it("Should allow transfers done by owner", async function () {
-                await token.flipLocked(0);
+                await token.locked(0);
 
                 await expect(
                     token.transferFrom(
@@ -650,6 +652,10 @@ describe("Soulbound", function () {
                 ).to.be.revertedWith(
                     "Address is neither owner of contract nor approved for token/tokenowner"
                 );
+            });
+
+            it("Should lock the token again post-transfer", async function() {
+                await token.flipLocked(0);
             });
         });
     });
