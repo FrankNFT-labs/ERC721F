@@ -146,7 +146,7 @@ contract Soulbound is IERC5192, ERC721F {
 
     /**
      * @notice Flips the lockedState of `tokenId` from `false` to `true` and `true` to `false`
-     * @dev Token can't be owned by zero address
+     * @dev `tokenId` must have been minted before execution
      */
     function flipLocked(uint256 tokenId) public onlyOwner {
         require(_exists(tokenId), "Token has yet to be minted");
