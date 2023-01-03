@@ -193,7 +193,7 @@ contract Soulbound is IERC5192, ERC721F {
         address from,
         address to,
         uint256 tokenId
-    ) public virtual override onlyNonLocked(tokenId) onlyOwnerOrApproved(msg.sender, tokenId) {
+    ) public virtual override {
         safeTransferFrom(from, to, tokenId, "");
     }
 
