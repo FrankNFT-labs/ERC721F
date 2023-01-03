@@ -205,6 +205,23 @@ describe("Soulbound", function () {
         it("Shouldn't be executable by other addresses", async function() {
             await expect(token.connect(otherAddress).flipLocked(0)).to.be.revertedWith("Ownable: caller is not the owner");
         });
+
+        it("Should revert when token has yet to be minted", async function() {
+            await expect(token.flipLocked(1)).to.be.revertedWith("Token has yet to be minted");
+        });
+
+        it("Should flip the status of a minted token to false", async function() {
+            await token.flipLocked(0);
+            
+            expect(await token.locked(0)).to.be.false;
+        });
+
+        it("Should flip the status of a minted token to true when double flipping", async function() {
+            await token.flipLocked(0);
+            await token.flipLocked(0);
+
+            expect(await token.locked(0)).to.be.true;
+        });
     })
 
     describe("transferFrom", function () {
