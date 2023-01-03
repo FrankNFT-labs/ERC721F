@@ -308,6 +308,14 @@ describe("Soulbound", function () {
 
             expect(await hardhatToken.locked(0)).to.be.true;
         });
+
+        it("Should cause the Locked event to be emitted", async function () {
+            const { hardhatToken, addr1 } = await loadFixture(
+                deployTokenFixture
+            );
+
+            await expect(hardhatToken.mint(addr1.address)).to.emit(hardhatToken, "Locked");
+        });
     });
 
     describe("flipLocked", function () {
