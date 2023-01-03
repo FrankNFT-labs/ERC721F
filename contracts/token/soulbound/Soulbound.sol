@@ -27,6 +27,14 @@ contract Soulbound is IERC5192, ERC721F {
     }
 
     /**
+     * @dev Only a `tokenId` which has not been locked passes
+     */
+    modifier onlyNonLocked(uint256 tokenId) {
+        require(!_lockedTokens[tokenId], "Token has been locked");
+        _;
+    }
+
+    /**
      * @notice Approve `to` to have transfer- and burnperms of `tokenId`
      */
     function approve(address to, uint256 tokenId)
@@ -101,9 +109,9 @@ contract Soulbound is IERC5192, ERC721F {
     }
 
     /**
-     * @dev Burn function is only executable by the owner of the contract or approved addresses, increases `_burnCounter` for proper functionality of totalSupply
+     * @dev Burn function is only executable on non-locked token by the owner of the contract or approved addresses, increases `_burnCounter` for proper functionality of totalSupply
      */
-    function _burn(uint256 tokenId) internal virtual override {
+    function _burn(uint256 tokenId) internal virtual override onlyNonLocked(tokenId) {
         if (
             !isOwnerOrApproved(msg.sender, tokenId) &&
             !(ownerOf(tokenId) == msg.sender && _tokenHolderIsAllowedToBurn)
@@ -125,6 +133,7 @@ contract Soulbound is IERC5192, ERC721F {
     }
 
     function flipLocked(uint256 tokenId) public onlyOwner {
+        require(_exists(tokenId), "Token has yet to be minted");
         bool lockedStatus = !_lockedTokens[tokenId];
         _lockedTokens[tokenId] = lockedStatus;
         if (lockedStatus) {
@@ -166,38 +175,38 @@ contract Soulbound is IERC5192, ERC721F {
 
     /**
      * @notice Transfers `tokenId` from `from` to `to`
-     * @dev Only executable by owner or approved addresses
+     * @dev Only executable on non-locked token by owner or approved addresses
      */
     function transferFrom(
         address from,
         address to,
         uint256 tokenId
-    ) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
+    ) public virtual override onlyNonLocked(tokenId) onlyOwnerOrApproved(msg.sender, tokenId) {
         _transfer(from, to, tokenId);
     }
 
     /**
      * @dev See {IERC721-safeTransferFrom}.
-     * @dev Only executable by owner or approved addresses
+     * @dev Only executable on non-locked token by owner or approved addresses
      */
     function safeTransferFrom(
         address from,
         address to,
         uint256 tokenId
-    ) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
+    ) public virtual override onlyNonLocked(tokenId) onlyOwnerOrApproved(msg.sender, tokenId) {
         safeTransferFrom(from, to, tokenId, "");
     }
 
     /**
      * @dev See {IERC721-safeTransferFrom}.
-     * @dev Only executable by owner or approved addresses
+     * @dev Only executable on non-locked token by owner or approved addresses
      */
     function safeTransferFrom(
         address from,
         address to,
         uint256 tokenId,
         bytes memory data
-    ) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
+    ) public virtual override onlyNonLocked(tokenId) onlyOwnerOrApproved(msg.sender, tokenId) {
         _safeTransfer(from, to, tokenId, data);
     }
 }
