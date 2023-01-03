@@ -127,6 +127,7 @@ contract Soulbound is IERC5192, ERC721F {
         onlyOwner
     {
         super._mint(to, tokenId);
+        flipLocked(tokenId);
     }
 
     /**
