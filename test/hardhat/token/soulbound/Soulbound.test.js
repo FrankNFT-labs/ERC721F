@@ -374,7 +374,7 @@ describe("Soulbound", function () {
         });
     });
 
-    describe.only("safeTransferFrom", function () {
+    describe("safeTransferFrom", function () {
         let token;
         let ownerAdress;
         let otherAddress;
@@ -472,56 +472,83 @@ describe("Soulbound", function () {
         });
 
         context("With data parameter", function () {
-            it("Should allow transfers done by owner", async function () {
-                await expect(token.safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)).to.not.be.reverted;
+            context("Token is locked", function() {
+                it("Shouldn't allow transfers by anyone", async function() {
+                    await token.approve(addressToBeApproved.address, 0);
+
+                    await expect(token.safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)).to.be.revertedWith("Token has been locked");
+                    await expect(token.connect(otherAddress).safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)).to.be.revertedWith("Token has been locked");
+                    await expect(token.connect(addressToBeApproved).safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)).to.be.revertedWith("Token has been locked");
+
+                    await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+                    await expect(token.connect(addressToBeApproved).safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)).to.be.revertedWith("Token has been locked");
+                });
             });
 
-            it("Shouldn't allow transfers by unapproved addresses", async function () {
-                await expect(token.connect(addressToBeApproved).safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
-            });
+            context("Token is unlocked", function() {
+                it("Should allow transfers done by owner", async function () {
+                    await token.flipLocked(0);
 
-            it("Should allow transfers by approved addresses", async function () {
-                await token.approve(addressToBeApproved.address, 0);
+                    await expect(token.safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)).to.not.be.reverted;
+                });
+    
+                it("Shouldn't allow transfers by unapproved addresses", async function () {
+                    await token.flipLocked(0);
 
-                await expect(token.connect(addressToBeApproved).safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)).to.not.be.reverted;
-            });
+                    await expect(token.connect(addressToBeApproved).safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
+                });
+    
+                it("Should allow transfers by approved addresses", async function () {
+                    await token.flipLocked(0);
+                    await token.approve(addressToBeApproved.address, 0);
+    
+                    await expect(token.connect(addressToBeApproved).safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)).to.not.be.reverted;
+                });
+    
+                it("Should allow transfers by approved-all addresses", async function () {
+                    await token.flipLocked(0);
+                    await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+    
+                    await expect(token.connect(addressToBeApproved).safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)).to.not.be.reverted;
+                });
+    
+                it("Should transfer the token between addresses", async function () {
+                    await token.flipLocked(0);
 
-            it("Should allow transfers by approved-all addresses", async function () {
-                await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+                    await expect(token.safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)).to.changeTokenBalances(token, [otherAddress.address, ownerAdress.address], [-1, 1]);
+                    expect(await token.ownerOf(0)).to.be.equal(ownerAdress.address);
+                });
+    
+                it("Should remove the approval status of approved address post transfer", async function () {
+                    await token.flipLocked(0);
 
-                await expect(token.connect(addressToBeApproved).safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)).to.not.be.reverted;
-            });
-
-            it("Should transfer the token between addresses", async function () {
-                await expect(token.safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)).to.changeTokenBalances(token, [otherAddress.address, ownerAdress.address], [-1, 1]);
-                expect(await token.ownerOf(0)).to.be.equal(ownerAdress.address);
-            });
-
-            it("Should remove the approval status of approved address post transfer", async function () {
-                await token.approve(addressToBeApproved.address, 0);
-                expect(await token.getApproved(0)).to.equal(addressToBeApproved.address);
-
-                await token.connect(addressToBeApproved).safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)
-
-                expect(await token.getApproved(0)).to.not.equal(addressToBeApproved.address);
-                expect(await token.getApproved(0)).to.equal(ethers.constants.AddressZero);
-            });
-
-            it("Shouldn't remove approval status of an approved-all address post transfer", async function () {
-                await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
-
-                await token.connect(addressToBeApproved).safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00);
-
-                expect(await token.isApprovedForAll(otherAddress.address, addressToBeApproved.address)).to.be.true;
-            });
-
-            it("Shouldn't allow transfers from addresses which had their approved-all status removed", async function () {
-                await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
-                expect(await token.isApprovedForAll(otherAddress.address, addressToBeApproved.address)).to.be.true;
-
-                await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, false);
-
-                expect(await token.safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
+                    await token.approve(addressToBeApproved.address, 0);
+                    expect(await token.getApproved(0)).to.equal(addressToBeApproved.address);
+    
+                    await token.connect(addressToBeApproved).safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)
+    
+                    expect(await token.getApproved(0)).to.not.equal(addressToBeApproved.address);
+                    expect(await token.getApproved(0)).to.equal(ethers.constants.AddressZero);
+                });
+    
+                it("Shouldn't remove approval status of an approved-all address post transfer", async function () {
+                    await token.flipLocked(0);
+                    await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+    
+                    await token.connect(addressToBeApproved).safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00);
+    
+                    expect(await token.isApprovedForAll(otherAddress.address, addressToBeApproved.address)).to.be.true;
+                });
+    
+                it("Shouldn't allow transfers from addresses which had their approved-all status removed", async function () {
+                    await token.flipLocked(0);
+                    await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+                    expect(await token.isApprovedForAll(otherAddress.address, addressToBeApproved.address)).to.be.true;
+    
+                    await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, false);
+    
+                    expect(await token.safeTransferFromHelperWithData(otherAddress.address, ownerAdress.address, 0, 0x00)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
+                });
             });
         });
     });
