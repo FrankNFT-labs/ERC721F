@@ -321,7 +321,7 @@ describe("Soulbound", function () {
         });
     });
 
-    describe("lockedStatus", function () {
+    describe("unlockedStatus", function () {
         let token;
         let otherAddress;
         let addressToBeApproved;
@@ -337,13 +337,13 @@ describe("Soulbound", function () {
         });
 
         it("Should only be executable by the owner of the conract", async function () {
-            await expect(token.lockedStatus(0, true)).to.not.be.reverted;
+            await expect(token.unlockedStatus(0, true)).to.not.be.reverted;
         });
 
         it("Shouldn't be executable by approved addresses", async function () {
             await token.approve(addressToBeApproved.address, 0);
             await expect(
-                token.connect(addressToBeApproved).lockedStatus(0, true)
+                token.connect(addressToBeApproved).unlockedStatus(0, true)
             ).to.be.revertedWith("Ownable: caller is not the owner");
 
             await token.approve(ethers.constants.AddressZero, 0);
@@ -353,40 +353,40 @@ describe("Soulbound", function () {
                 true
             );
             await expect(
-                token.connect(addressToBeApproved).lockedStatus(0, true)
+                token.connect(addressToBeApproved).unlockedStatus(0, true)
             ).to.be.revertedWith("Ownable: caller is not the owner");
         });
 
         it("Shouldn't be executable by other addresses", async function () {
             await expect(
-                token.connect(otherAddress).lockedStatus(0, true)
+                token.connect(otherAddress).unlockedStatus(0, true)
             ).to.be.revertedWith("Ownable: caller is not the owner");
         });
 
         it("Should revert when token has yet to be minted", async function () {
-            await expect(token.lockedStatus(1, true)).to.be.revertedWith(
+            await expect(token.unlockedStatus(1, true)).to.be.revertedWith(
                 "Token has yet to be minted"
             );
         });
 
-        it("Should set the status of a minted token to false", async function () {
-            await token.lockedStatus(0, false);
+        it("Should set the lockstatus of a minted token to false", async function () {
+            await token.unlockedStatus(0, true);
 
             expect(await token.locked(0)).to.be.false;
         });
 
-        it("Should set the status of a minted token to true when status is false", async function () {
-            await token.lockedStatus(0, false);
+        it("Should set the lockstatus of a minted token to true when status is false", async function () {
+            await token.unlockedStatus(0, true);
 
             expect(await token.locked(0)).to.be.false;
 
-            await token.lockedStatus(0, true);
+            await token.unlockedStatus(0, false);
 
             expect(await token.locked(0)).to.be.true;
         });
 
-        it("Should emit the Unlocked event when set to false", async function () {
-            await expect(token.lockedStatus(0, false)).to.emit(
+        it("Should emit the Unlocked event when set to true", async function () {
+            await expect(token.unlockedStatus(0, true)).to.emit(
                 token,
                 "Unlocked"
             );
@@ -394,8 +394,8 @@ describe("Soulbound", function () {
             expect(await token.locked(0)).to.be.false;
         });
 
-        it("Should emit the Locked event when set to true", async function () {
-            await expect(token.lockedStatus(0, true)).to.emit(token, "Locked");
+        it("Should emit the Locked event when set to false", async function () {
+            await expect(token.unlockedStatus(0, false)).to.emit(token, "Locked");
 
             expect(await token.locked(0)).to.be.true;
         });
@@ -431,7 +431,7 @@ describe("Soulbound", function () {
                 "Token is owned by zero address"
             );
 
-            await token.lockedStatus(0, false);
+            await token.unlockedStatus(0, true);
 
             await expect(token.locked(0)).to.not.be.reverted;
 
@@ -509,7 +509,7 @@ describe("Soulbound", function () {
 
         context("Token is unlocked", function () {
             beforeEach(async () => {
-                await token.lockedStatus(0, false);
+                await token.unlockedStatus(0, true);
             });
 
             it("Should allow transfers done by owner", async function () {
@@ -729,7 +729,7 @@ describe("Soulbound", function () {
 
             context("Token is unlocked", function () {
                 beforeEach(async () => {
-                    await token.lockedStatus(0, false);
+                    await token.unlockedStatus(0, true);
                 });
 
                 it("Should allow transfers done by owner", async function () {
@@ -946,7 +946,7 @@ describe("Soulbound", function () {
 
             context("Token is unlocked", function () {
                 beforeEach(async () => {
-                    await token.lockedStatus(0, false);
+                    await token.unlockedStatus(0, true);
                 });
 
                 it("Should allow transfers done by owner", async function () {
@@ -1161,7 +1161,7 @@ describe("Soulbound", function () {
 
         context("Token is unlocked", async function () {
             beforeEach(async () => {
-                await token.lockedStatus(0, false);
+                await token.unlockedStatus(0, true);
             });
 
             it("Should allow burns done by owner", async function () {
@@ -1271,7 +1271,7 @@ describe("Soulbound", function () {
                 deployTokenFixture
             );
             await hardhatToken.mint(owner.address);
-            await hardhatToken.lockedStatus(0, false);
+            await hardhatToken.unlockedStatus(0, true);
             await hardhatToken.mint(owner.address);
             await hardhatToken.burn(0);
 
@@ -1295,7 +1295,7 @@ describe("Soulbound", function () {
                 deployTokenFixture
             );
             await hardhatToken.mint(owner.address);
-            await hardhatToken.lockedStatus(0, false);
+            await hardhatToken.unlockedStatus(0, true);
             await hardhatToken.mint(owner.address);
             await hardhatToken.burn(0);
 
@@ -1312,7 +1312,7 @@ describe("Soulbound", function () {
 
             expect(await hardhatToken.totalBurned()).to.be.equal(0);
 
-            await hardhatToken.lockedStatus(0, false);
+            await hardhatToken.unlockedStatus(0, true);
             await hardhatToken.burn(0);
 
             expect(await hardhatToken.totalBurned()).to.be.equal(1);
