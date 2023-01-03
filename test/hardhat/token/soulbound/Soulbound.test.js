@@ -15,7 +15,7 @@ describe("Soulbound", function () {
     }
 
     describe("supportsInterface", function() {
-        it.only("Should return true with interfaceId=0xb45a3c0e", async function() {
+        it("Should return true with interfaceId=0xb45a3c0e", async function() {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
             expect(await hardhatToken.supportsInterface(0xb45a3c0e)).to.be.true;
@@ -241,6 +241,40 @@ describe("Soulbound", function () {
             await expect(token.flipLocked(0)).to.emit(token, 'Locked');
 
             expect(await token.locked(0)).to.be.true;
+        });
+    });
+
+    describe("locked", function() {
+        let token;
+        let otherAddress;
+        let addressToBeApproved;
+
+        beforeEach(async () => {
+            const { hardhatToken, addr1, addr2 } = await loadFixture(deployTokenFixture);
+            token = hardhatToken;
+            otherAddress = addr1;
+            addressToBeApproved = addr2;
+            await token.mint(otherAddress.address);
+        });
+
+        it("Should be executable by anyone", async function() {
+            await token.approve(addressToBeApproved.address, 0);
+
+            await expect(token.locked(0)).to.not.be.reverted;
+            await expect(token.connect(addressToBeApproved).locked(0)).to.not.be.reverted;
+            await expect(token.connect(otherAddress).locked(0)).to.not.be.reverted;
+        });
+
+        it("Should revert when requesting a token owned by the zero address", async function() {
+            await expect(token.locked(1)).to.be.revertedWith("Token is owned by zero address");
+
+            await token.flipLocked(0);
+
+            await expect(token.locked(0)).to.not.be.reverted;
+
+            await token.burn(0);
+
+            await expect(token.locked(0)).to.be.revertedWith("Token is owned by zero address");
         });
     });
 
