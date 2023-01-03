@@ -502,10 +502,11 @@ describe("Soulbound", function () {
         });
 
         context("Token is unlocked", function () {
+            beforeEach(async () => {
+                await token.lockedStatus(0, false);
+            });
             
             it("Should allow transfers done by owner", async function () {
-                await token.locked(0);
-
                 await expect(
                     token.transferFrom(
                         otherAddress.address,
@@ -516,8 +517,6 @@ describe("Soulbound", function () {
             });
 
             it("Shouldn't allow transfers by unapproved addresses", async function () {
-                await token.flipLocked(0);
-
                 await expect(
                     token
                         .connect(addressToBeApproved)
@@ -533,7 +532,6 @@ describe("Soulbound", function () {
 
             it("Should allow transfers by approved addresses", async function () {
                 await token.approve(addressToBeApproved.address, 0);
-                await token.flipLocked(0);
 
                 await expect(
                     token
@@ -552,7 +550,6 @@ describe("Soulbound", function () {
                     addressToBeApproved.address,
                     true
                 );
-                await token.flipLocked(0);
 
                 await expect(
                     token
@@ -566,8 +563,6 @@ describe("Soulbound", function () {
             });
 
             it("Should transfer the token between addresses", async function () {
-                await token.flipLocked(0);
-
                 await expect(
                     token.transferFrom(
                         otherAddress.address,
@@ -583,8 +578,6 @@ describe("Soulbound", function () {
             });
 
             it("Should remove the approval status of approved address post transfer", async function () {
-                await token.flipLocked(0);
-
                 await token.approve(addressToBeApproved.address, 0);
                 expect(await token.getApproved(0)).to.equal(
                     addressToBeApproved.address
@@ -603,7 +596,6 @@ describe("Soulbound", function () {
             });
 
             it("Shouldn't remove approval status of an approved-all address post transfer", async function () {
-                await token.flipLocked(0);
                 await token.setApprovalForAllOwner(
                     otherAddress.address,
                     addressToBeApproved.address,
@@ -623,8 +615,6 @@ describe("Soulbound", function () {
             });
 
             it("Shouldn't allow transfers from addresses which had their approved-all status removed", async function () {
-                await token.flipLocked(0);
-
                 await token.setApprovalForAllOwner(
                     otherAddress.address,
                     addressToBeApproved.address,
@@ -652,10 +642,6 @@ describe("Soulbound", function () {
                 ).to.be.revertedWith(
                     "Address is neither owner of contract nor approved for token/tokenowner"
                 );
-            });
-
-            it("Should lock the token again post-transfer", async function() {
-                await token.flipLocked(0);
             });
         });
     });
@@ -726,9 +712,11 @@ describe("Soulbound", function () {
             });
 
             context("Token is unlocked", function () {
-                it("Should allow transfers done by owner", async function () {
-                    await token.flipLocked(0);
+                beforeEach(async () => {
+                    await token.lockedStatus(0, false);
+                });
 
+                it("Should allow transfers done by owner", async function () {
                     await expect(
                         token.safeTransferFromHelperNonData(
                             otherAddress.address,
@@ -739,8 +727,6 @@ describe("Soulbound", function () {
                 });
 
                 it("Shouldn't allow transfers by unapproved addresses", async function () {
-                    await token.flipLocked(0);
-
                     await expect(
                         token
                             .connect(addressToBeApproved)
@@ -755,7 +741,6 @@ describe("Soulbound", function () {
                 });
 
                 it("Should allow transfers by approved addresses", async function () {
-                    await token.flipLocked(0);
                     await token.approve(addressToBeApproved.address, 0);
 
                     await expect(
@@ -770,7 +755,6 @@ describe("Soulbound", function () {
                 });
 
                 it("Should allow transfers by approved-all addresses", async function () {
-                    await token.flipLocked(0);
                     await token.setApprovalForAllOwner(
                         otherAddress.address,
                         addressToBeApproved.address,
@@ -789,8 +773,6 @@ describe("Soulbound", function () {
                 });
 
                 it("Should transfer the token between addresses", async function () {
-                    await token.flipLocked(0);
-
                     await expect(
                         token.safeTransferFromHelperNonData(
                             otherAddress.address,
@@ -808,8 +790,6 @@ describe("Soulbound", function () {
                 });
 
                 it("Should remove the approval status of approved address post transfer", async function () {
-                    await token.flipLocked(0);
-
                     await token.approve(addressToBeApproved.address, 0);
                     expect(await token.getApproved(0)).to.equal(
                         addressToBeApproved.address
@@ -832,7 +812,6 @@ describe("Soulbound", function () {
                 });
 
                 it("Shouldn't remove approval status of an approved-all address post transfer", async function () {
-                    await token.flipLocked(0);
                     await token.setApprovalForAllOwner(
                         otherAddress.address,
                         addressToBeApproved.address,
@@ -856,8 +835,6 @@ describe("Soulbound", function () {
                 });
 
                 it("Shouldn't allow transfers from addresses which had their approved-all status removed", async function () {
-                    await token.flipLocked(0);
-
                     await token.setApprovalForAllOwner(
                         otherAddress.address,
                         addressToBeApproved.address,
@@ -942,9 +919,11 @@ describe("Soulbound", function () {
             });
 
             context("Token is unlocked", function () {
-                it("Should allow transfers done by owner", async function () {
-                    await token.flipLocked(0);
+                beforeEach(async () => {
+                    await token.lockedStatus(0, false);
+                });
 
+                it("Should allow transfers done by owner", async function () {
                     await expect(
                         token.safeTransferFromHelperWithData(
                             otherAddress.address,
@@ -956,8 +935,6 @@ describe("Soulbound", function () {
                 });
 
                 it("Shouldn't allow transfers by unapproved addresses", async function () {
-                    await token.flipLocked(0);
-
                     await expect(
                         token
                             .connect(addressToBeApproved)
@@ -973,7 +950,6 @@ describe("Soulbound", function () {
                 });
 
                 it("Should allow transfers by approved addresses", async function () {
-                    await token.flipLocked(0);
                     await token.approve(addressToBeApproved.address, 0);
 
                     await expect(
@@ -989,7 +965,6 @@ describe("Soulbound", function () {
                 });
 
                 it("Should allow transfers by approved-all addresses", async function () {
-                    await token.flipLocked(0);
                     await token.setApprovalForAllOwner(
                         otherAddress.address,
                         addressToBeApproved.address,
@@ -1009,8 +984,6 @@ describe("Soulbound", function () {
                 });
 
                 it("Should transfer the token between addresses", async function () {
-                    await token.flipLocked(0);
-
                     await expect(
                         token.safeTransferFromHelperWithData(
                             otherAddress.address,
@@ -1029,8 +1002,6 @@ describe("Soulbound", function () {
                 });
 
                 it("Should remove the approval status of approved address post transfer", async function () {
-                    await token.flipLocked(0);
-
                     await token.approve(addressToBeApproved.address, 0);
                     expect(await token.getApproved(0)).to.equal(
                         addressToBeApproved.address
@@ -1054,7 +1025,6 @@ describe("Soulbound", function () {
                 });
 
                 it("Shouldn't remove approval status of an approved-all address post transfer", async function () {
-                    await token.flipLocked(0);
                     await token.setApprovalForAllOwner(
                         otherAddress.address,
                         addressToBeApproved.address,
@@ -1079,7 +1049,6 @@ describe("Soulbound", function () {
                 });
 
                 it("Shouldn't allow transfers from addresses which had their approved-all status removed", async function () {
-                    await token.flipLocked(0);
                     await token.setApprovalForAllOwner(
                         otherAddress.address,
                         addressToBeApproved.address,
@@ -1154,15 +1123,15 @@ describe("Soulbound", function () {
         });
 
         context("Token is unlocked", async function () {
-            it("Should allow burns done by owner", async function () {
-                await token.flipLocked(0);
+            beforeEach(async () => {
+                await token.lockedStatus(0, false);
+            });
 
+            it("Should allow burns done by owner", async function () {
                 await expect(token.burn(0)).to.not.be.reverted;
             });
 
             it("Shouldn't allow burns by unapproved addresses and non-allowed owners", async function () {
-                await token.flipLocked(0);
-
                 await expect(
                     token.connect(addressToBeApproved).burn(0)
                 ).to.be.revertedWith(
@@ -1171,7 +1140,6 @@ describe("Soulbound", function () {
             });
 
             it("Should allow burns by approved addresses", async function () {
-                await token.flipLocked(0);
                 await token.approve(addressToBeApproved.address, 0);
 
                 await expect(
@@ -1180,7 +1148,6 @@ describe("Soulbound", function () {
             });
 
             it("Should allow burns by approved-all addresses", async function () {
-                await token.flipLocked(0);
                 await token.setApprovalForAllOwner(
                     otherAddress.address,
                     addressToBeApproved.address,
@@ -1193,7 +1160,6 @@ describe("Soulbound", function () {
             });
 
             it("Should allow burns by allowed token holder", async function () {
-                await token.flipLocked(0);
                 await token.allowBurn(true);
 
                 await expect(
@@ -1202,7 +1168,6 @@ describe("Soulbound", function () {
             });
 
             it("Shouldn't remove approval status of approved-all address post burn", async function () {
-                await token.flipLocked(0);
                 await token.setApprovalForAllOwner(
                     otherAddress.address,
                     addressToBeApproved.address,
@@ -1220,7 +1185,6 @@ describe("Soulbound", function () {
             });
 
             it("Should destroy the burned token", async function () {
-                await token.flipLocked(0);
                 await token.burn(0);
 
                 await expect(token.tokenURI(0)).to.be.revertedWith(
@@ -1229,7 +1193,6 @@ describe("Soulbound", function () {
             });
 
             it("Shouldn't allow burns from addresses which had their approved-all status removed", async function () {
-                await token.flipLocked(0);
                 await token.setApprovalForAllOwner(
                     otherAddress.address,
                     addressToBeApproved.address,
@@ -1271,7 +1234,7 @@ describe("Soulbound", function () {
                 deployTokenFixture
             );
             await hardhatToken.mint(owner.address);
-            await hardhatToken.flipLocked(0);
+            await hardhatToken.lockedStatus(0, false);
             await hardhatToken.mint(owner.address);
             await hardhatToken.burn(0);
 
@@ -1295,7 +1258,7 @@ describe("Soulbound", function () {
                 deployTokenFixture
             );
             await hardhatToken.mint(owner.address);
-            await hardhatToken.flipLocked(0);
+            await hardhatToken.lockedStatus(0, false);
             await hardhatToken.mint(owner.address);
             await hardhatToken.burn(0);
 
@@ -1312,7 +1275,7 @@ describe("Soulbound", function () {
 
             expect(await hardhatToken.totalBurned()).to.be.equal(0);
 
-            await hardhatToken.flipLocked(0);
+            await hardhatToken.lockedStatus(0, false);
             await hardhatToken.burn(0);
 
             expect(await hardhatToken.totalBurned()).to.be.equal(1);
