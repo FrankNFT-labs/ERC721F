@@ -48,7 +48,8 @@ contract Soulbound is IERC5192, ERC721F {
         bytes4 _interfaceId
     ) public view virtual override returns (bool) {
         return
-            _interfaceId == 0xb45a3c0e || super.supportsInterface(_interfaceId);
+            _interfaceId == type(IERC5192).interfaceId ||
+            super.supportsInterface(_interfaceId);
     }
 
     /**
