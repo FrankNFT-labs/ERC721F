@@ -2,10 +2,12 @@
 pragma solidity ^0.8.9 <0.9.0;
 
 import "../ERC721/ERC721F.sol";
+import "../../interfaces/IERC5192.sol";
 
-contract Soulbound is ERC721F {
+contract Soulbound is IERC5192, ERC721F {
     // Mapping from owner to operator approvals
     mapping(address => mapping(address => bool)) private _operatorApprovals;
+    mapping(uint256 => bool) private _lockedTokens;
     bool private _tokenHolderIsAllowedToBurn;
 
     constructor(string memory name_, string memory symbol_)
@@ -110,6 +112,26 @@ contract Soulbound is ERC721F {
                 "Caller is neither tokenholder which is allowed to burn nor owner of contract nor approved address for token/tokenOwner"
             );
         super._burn(tokenId);
+    }
+
+    /**
+     * @notice Returns the locking status of a Soulbound Token
+     * @dev SBTs assigned to zero address are considered invalid, and queries about them do throw
+     * @param tokenId The identifier for an SBT
+     */
+    function locked(uint256 tokenId) external view returns (bool) {
+        require(_exists(tokenId), "Token is owned by zero address");
+        return _lockedTokens[tokenId];   
+    }
+
+    function flipLocked(uint256 tokenId) public onlyOwner {
+        bool lockedStatus = !_lockedTokens[tokenId];
+        _lockedTokens[tokenId] = lockedStatus;
+        if (lockedStatus) {
+            emit Locked(tokenId);
+        } else {
+            emit Unlocked(tokenId);
+        }
     }
 
     /**
