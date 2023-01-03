@@ -214,7 +214,7 @@ contract Soulbound is IERC5192, ERC721F {
 
     /**
      * @dev See {IERC721-safeTransferFrom}.
-     * @dev Only executable on non-locked token by owner or approved addresses
+     * @dev Only executable on unlocked tokens by owner or approved addresses
      */
     function safeTransferFrom(
         address from,
@@ -226,7 +226,7 @@ contract Soulbound is IERC5192, ERC721F {
 
     /**
      * @dev See {IERC721-safeTransferFrom} and locks `tokenId`
-     * @dev Only executable on non-locked token by owner or approved addresses
+     * @dev Only executable on unlocked tokens by owner or approved addresses
      */
     function safeTransferFrom(
         address from,
