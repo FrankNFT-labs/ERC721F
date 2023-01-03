@@ -174,16 +174,14 @@ describe("Soulbound", function () {
         });
     });
 
-    describe.only("flipLocked", function() {
+    describe("flipLocked", function() {
         let token;
-        let ownerAdress;
         let otherAddress;
         let addressToBeApproved;
 
         beforeEach(async () => {
             const { hardhatToken, owner, addr1, addr2 } = await loadFixture(deployTokenFixture);
             token = hardhatToken;
-            ownerAdress = owner;
             otherAddress = addr1;
             addressToBeApproved = addr2;
             await token.mint(otherAddress.address);
