@@ -147,7 +147,7 @@ contract Soulbound is IERC5192, ERC721F {
     /**
      * @notice Sets the unlockedState of `tokenId` to `_unlocked`
      */
-    function unlockedStatus(uint256 tokenId, bool _unlocked) public onlyOwner {
+    function unlockedStatus(uint256 tokenId, bool _unlocked) external onlyOwner {
         _unlockedStatus(tokenId, _unlocked);
     }
 
