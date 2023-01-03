@@ -673,6 +673,7 @@ describe("Soulbound", function () {
         it("Shouldn't be influenced by burned tokens", async function () {
             const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
             await hardhatToken.mint(owner.address);
+            await hardhatToken.flipLocked(0);
             await hardhatToken.mint(owner.address);
             await hardhatToken.burn(0);
 
