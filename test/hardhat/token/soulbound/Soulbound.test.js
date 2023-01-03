@@ -314,7 +314,10 @@ describe("Soulbound", function () {
                 deployTokenFixture
             );
 
-            await expect(hardhatToken.mint(addr1.address)).to.emit(hardhatToken, "Locked");
+            await expect(hardhatToken.mint(addr1.address)).to.emit(
+                hardhatToken,
+                "Locked"
+            );
         });
     });
 
@@ -383,7 +386,10 @@ describe("Soulbound", function () {
         });
 
         it("Should emit the Unlocked event when set to false", async function () {
-            await expect(token.lockedStatus(0, false)).to.emit(token, "Unlocked");
+            await expect(token.lockedStatus(0, false)).to.emit(
+                token,
+                "Unlocked"
+            );
 
             expect(await token.locked(0)).to.be.false;
         });
@@ -505,7 +511,7 @@ describe("Soulbound", function () {
             beforeEach(async () => {
                 await token.lockedStatus(0, false);
             });
-            
+
             it("Should allow transfers done by owner", async function () {
                 await expect(
                     token.transferFrom(
@@ -642,6 +648,16 @@ describe("Soulbound", function () {
                 ).to.be.revertedWith(
                     "Address is neither owner of contract nor approved for token/tokenowner"
                 );
+            });
+
+            it("Should lock the token post-transfer", async function () {
+                await token.transferFrom(
+                    otherAddress.address,
+                    ownerAdress.address,
+                    0
+                );
+
+                expect(await token.locked(0)).to.be.true;
             });
         });
     });
@@ -863,6 +879,16 @@ describe("Soulbound", function () {
                         "Address is neither owner of contract nor approved for token/tokenowner"
                     );
                 });
+
+                it("Should lock the token post-transfer", async function () {
+                    await token.safeTransferFromHelperNonData(
+                        otherAddress.address,
+                        ownerAdress.address,
+                        0
+                    );
+
+                    expect(await token.locked(0)).to.be.true;
+                });
             });
         });
 
@@ -1077,6 +1103,17 @@ describe("Soulbound", function () {
                     ).to.be.revertedWith(
                         "Address is neither owner of contract nor approved for token/tokenowner"
                     );
+                });
+
+                it("Should lock the token post-transfer", async function () {
+                    await token.safeTransferFromHelperWithData(
+                        otherAddress.address,
+                        ownerAdress.address,
+                        0,
+                        0x00
+                    );
+
+                    expect(await token.locked(0)).to.be.true;
                 });
             });
         });
