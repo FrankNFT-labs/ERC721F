@@ -164,6 +164,14 @@ describe("Soulbound", function () {
 
             await expect(hardhatToken.mint(addr1.address)).to.changeTokenBalance(hardhatToken, addr1.address, 1);
         });
+
+        it("Should set token to locked by default", async function() {
+            const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
+
+            await hardhatToken.mint(addr1.address);
+            
+            expect(await hardhatToken.locked(0)).to.be.true;
+        });
     });
 
     describe("transferFrom", function () {
