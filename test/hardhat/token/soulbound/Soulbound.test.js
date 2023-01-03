@@ -14,6 +14,14 @@ describe("Soulbound", function () {
         return { Token, hardhatToken, owner, addr1, addr2 };
     }
 
+    describe("supportsInterface", function() {
+        it.only("Should return true with interfaceId=0xb45a3c0e", async function() {
+            const { hardhatToken } = await loadFixture(deployTokenFixture);
+
+            expect(await hardhatToken.supportsInterface(0xb45a3c0e)).to.be.true;
+        });
+    });
+
     describe("approve", function () {
         it("Should only be executable by owner of the contract", async function () {
             const { hardhatToken, addr1 } = await loadFixture(deployTokenFixture);
