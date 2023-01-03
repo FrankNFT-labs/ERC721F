@@ -293,8 +293,15 @@ describe("Soulbound", function () {
             await token.mint(otherAddress.address);
         });
 
-        it("Shouldn't allow transfers done by owner when token is locked", async function() {
+        it("Shouldn't allow transfers done by anyone when token is locked", async function() {
+            await token.approve(addressToBeApproved.address, 0);
+
             await expect(token.transferFrom(otherAddress.address, ownerAdress.address, 0)).to.be.revertedWith("Token has been locked");
+            await expect(token.connect(addressToBeApproved).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.be.revertedWith("Token has been locked");
+            await expect(token.connect(addressToBeApproved).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.be.revertedWith("Token has been locked");
+
+            await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+            await expect(token.connect(addressToBeApproved).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.be.revertedWith("Token has been locked");
         });
 
         it("Should allow transfers done by owner when token isn't locked", async function () {
@@ -303,16 +310,10 @@ describe("Soulbound", function () {
             await expect(token.transferFrom(otherAddress.address, ownerAdress.address, 0)).to.not.be.reverted;
         });
 
-        it("Shouldn't allow transfers by unapproved addresses", async function () { 
+        it("Shouldn't allow transfers by unapproved addresses when token isn't locked", async function () { 
             await token.flipLocked(0);
 
             await expect(token.connect(addressToBeApproved).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
-        });
-
-        it("Shouldn't allow transfers by approved address when token is locked", async function() {
-            await token.approve(addressToBeApproved.address, 0);
-
-            await expect(token.connect(addressToBeApproved).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.be.revertedWith("Token has been locked");
         });
 
         it("Should allow transfers by approved addresses when token is not locked", async function () {
@@ -320,12 +321,6 @@ describe("Soulbound", function () {
             await token.flipLocked(0);
 
             await expect(token.connect(addressToBeApproved).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.not.be.reverted;
-        });
-
-        it("Shouldn't allow transfers by approved-all address when token is locked", async function() {
-            await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
-
-            await expect(token.connect(addressToBeApproved).transferFrom(otherAddress.address, ownerAdress.address, 0)).to.be.revertedWith("Token has been locked");
         });
 
         it("Should allow transfers by approved-all addresses when token is not locked", async function () {
