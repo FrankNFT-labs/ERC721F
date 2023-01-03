@@ -222,7 +222,21 @@ describe("Soulbound", function () {
 
             expect(await token.locked(0)).to.be.true;
         });
-    })
+
+        it("Should emit the Unlocked event when flipping to false", async function() {
+            await expect(token.flipLocked(0)).to.emit(token, 'Unlocked');
+
+            expect(await token.locked(0)).to.be.false;
+        });
+
+        it("Should emit the Locked event when flipping to true", async function() {
+            await token.flipLocked(0);
+
+            await expect(token.flipLocked(0)).to.emit(token, 'Locked');
+
+            expect(await token.locked(0)).to.be.true;
+        });
+    });
 
     describe("transferFrom", function () {
         let token;
