@@ -7,7 +7,7 @@ import "../../interfaces/IERC5192.sol";
 contract Soulbound is IERC5192, ERC721F {
     // Mapping from owner to operator approvals
     mapping(address => mapping(address => bool)) private _operatorApprovals;
-    mapping(uint256 => bool) private _lockedTokens;
+    mapping(uint256 => bool) private _unlockedTokens;
     bool private _tokenHolderIsAllowedToBurn;
 
     constructor(
@@ -28,10 +28,10 @@ contract Soulbound is IERC5192, ERC721F {
     }
 
     /**
-     * @dev Only a `tokenId` which has not been locked passes
+     * @dev Only a `tokenId` which is unlocked passes
      */
-    modifier onlyNonLocked(uint256 tokenId) {
-        require(!_lockedTokens[tokenId], "Token has been locked");
+    modifier onlyUnlocked(uint256 tokenId) {
+        require(_unlockedTokens[tokenId], "Token has been locked");
         _;
     }
 
@@ -115,15 +115,15 @@ contract Soulbound is IERC5192, ERC721F {
         uint256 tokenId
     ) internal virtual override onlyOwner {
         super._mint(to, tokenId);
-        _lockedStatus(tokenId, true);
+        _unlockedStatus(tokenId, false);
     }
 
     /**
-     * @dev Burn function is only executable on non-locked token by the owner of the contract or approved addresses, increases `_burnCounter` for proper functionality of totalSupply
+     * @dev Burn function is only executable on unlocked tokens by the owner of the contract or approved addresses, increases `_burnCounter` for proper functionality of totalSupply
      */
     function _burn(
         uint256 tokenId
-    ) internal virtual override onlyNonLocked(tokenId) {
+    ) internal virtual override onlyUnlocked(tokenId) {
         if (
             !isOwnerOrApproved(msg.sender, tokenId) &&
             !(ownerOf(tokenId) == msg.sender && _tokenHolderIsAllowedToBurn)
@@ -141,26 +141,26 @@ contract Soulbound is IERC5192, ERC721F {
      */
     function locked(uint256 tokenId) external view returns (bool) {
         require(_exists(tokenId), "Token is owned by zero address");
-        return _lockedTokens[tokenId];
+        return !_unlockedTokens[tokenId];
     }
 
     /**
-     * @notice Sets the lockedState of `tokenId` to `_locked`
+     * @notice Sets the unlockedState of `tokenId` to `_unlocked`
      */
-    function lockedStatus(uint256 tokenId, bool _locked) public onlyOwner {
-        _lockedStatus(tokenId, _locked);
+    function unlockedStatus(uint256 tokenId, bool _unlocked) public onlyOwner {
+        _unlockedStatus(tokenId, _unlocked);
     }
 
     /**
-     * @dev Sets the lockedState of ``tokenId` to `_locked`, `tokenId` must exist
+     * @dev Sets the unlockedState of `tokenId` to `_unlocked`, `tokenId` must exist
      */
-    function _lockedStatus(uint256 tokenId, bool _locked) internal {
+    function _unlockedStatus(uint256 tokenId, bool _unlocked) internal {
         require(_exists(tokenId), "Token has yet to be minted");
-        _lockedTokens[tokenId] = _locked;
-        if (_locked) {
-            emit Locked(tokenId);
-        } else {
+        _unlockedTokens[tokenId] = _unlocked;
+        if (_unlocked) {
             emit Unlocked(tokenId);
+        } else {
+            emit Locked(tokenId);
         }
     }
 
@@ -195,7 +195,7 @@ contract Soulbound is IERC5192, ERC721F {
 
     /**
      * @notice Transfers `tokenId` from `from` to `to` and locks `tokenId`
-     * @dev Only executable on non-locked token by owner or approved addresses
+     * @dev Only executable on unlocked tokens by owner or approved addresses
      */
     function transferFrom(
         address from,
@@ -205,11 +205,11 @@ contract Soulbound is IERC5192, ERC721F {
         public
         virtual
         override
-        onlyNonLocked(tokenId)
+        onlyUnlocked(tokenId)
         onlyOwnerOrApproved(msg.sender, tokenId)
     {
         _transfer(from, to, tokenId);
-        _lockedStatus(tokenId, true);
+        _unlockedStatus(tokenId, false);
     }
 
     /**
@@ -237,10 +237,10 @@ contract Soulbound is IERC5192, ERC721F {
         public
         virtual
         override
-        onlyNonLocked(tokenId)
+        onlyUnlocked(tokenId)
         onlyOwnerOrApproved(msg.sender, tokenId)
     {
         _safeTransfer(from, to, tokenId, data);
-        _lockedStatus(tokenId, true);
+        _unlockedStatus(tokenId, false);
     }
 }
