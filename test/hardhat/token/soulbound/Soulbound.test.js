@@ -566,53 +566,78 @@ describe("Soulbound", function () {
             await token.mint(otherAddress.address);
         });
 
-        it("Should allow burns done by owner", async function () {
-            await expect(token.burn(0)).to.not.be.reverted;
+        context("Token is locked", async function() {
+            it("Shouldn't allow burns by anyone", async function() {
+                await token.approve(addressToBeApproved.address, 0);
+            
+                await expect(token.burn(0)).to.be.revertedWith("Token has been locked");
+                await expect(token.connect(otherAddress).burn(0)).to.be.revertedWith("Token has been locked");
+                await expect(token.connect(addressToBeApproved).burn(0)).to.be.revertedWith("Token has been locked");
+
+                await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+                await expect(token.connect(addressToBeApproved).burn(0)).to.be.revertedWith("Token has been locked");
+            });
         });
 
-        it("Shouldn't allow burns by unapproved addresses and non-allowed owners", async function () {
-            await expect(token.connect(addressToBeApproved).burn(0)).to.be.revertedWith("Caller is neither tokenholder which is allowed to burn nor owner of contract nor approved address for token/tokenOwner");
-        });
+        context("Token is unlocked", async function() {
+            it("Should allow burns done by owner", async function () {
+                await token.flipLocked(0);
 
-        it("Should allow burns by approved addresses", async function () {
-            await token.approve(addressToBeApproved.address, 0);
+                await expect(token.burn(0)).to.not.be.reverted;
+            });
+    
+            it("Shouldn't allow burns by unapproved addresses and non-allowed owners", async function () {
+                await token.flipLocked(0);
 
-            await expect(token.connect(addressToBeApproved).burn(0)).to.not.be.reverted;
-        });
-
-        it("Should allow burns by approved-all addresses", async function () {
-            await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
-
-            await expect(token.connect(addressToBeApproved).burn(0)).to.not.be.reverted;
-        });
-
-        it("Should allow burns by allowed token holder", async function () {
-            await token.allowBurn(true);
-
-            await expect(token.connect(otherAddress).burn(0)).to.not.be.reverted;
-        });
-
-        it("Shouldn't remove approval status of approved-all address post burn", async function () {
-            await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
-
-            await token.connect(addressToBeApproved).burn(0);
-
-            expect(await token.isApprovedForAll(otherAddress.address, addressToBeApproved.address)).to.be.true;
-        });
-
-        it("Should destroy the burned token", async function () {
-            await token.burn(0);
-
-            await expect(token.tokenURI(0)).to.be.revertedWith("ERC721: invalid token ID");
-        });
-
-        it("Shouldn't allow burns from addresses which had their approved-all status removed", async function () {
-            await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
-            expect(await token.isApprovedForAll(otherAddress.address, addressToBeApproved.address)).to.be.true;
-
-            await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, false);
-
-            expect(await token.burn(0)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
+                await expect(token.connect(addressToBeApproved).burn(0)).to.be.revertedWith("Caller is neither tokenholder which is allowed to burn nor owner of contract nor approved address for token/tokenOwner");
+            });
+    
+            it("Should allow burns by approved addresses", async function () {
+                await token.flipLocked(0);
+                await token.approve(addressToBeApproved.address, 0);
+    
+                await expect(token.connect(addressToBeApproved).burn(0)).to.not.be.reverted;
+            });
+    
+            it("Should allow burns by approved-all addresses", async function () {
+                await token.flipLocked(0);
+                await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+    
+                await expect(token.connect(addressToBeApproved).burn(0)).to.not.be.reverted;
+            });
+    
+            it("Should allow burns by allowed token holder", async function () {
+                await token.flipLocked(0);
+                await token.allowBurn(true);
+    
+                await expect(token.connect(otherAddress).burn(0)).to.not.be.reverted;
+            });
+    
+            it("Shouldn't remove approval status of approved-all address post burn", async function () {
+                await token.flipLocked(0);
+                await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+    
+                await token.connect(addressToBeApproved).burn(0);
+    
+                expect(await token.isApprovedForAll(otherAddress.address, addressToBeApproved.address)).to.be.true;
+            });
+    
+            it("Should destroy the burned token", async function () {
+                await token.flipLocked(0);
+                await token.burn(0);
+    
+                await expect(token.tokenURI(0)).to.be.revertedWith("ERC721: invalid token ID");
+            });
+    
+            it("Shouldn't allow burns from addresses which had their approved-all status removed", async function () {
+                await token.flipLocked(0);
+                await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+                expect(await token.isApprovedForAll(otherAddress.address, addressToBeApproved.address)).to.be.true;
+    
+                await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, false);
+    
+                expect(await token.burn(0)).to.be.revertedWith("Address is neither owner of contract nor approved for token/tokenowner");
+            });
         });
     });
 
