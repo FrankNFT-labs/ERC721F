@@ -115,7 +115,7 @@ contract Soulbound is IERC5192, ERC721F {
         uint256 tokenId
     ) internal virtual override onlyOwner {
         super._mint(to, tokenId);
-        lockedStatus(tokenId, true);
+        _lockedStatus(tokenId, true);
     }
 
     /**
@@ -145,13 +145,19 @@ contract Soulbound is IERC5192, ERC721F {
     }
 
     /**
-     * @notice Sets the lockedState of `tokenId` to `_lockedStatus`
-     * @dev `tokenId` must have been minted before execution
+     * @notice Sets the lockedState of `tokenId` to `_locked`
      */
-    function lockedStatus(uint256 tokenId, bool _lockedStatus) public onlyOwner {
+    function lockedStatus(uint256 tokenId, bool _locked) public onlyOwner {
+        _lockedStatus(tokenId, _locked);
+    }
+
+    /**
+     * @dev Sets the lockedState of ``tokenId` to `_locked`, `tokenId` must exist
+     */
+    function _lockedStatus(uint256 tokenId, bool _locked) internal {
         require(_exists(tokenId), "Token has yet to be minted");
-        _lockedTokens[tokenId] = _lockedStatus;
-        if (_lockedStatus) {
+        _lockedTokens[tokenId] = _locked;
+        if (_locked) {
             emit Locked(tokenId);
         } else {
             emit Unlocked(tokenId);
@@ -203,7 +209,7 @@ contract Soulbound is IERC5192, ERC721F {
         onlyOwnerOrApproved(msg.sender, tokenId)
     {
         _transfer(from, to, tokenId);
-        lockedStatus(tokenId, true);
+        _lockedStatus(tokenId, true);
     }
 
     /**
@@ -235,6 +241,6 @@ contract Soulbound is IERC5192, ERC721F {
         onlyOwnerOrApproved(msg.sender, tokenId)
     {
         _safeTransfer(from, to, tokenId, data);
-        lockedStatus(tokenId, true);
+        _lockedStatus(tokenId, true);
     }
 }
