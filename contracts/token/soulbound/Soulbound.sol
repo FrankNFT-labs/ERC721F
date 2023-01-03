@@ -35,6 +35,27 @@ contract Soulbound is IERC5192, ERC721F {
     }
 
     /**
+     * @notice Indicates whether this contract supports an interface
+     * @dev Returns true if this contract implements the interface defined by
+     * `interfaceId`. See the corresponding
+     * [EIP section](https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified)
+     * to learn more about how these ids are created.
+     *
+     * @return `true` if the contract implements `interfaceID` or is 0xb45a3c0e, `false` otherwise
+     */
+    function supportsInterface(bytes4 _interfaceId)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
+        return
+            _interfaceId == 0xb45a3c0e ||
+            super.supportsInterface(_interfaceId);
+    }
+
+    /**
      * @notice Approve `to` to have transfer- and burnperms of `tokenId`
      */
     function approve(address to, uint256 tokenId)
