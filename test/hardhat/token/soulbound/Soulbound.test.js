@@ -688,6 +688,7 @@ describe("Soulbound", function () {
 
             expect(await hardhatToken.totalBurned()).to.be.equal(0);
 
+            await hardhatToken.flipLocked(0);
             await hardhatToken.burn(0);
 
             expect(await hardhatToken.totalBurned()).to.be.equal(1);
