@@ -174,6 +174,39 @@ describe("Soulbound", function () {
         });
     });
 
+    describe.only("flipLocked", function() {
+        let token;
+        let ownerAdress;
+        let otherAddress;
+        let addressToBeApproved;
+
+        beforeEach(async () => {
+            const { hardhatToken, owner, addr1, addr2 } = await loadFixture(deployTokenFixture);
+            token = hardhatToken;
+            ownerAdress = owner;
+            otherAddress = addr1;
+            addressToBeApproved = addr2;
+            await token.mint(otherAddress.address);
+        });
+
+        it("Should only be executable by the owner of the conract",  async function() {
+            await expect(token.flipLocked(0)).to.not.be.reverted;
+        });
+
+        it("Shouldn't be executable by approved addresses", async function() {
+            await token.approve(addressToBeApproved.address, 0);
+            await expect(token.connect(addressToBeApproved).flipLocked(0)).to.be.revertedWith("Ownable: caller is not the owner");
+            
+            await token.approve(ethers.constants.AddressZero, 0);
+            await token.setApprovalForAllOwner(otherAddress.address, addressToBeApproved.address, true);
+            await expect(token.connect(addressToBeApproved).flipLocked(0)).to.be.revertedWith("Ownable: caller is not the owner");
+        });
+
+        it("Shouldn't be executable by other addresses", async function() {
+            await expect(token.connect(otherAddress).flipLocked(0)).to.be.revertedWith("Ownable: caller is not the owner");
+        });
+    })
+
     describe("transferFrom", function () {
         let token;
         let ownerAdress;
