@@ -42,7 +42,7 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
                     abi.encodePacked(
                         '{"name": "',
                         name(),
-                        " ",
+                        " #",
                         Strings.toString(tokenId),
                         '", "description": "',
                         getDescription(),
