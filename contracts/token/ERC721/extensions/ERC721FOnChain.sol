@@ -32,7 +32,7 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
      */
     function tokenURI(
         uint256 tokenId
-    ) public view override returns (string memory) {
+    ) public view virtual override returns (string memory) {
         require(_exists(tokenId), "Non-Existing token");
         string memory svgData = renderTokenById(tokenId);
         string memory traits = getTraits(tokenId);
