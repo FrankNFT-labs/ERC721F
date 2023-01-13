@@ -57,7 +57,7 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
     function flipSaleState() external onlyOwner {
         if (!saleIsActive)
             require(
-                startingIndex != 0,
+                startingIndex > 0,
                 "startingIndex must be set before sale can begin"
             );
         saleIsActive = !saleIsActive;
@@ -89,7 +89,7 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
     function mint(uint32 numberOfTokens) external {
         require(msg.sender == tx.origin, "No Contracts allowed.");
         require(saleIsActive, "Sale NOT active yet");
-        require(numberOfTokens != 0, "numberOfTokens cannot be 0");
+        require(numberOfTokens > 0, "numberOfTokens cannot be 0");
         require(
             numberOfTokens < MAX_PURCHASE,
             "Can only mint 30 tokens at a time"
