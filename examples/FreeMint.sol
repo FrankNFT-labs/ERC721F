@@ -47,7 +47,7 @@ contract FreeMint is ERC721F, ERC2981 {
      */
     function setRoyalties(uint16 _royalties) external onlyOwner {
         require(
-            _royalties != 0 && _royalties < 90,
+            _royalties > 0 && _royalties < 90,
             "royalties should be between 0 and 90"
         );
 
