@@ -3,7 +3,15 @@ pragma solidity ^0.8.9 <0.9.0;
 
 import "../FreeMint.sol";
 
+/**
+ * @title FreeMintMock
+ * 
+ * @dev Contract utilised to test variations of functions of FreeMint and compare their gas consumption
+ */
 contract FreeMintMock is FreeMint {
+    /**
+     * @dev Variation of mint function where numberOfTokens must be larger than 0
+     */
     function mintRequireNumberOfTokensLargerThanZero(uint256 numberOfTokens) external {
         require(msg.sender == tx.origin, "No Contracts allowed.");
         require(saleIsActive, "Sale NOT active yet");
@@ -25,6 +33,9 @@ contract FreeMintMock is FreeMint {
         }
     }
 
+    /**
+     * @dev variation of mint function where numberOfTokens can't be zero
+     */
     function mintRequireNumberOfTokensNotEqualsZero(uint256 numberOfTokens) external {
         require(msg.sender == tx.origin, "No Contracts allowed.");
         require(saleIsActive, "Sale NOT active yet");
