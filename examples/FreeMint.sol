@@ -85,7 +85,7 @@ contract FreeMint is ERC721F, ERC2981 {
     function mint(uint256 numberOfTokens) external {
         require(msg.sender == tx.origin, "No Contracts allowed.");
         require(saleIsActive, "Sale NOT active yet");
-        require(numberOfTokens != 0, "numberOfNfts cannot be 0");
+        require(numberOfTokens > 0, "numberOfNfts cannot be 0");
         require(
             numberOfTokens < MAX_PURCHASE,
             "Can only mint 30 tokens at a time"
