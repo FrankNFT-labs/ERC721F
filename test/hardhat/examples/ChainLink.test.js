@@ -16,6 +16,8 @@ describe("ChainLink", function () {
 
         const hardhatToken = await Token.deploy(1, hardhatVrfMock.address);
 
+        await hardhatVrfMock.addConsumer(1, hardhatToken.address);
+
         return { Token, hardhatToken, VRFMock, hardhatVrfMock, owner, addr1 };
     }
 

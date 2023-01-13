@@ -30,7 +30,7 @@ contract RevokableDefaultOperatorFiltererERC721F is
     }
 
     modifier validMintRequest(uint256 numberOfTokens) {
-        require(numberOfTokens != 0, "numberOfNfts cannot be 0");
+        require(numberOfTokens > 0, "numberOfNfts cannot be 0");
         require(
             numberOfTokens < MAX_PURCHASE,
             "Can only mint 30 tokens at a time"

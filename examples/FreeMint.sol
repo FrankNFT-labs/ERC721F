@@ -47,7 +47,7 @@ contract FreeMint is ERC721F, ERC2981 {
      */
     function setRoyalties(uint16 _royalties) external onlyOwner {
         require(
-            _royalties != 0 && _royalties < 90,
+            _royalties > 0 && _royalties < 90,
             "royalties should be between 0 and 90"
         );
 
@@ -85,7 +85,7 @@ contract FreeMint is ERC721F, ERC2981 {
     function mint(uint256 numberOfTokens) external {
         require(msg.sender == tx.origin, "No Contracts allowed.");
         require(saleIsActive, "Sale NOT active yet");
-        require(numberOfTokens != 0, "numberOfNfts cannot be 0");
+        require(numberOfTokens > 0, "numberOfNfts cannot be 0");
         require(
             numberOfTokens < MAX_PURCHASE,
             "Can only mint 30 tokens at a time"
