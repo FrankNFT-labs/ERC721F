@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9 <0.9.0;
 
-import "../../../../examples/gas-optimizations/RequireNonZero.sol";
+import "../../../../examples/gas-optimisations/RequireNonZero.sol";
 import "../../../../lib/forge-std/src/Test.sol";
 
 contract RequireNonZeroTest is Test {
