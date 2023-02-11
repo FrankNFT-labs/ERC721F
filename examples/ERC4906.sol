@@ -24,7 +24,7 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
         bytes4 _interfaceId
     ) public view virtual override(IERC165, ERC721) returns (bool) {
         return
-            _interfaceId == type(IERC4906).interfaceId ||
+            _interfaceId == bytes4(0x49064906) ||
             super.supportsInterface(_interfaceId);
     }
 
