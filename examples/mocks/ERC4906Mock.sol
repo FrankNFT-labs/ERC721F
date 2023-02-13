@@ -12,7 +12,11 @@ contract ERC4906Mock is ERC4906 {
         _setTokenURI(tokenId, _tokenURI);
     }
 
-    function setTokenURIS(uint256 _fromTokenId, uint256 _toTokenId, string memory _tokenURI) public {
+    function setTokenURIS(
+        uint256 _fromTokenId,
+        uint256 _toTokenId,
+        string memory _tokenURI
+    ) public {
         _setTokenURIS(_fromTokenId, _toTokenId, _tokenURI);
     }
 

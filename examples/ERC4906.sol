@@ -32,7 +32,15 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
     /**
      * @dev See {IERC721Metadata-tokenURI}.
      */
-    function tokenURI(uint256 tokenId) public view virtual override(ERC721, ERC721URIStorage) returns (string memory) {
+    function tokenURI(
+        uint256 tokenId
+    )
+        public
+        view
+        virtual
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
         return ERC721URIStorage.tokenURI(tokenId);
     }
 
@@ -72,7 +80,10 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
     /**
      * @dev Sets the tokenURI of `tokenId` to `_tokenURI`
      */
-    function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal virtual override  {
+    function _setTokenURI(
+        uint256 tokenId,
+        string memory _tokenURI
+    ) internal virtual override {
         require(ownerOf(tokenId) == msg.sender, "Caller is not owner of token");
         super._setTokenURI(tokenId, _tokenURI);
         emit MetadataUpdate(tokenId);
@@ -81,10 +92,17 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
     /**
      * @dev Sets the tokenURI of tokens from `_fromTokenId` to `to` to `_toTokenId`
      */
-    function _setTokenURIS(uint256 _fromTokenId, uint256 _toTokenId, string memory _tokenURI) internal virtual {
+    function _setTokenURIS(
+        uint256 _fromTokenId,
+        uint256 _toTokenId,
+        string memory _tokenURI
+    ) internal virtual {
         unchecked {
             for (uint256 i = _fromTokenId; i <= _toTokenId; ) {
-                require(ownerOf(i) == msg.sender, "Caller is not owner of token");
+                require(
+                    ownerOf(i) == msg.sender,
+                    "Caller is not owner of token"
+                );
                 if (_exists(i)) {
                     super._setTokenURI(i, _tokenURI);
                 }
@@ -99,7 +117,13 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
      * token will be the concatenation of the `baseURI` and the `tokenId`. Empty
      * by default, can be overridden in child contracts.
      */
-    function _baseURI() internal view virtual override(ERC721, ERC721F) returns (string memory) {
+    function _baseURI()
+        internal
+        view
+        virtual
+        override(ERC721, ERC721F)
+        returns (string memory)
+    {
         return ERC721F._baseURI();
     }
 
@@ -108,14 +132,19 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
      * @dev Mints `tokenId` and transfers it to `to`.
      *
      */
-    function _mint(address to, uint256 tokenId) internal virtual override(ERC721, ERC721F) {
+    function _mint(
+        address to,
+        uint256 tokenId
+    ) internal virtual override(ERC721, ERC721F) {
         ERC721F._mint(to, tokenId);
     }
 
     /**
      * @dev See {ERC721URIStorage-_burn}
      */
-    function _burn(uint256 tokenId) internal virtual override(ERC721URIStorage, ERC721F) {
+    function _burn(
+        uint256 tokenId
+    ) internal virtual override(ERC721URIStorage, ERC721F) {
         ERC721URIStorage._burn(tokenId);
     }
 }
