@@ -99,11 +99,11 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
     ) internal virtual {
         unchecked {
             for (uint256 i = _fromTokenId; i <= _toTokenId; ) {
-                require(
+                if (_exists(i)) {
+                     require(
                     ownerOf(i) == msg.sender,
                     "Caller is not owner of token"
                 );
-                if (_exists(i)) {
                     super._setTokenURI(i, _tokenURI);
                 }
                 i++;
