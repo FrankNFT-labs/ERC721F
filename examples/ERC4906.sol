@@ -45,7 +45,7 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
     /**
      * Mint your tokens here.
      */
-    function mint(address to, uint256 tokenId, string memory _tokenURI) external {
+    function mint(uint256 tokenId, string memory _tokenURI) external {
         require(msg.sender == tx.origin, "No Contracts allowed.");
         require(saleIsActive, "Sale NOT active yet");
         require(!_exists(tokenId), "Token already exists");
@@ -54,12 +54,13 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
             "Purchase would exceed max supply of Tokens"
         );
         unchecked {
-            _mint(to, tokenId);
+            _mint(msg.sender, tokenId);
         }
         super._setTokenURI(tokenId, _tokenURI);
     }
 
     function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal virtual override {
+        require(ownerOf(tokenId) == msg.sender, "Caller is not owner of token");
         super._setTokenURI(tokenId, _tokenURI);
         emit MetadataUpdate(tokenId);
     }
