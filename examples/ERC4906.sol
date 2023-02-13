@@ -53,9 +53,7 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
             _totalMinted() <= MAX_TOKENS,
             "Purchase would exceed max supply of Tokens"
         );
-        unchecked {
-            _mint(msg.sender, tokenId);
-        }
+        _mint(msg.sender, tokenId);
         super._setTokenURI(tokenId, _tokenURI);
     }
 
