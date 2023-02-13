@@ -50,7 +50,7 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
         require(saleIsActive, "Sale NOT active yet");
         require(!_exists(tokenId), "Token already exists");
         require(
-            _totalMinted() <= MAX_TOKENS,
+            totalSupply() <= MAX_TOKENS,
             "Purchase would exceed max supply of Tokens"
         );
         _mint(msg.sender, tokenId);
