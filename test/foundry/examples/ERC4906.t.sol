@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9 <0.9.0;
 
-import "../../../examples/ERC4906.sol";
+import "../../../examples/mocks/ERC4906Mock.sol";
 import "../../../lib/forge-std/src/Test.sol";
 
 /**
@@ -10,16 +10,46 @@ import "../../../lib/forge-std/src/Test.sol";
  * @dev Contract utilised to test additional contractfunctionality and retained functionality of overridden functions
  */
 contract ERC4906Test is Test {
-    ERC4906 t;
+    ERC4906Mock t;
     address owner;
+    string constant tokenURI = "uri";
+
+    event MetadataUpdate(uint256 _tokenId);
 
     function setUp() public {
-        t = new ERC4906();
+        t = new ERC4906Mock();
         t.flipSaleState();
         owner = t.owner();
+        vm.startPrank(owner, owner);
     }
 
     function testSupportsInterfaceReturnsRequiredTrue() public {
         assertTrue(t.supportsInterface(0x49064906));
+    }
+
+    function testTokenURIReturnsSetValue() public {
+        t.mint(0, tokenURI);
+        assertEq(t.tokenURI(0), tokenURI);
+    }
+
+    function testSetTokenURIEmitsMetaDataUpdateEvent() public {
+        t.mint(0, tokenURI);
+        vm.expectEmit(false, false, false, true);
+        emit MetadataUpdate(0);
+        t.setTokenURI(0, "newURI");
+    }
+
+    function testSetBaseTokenURIAffectsTokenURI() public {
+        string memory baseURI = "Prefix";
+        t.mint(0, tokenURI);
+        t.setBaseTokenURI(baseURI);
+        assertEq(t.tokenURI(0), string(abi.encodePacked(baseURI, tokenURI)));
+    }
+
+    function testBurnIncreasesBurnCounter() public {
+        t.mint(0, tokenURI);
+        assertEq(t.totalBurned(), 0);
+        t.burn(0);
+        assertEq(t.totalBurned(), 1);
     }
 }
