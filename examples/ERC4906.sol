@@ -30,7 +30,7 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
     }
 
     /**
-     * @dev See {IERC721Metadata-tokenURI}.
+     * @dev See {ERC721URIStorage-tokenURI}.
      */
     function tokenURI(
         uint256 tokenId
@@ -100,10 +100,10 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
         unchecked {
             for (uint256 i = _fromTokenId; i <= _toTokenId; ) {
                 if (_exists(i)) {
-                     require(
-                    ownerOf(i) == msg.sender,
-                    "Caller is not owner of token"
-                );
+                    require(
+                        ownerOf(i) == msg.sender,
+                        "Caller is not owner of token"
+                    );
                     super._setTokenURI(i, _tokenURI);
                 }
                 i++;
