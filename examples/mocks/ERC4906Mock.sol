@@ -12,11 +12,15 @@ contract ERC4906Mock is ERC4906 {
         _setTokenURI(tokenId, _tokenURI);
     }
 
+    function setTokenURIS(uint256 _fromTokenId, uint256 _toTokenId, string memory _tokenURI) public {
+        _setTokenURIS(_fromTokenId, _toTokenId, _tokenURI);
+    }
+
     function burn(uint256 tokenId) public {
         _burn(tokenId);
     }
 
-    function totalBurned() public returns (uint256) {
+    function totalBurned() public view returns (uint256) {
         return _totalBurned();
     }
 }

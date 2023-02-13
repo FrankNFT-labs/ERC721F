@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
     uint256 public constant MAX_TOKENS = 10000;
+    uint public constant MAX_PURCHASE = 31; // Theoretical limit 1100
     bool public saleIsActive;
 
     constructor() ERC721F("Example Metadata Update Extension", "EMUE") {}
@@ -45,26 +46,52 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
     /**
      * Mint your tokens here.
      */
-    function mint(uint256 tokenId, string memory _tokenURI) external {
+    function mint(uint256 numberOfTokens, string memory _tokenURI) external {
         require(msg.sender == tx.origin, "No Contracts allowed.");
         require(saleIsActive, "Sale NOT active yet");
-        require(!_exists(tokenId), "Token already exists");
+        require(numberOfTokens > 0, "numberOfNfts cannot be 0");
         require(
-            totalSupply() <= MAX_TOKENS,
+            numberOfTokens < MAX_PURCHASE,
+            "Can only mint 30 tokens at a time"
+        );
+        uint256 supply = _totalMinted();
+        require(
+            supply + numberOfTokens <= MAX_TOKENS,
             "Purchase would exceed max supply of Tokens"
         );
-        _mint(msg.sender, tokenId);
-        super._setTokenURI(tokenId, _tokenURI);
+        unchecked {
+            for (uint256 i; i < numberOfTokens; ) {
+                uint256 nextTokenId = supply + i;
+                _mint(msg.sender, nextTokenId); // no need to use safeMint as we don't allow contracts.
+                super._setTokenURI(nextTokenId, _tokenURI);
+                i++;
+            }
+        }
     }
 
     /**
-     * @notice Sets the tokenURI of `tokenId` to `_tokenURI`
-     * @dev Requires caller to be owner of `tokenId`
+     * @dev Sets the tokenURI of `tokenId` to `_tokenURI`
      */
     function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal virtual override  {
         require(ownerOf(tokenId) == msg.sender, "Caller is not owner of token");
         super._setTokenURI(tokenId, _tokenURI);
         emit MetadataUpdate(tokenId);
+    }
+
+    /**
+     * @dev Sets the tokenURI of tokens from `_fromTokenId` to `to` to `_toTokenId`
+     */
+    function _setTokenURIS(uint256 _fromTokenId, uint256 _toTokenId, string memory _tokenURI) internal virtual {
+        unchecked {
+            for (uint256 i = _fromTokenId; i <= _toTokenId; ) {
+                require(ownerOf(i) == msg.sender, "Caller is not owner of token");
+                if (_exists(i)) {
+                    super._setTokenURI(i, _tokenURI);
+                }
+                i++;
+            }
+        }
+        emit BatchMetadataUpdate(_fromTokenId, _toTokenId);
     }
 
     /**
