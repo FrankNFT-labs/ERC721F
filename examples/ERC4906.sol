@@ -57,7 +57,11 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
         super._setTokenURI(tokenId, _tokenURI);
     }
 
-    function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal virtual override {
+    /**
+     * @notice Sets the tokenURI of `tokenId` to `_tokenURI`
+     * @dev Requires caller to be owner of `tokenId`
+     */
+    function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal virtual override  {
         require(ownerOf(tokenId) == msg.sender, "Caller is not owner of token");
         super._setTokenURI(tokenId, _tokenURI);
         emit MetadataUpdate(tokenId);
