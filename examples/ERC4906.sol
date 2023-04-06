@@ -2,7 +2,7 @@
 pragma solidity ^0.8.9 <0.9.0;
 
 import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721F.sol";
-import "../contracts/interfaces/IERC4906.sol";
+import "@franknft.eth/erc721-f/contracts/interfaces/IERC4906.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
