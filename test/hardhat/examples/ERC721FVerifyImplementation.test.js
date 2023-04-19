@@ -12,7 +12,7 @@ describe("ERC721FVerifyImplementation", function () {
     const Token = await ethers.getContractFactory(
       "ERC721FVerifyImplementation"
     );
-    const [owner, addr1, addr2, addr3, addr4] = await ethers.getSigners();
+    const [owner, addr1, addr2] = await ethers.getSigners();
 
     const delegationRegistry = await DelegationRegistry.deploy();
     const hotWalletProxy = await HotWalletProxy.deploy();
@@ -24,34 +24,50 @@ describe("ERC721FVerifyImplementation", function () {
     );
 
     await hotWalletProxy.setHotWallet(addr1.address, 9999999999, false);
-    await hotWalletProxy.setHotWallet(addr3.address, 9999999999, false);
     await delegationRegistry.delegateForContract(
       addr1.address,
-      freeMint.address,
-      true
-    );
-    await delegationRegistry.delegateForContract(
-      addr4.address,
-      freeMint.address,
+      token.address,
       true
     );
     await freeMint.flipSaleState();
     await freeMint.mint(5);
     await freeMint.flipSaleState();
 
-    return { hotWalletProxy, token, owner, addr1, addr2 };
+    return { token, owner, addr1, addr2 };
   }
 
-  describe("claim", function () {
-    it("Allows claims by wallets that are neither hotwallet or delegated", async function () {
-      const { token, addr2 } = await loadFixture(deployTokenFixture);
+  describe("mint", function () {
+    it("Doesn't allow minting when sale is inactive", async function () {
+      const { token, owner } = await loadFixture(deployTokenFixture);
 
-      await expect(token.connect(addr2).claimToken(1)).to.not.be.reverted;
-      console.log("token?", await token.totalSupply());
-      console.log("ownerOf", await token.ownerOf(1));
+      await expect(token.singleMint(1)).to.be.rejectedWith(
+        "SALE is not active yet"
+      );
     });
-    it("does something", async function () {
-      const { delegationRegistry } = await loadFixture(deployTokenFixture);
+
+    it("Allows minting when sale is active", async function () {
+      const { token, owner } = await loadFixture(deployTokenFixture);
+
+      await token.flipSaleState();
+      await expect(token.singleMint(1)).to.not.be.rejected;
+    });
+
+    it("Doesn't allow minting for someone else without delegation", async function () {
+      const { token, owner, addr2 } = await loadFixture(deployTokenFixture);
+
+      await token.flipSaleState();
+      await expect(
+        token.connect(addr2).singleMintOther(1, owner.address)
+      ).to.be.rejectedWith("Not delegated by recipient");
+    });
+
+    it("Allows minting for someone else when delegated", async function () {
+      const { token, owner, addr1 } = await loadFixture(deployTokenFixture);
+
+      await token.flipSaleState();
+      await expect(token.connect(addr1).singleMintOther(1, owner.address)).to
+        .not.be.rejected;
+      expect(await token.ownerOf(1)).to.be.equals(owner.address);
     });
   });
 });
