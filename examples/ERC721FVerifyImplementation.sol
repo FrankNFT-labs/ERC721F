@@ -6,6 +6,12 @@ import "./ERC721FVerify.sol";
 
 contract ERC721FVerifyImplementation is ERC721FVerify, ERC721F {
     address public immutable FREEMINT_CONTRACT;
+    bool public saleIsActive;
+
+    modifier validMintRequest() {
+        require(msg.sender == tx.origin, "No contracts allowed");
+        _;
+    }
 
     constructor(
         address _warmContract,
@@ -18,14 +24,29 @@ contract ERC721FVerifyImplementation is ERC721FVerify, ERC721F {
         FREEMINT_CONTRACT = _freeMintContract;
     }
 
-    function claimToken(uint256 id) external {
-        _verifyValidClaimer(id);
-        _mint(msg.sender, id);
+    function flipSaleState() external onlyOwner {
+        saleIsActive = !saleIsActive;
     }
 
-    function _verifyValidClaimer(uint256 tokenId) private view {
-        if (!verifyTokenOwner((FREEMINT_CONTRACT), tokenId)) {
-            revert("Not a valid owner");
-        }
+    function singleMint(uint256 tokenId) external validMintRequest {
+        require(saleIsActive, "SALE is not active yet");
+        _mint(msg.sender, tokenId);
+    }
+
+    function singleMintOther(
+        uint256 tokenId,
+        address recipient
+    ) external validMintRequest {
+        require(saleIsActive, "SALE is not active yet");
+        require(
+            ERC721FVerify.isValidClaimer(address(this), recipient),
+            "Not delegated by recipient"
+        );
+        _mint(recipient, tokenId);
+    }
+
+    function preSaleMint(uint256 tokenId) external validMintRequest {
+        require(ERC721FVerify.hasPreSalePermissions(FREEMINT_CONTRACT));
+        _mint(msg.sender, tokenId);
     }
 }
