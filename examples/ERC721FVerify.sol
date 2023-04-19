@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9 <0.9.0;
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+// import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "../contracts/token/ERC721/ERC721F.sol";
 
 interface WarmInterface {
     function ownerOf(
@@ -48,7 +49,7 @@ contract ERC721FVerify {
         address tokenContract,
         uint256 tokenId
     ) internal view returns (bool) {
-        address tokenOwner = IERC721(tokenContract).ownerOf(tokenId);
+        address tokenOwner = ERC721F(tokenContract).ownerOf(tokenId);
 
         // 1. check contract token owner
         // 2. check warm wallet delegation - ownerOf()
