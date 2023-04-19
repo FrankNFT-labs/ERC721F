@@ -29,7 +29,7 @@ contract ERC721FVerifyImplementation is ERC721FVerify, ERC721F {
 
     /**
      * @notice Mints `tokenId`
-     * @param TokenId to be minted
+     * @param tokenId to be minted
      * @dev msg.sender must have tokens within the FreeMint contract
      */
     function mint(uint256 tokenId) external {
