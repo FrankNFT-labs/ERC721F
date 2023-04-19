@@ -39,18 +39,7 @@ contract ERC721FVerify {
         DELEGATE_CASH_CONTRACT = _delegateCashContract;
     }
 
-    function isValidClaimer(
-        address tokenContract,
-        address vault
-    ) internal view returns (bool) {
-        return
-            DelegateCashInterface(DELEGATE_CASH_CONTRACT)
-                .checkDelegateForContract(msg.sender, vault, tokenContract);
-    }
-
-    function hasPreSalePermissions(
-        address tokenContract
-    ) internal view returns (bool) {
+    function hasTokens(address tokenContract) internal view returns (bool) {
         return
             WarmInterface(WARM_WALLET_CONTRACT).balanceOf(
                 tokenContract,

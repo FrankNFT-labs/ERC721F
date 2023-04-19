@@ -33,39 +33,24 @@ describe("ERC721FVerifyImplementation", function () {
     await freeMint.mint(5);
     await freeMint.flipSaleState();
 
-    return { token, owner, addr1, addr2 };
+    return { freeMint, token, owner, addr1, addr2, hotWalletProxy };
   }
 
   describe("mint", function () {
-    it("Doesn't allow minting when sale is inactive", async function () {
-      const { token, owner } = await loadFixture(deployTokenFixture);
+    it("Doesn't allow mints when address does not have any tokens in freeMint", async function () {
+      const { token, addr2 } = await loadFixture(deployTokenFixture);
 
-      await expect(token.mint(1)).to.be.rejectedWith("SALE is not active yet");
+      await expect(token.connect(addr2).mint(1)).to.be.rejectedWith(
+        "Must have tokens in FreeMint"
+      );
     });
 
-    it("Allows minting when sale is active", async function () {
-      const { token, owner } = await loadFixture(deployTokenFixture);
+    it("Allows minting when owning tokens in FreeMint", async function () {
+      const { token, addr1, hotWalletProxy } = await loadFixture(
+        deployTokenFixture
+      );
 
-      await token.flipSaleState();
-      await expect(token.mint(1)).to.not.be.rejected;
-    });
-
-    it("Doesn't allow minting for someone else without delegation", async function () {
-      const { token, owner, addr2 } = await loadFixture(deployTokenFixture);
-
-      await token.flipSaleState();
-      await expect(
-        token.connect(addr2).mintDelegated(1, owner.address)
-      ).to.be.rejectedWith("Not delegated by recipient");
-    });
-
-    it("Allows minting for someone else when delegated", async function () {
-      const { token, owner, addr1 } = await loadFixture(deployTokenFixture);
-
-      await token.flipSaleState();
-      await expect(token.connect(addr1).mintDelegated(1, owner.address)).to.not
-        .be.rejected;
-      expect(await token.ownerOf(1)).to.be.equals(owner.address);
+      await expect(token.connect(addr1).mint(1)).to.not.be.rejected;
     });
   });
 });
