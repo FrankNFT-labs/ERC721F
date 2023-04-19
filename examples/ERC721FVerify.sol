@@ -24,6 +24,7 @@ error ZeroAddressCheck();
  * Based on https://etherscan.io/address/0xba5a9e9cbce12c70224446c24c111132becf9f1d#code
  * Warm Wallet https://github.com/wenewlabs/public/tree/main/HotWalletProxy
  * Delegate.cash https://github.com/delegatecash/delegation-registry
+ * @dev Contract used to interact with Warm Wallet and Delegate Cash for permission checks
  */
 contract ERC721FVerify {
     address public immutable WARM_WALLET_CONTRACT;
@@ -38,6 +39,9 @@ contract ERC721FVerify {
         DELEGATE_CASH_CONTRACT = _delegateCashContract;
     }
 
+    /**
+     * @notice Returns whether coldWallet of `msg.sender` contains any tokens in `tokenContract`
+     */
     function hasTokens(address tokenContract) internal view returns (bool) {
         return
             WarmInterface(WARM_WALLET_CONTRACT).balanceOf(
