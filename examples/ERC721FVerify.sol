@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.17;
+pragma solidity ^0.8.9 <0.9.0;
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 interface WarmInterface {
@@ -22,7 +22,7 @@ error ZeroAddressCheck();
 
 /**
  * @title ERC721FVerify - check for token ownership via contract, warm wallet and delegate cash
- * Based on https://etherscan.io/address/0xba5a9e9cbce12c70224446c24c111132becf9f1d#code 
+ * Based on https://etherscan.io/address/0xba5a9e9cbce12c70224446c24c111132becf9f1d#code
  * Warm Wallet https://github.com/wenewlabs/public/tree/main/HotWalletProxy
  * Delegate.cash https://github.com/delegatecash/delegation-registry
  */
@@ -64,10 +64,10 @@ contract ERC721FVerify {
                 tokenId
             ) ||
             DelegateCashInterface(DELEGATE_CASH_CONTRACT).checkDelegateForToken(
-                    msg.sender,
-                    tokenOwner,
-                    tokenContract,
-                    tokenId
-                ));
+                msg.sender,
+                tokenOwner,
+                tokenContract,
+                tokenId
+            ));
     }
 }

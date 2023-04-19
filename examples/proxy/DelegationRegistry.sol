@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: CC0-1.0
-pragma solidity ^0.8.17;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.9 <0.9.0;
 
 import {IDelegationRegistry} from "./IDelegationRegistry.sol";
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
