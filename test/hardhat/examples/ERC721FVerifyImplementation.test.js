@@ -40,16 +40,14 @@ describe("ERC721FVerifyImplementation", function () {
     it("Doesn't allow minting when sale is inactive", async function () {
       const { token, owner } = await loadFixture(deployTokenFixture);
 
-      await expect(token.singleMint(1)).to.be.rejectedWith(
-        "SALE is not active yet"
-      );
+      await expect(token.mint(1)).to.be.rejectedWith("SALE is not active yet");
     });
 
     it("Allows minting when sale is active", async function () {
       const { token, owner } = await loadFixture(deployTokenFixture);
 
       await token.flipSaleState();
-      await expect(token.singleMint(1)).to.not.be.rejected;
+      await expect(token.mint(1)).to.not.be.rejected;
     });
 
     it("Doesn't allow minting for someone else without delegation", async function () {
@@ -57,7 +55,7 @@ describe("ERC721FVerifyImplementation", function () {
 
       await token.flipSaleState();
       await expect(
-        token.connect(addr2).singleMintOther(1, owner.address)
+        token.connect(addr2).mintDelegated(1, owner.address)
       ).to.be.rejectedWith("Not delegated by recipient");
     });
 
@@ -65,8 +63,8 @@ describe("ERC721FVerifyImplementation", function () {
       const { token, owner, addr1 } = await loadFixture(deployTokenFixture);
 
       await token.flipSaleState();
-      await expect(token.connect(addr1).singleMintOther(1, owner.address)).to
-        .not.be.rejected;
+      await expect(token.connect(addr1).mintDelegated(1, owner.address)).to.not
+        .be.rejected;
       expect(await token.ownerOf(1)).to.be.equals(owner.address);
     });
   });

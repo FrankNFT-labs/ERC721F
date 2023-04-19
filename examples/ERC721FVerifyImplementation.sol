@@ -28,25 +28,29 @@ contract ERC721FVerifyImplementation is ERC721FVerify, ERC721F {
         saleIsActive = !saleIsActive;
     }
 
-    function singleMint(uint256 tokenId) external validMintRequest {
+    function mint(uint256 tokenId) external validMintRequest {
         require(saleIsActive, "SALE is not active yet");
         _mint(msg.sender, tokenId);
     }
 
-    function singleMintOther(
+    function mintDelegated(
         uint256 tokenId,
         address recipient
     ) external validMintRequest {
         require(saleIsActive, "SALE is not active yet");
-        require(
-            ERC721FVerify.isValidClaimer(address(this), recipient),
-            "Not delegated by recipient"
-        );
-        _mint(recipient, tokenId);
+        _delegatedMint(tokenId, recipient);
     }
 
     function preSaleMint(uint256 tokenId) external validMintRequest {
         require(ERC721FVerify.hasPreSalePermissions(FREEMINT_CONTRACT));
         _mint(msg.sender, tokenId);
+    }
+
+    function _delegatedMint(uint256 tokenId, address recipient) internal {
+        require(
+            ERC721FVerify.isValidClaimer(address(this), recipient),
+            "Not delegated by recipient"
+        );
+        _mint(recipient, tokenId);
     }
 }
