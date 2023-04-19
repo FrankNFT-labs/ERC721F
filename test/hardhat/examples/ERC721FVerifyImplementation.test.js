@@ -12,7 +12,7 @@ describe("ERC721FVerifyImplementation", function () {
     const Token = await ethers.getContractFactory(
       "ERC721FVerifyImplementation"
     );
-    const [owner, addr1, addr2] = await ethers.getSigners();
+    const [owner, addr1, addr2, addr3, addr4] = await ethers.getSigners();
 
     const delegationRegistry = await DelegationRegistry.deploy();
     const hotWalletProxy = await HotWalletProxy.deploy();
@@ -24,8 +24,14 @@ describe("ERC721FVerifyImplementation", function () {
     );
 
     await hotWalletProxy.setHotWallet(addr1.address, 9999999999, false);
+    await hotWalletProxy.setHotWallet(addr3.address, 9999999999, false);
     await delegationRegistry.delegateForContract(
       addr1.address,
+      freeMint.address,
+      true
+    );
+    await delegationRegistry.delegateForContract(
+      addr4.address,
       freeMint.address,
       true
     );
@@ -37,6 +43,13 @@ describe("ERC721FVerifyImplementation", function () {
   }
 
   describe("claim", function () {
+    it("Allows claims by wallets that are neither hotwallet or delegated", async function () {
+      const { token, addr2 } = await loadFixture(deployTokenFixture);
+
+      await expect(token.connect(addr2).claimToken(1)).to.not.be.reverted;
+      console.log("token?", await token.totalSupply());
+      console.log("ownerOf", await token.ownerOf(1));
+    });
     it("does something", async function () {
       const { delegationRegistry } = await loadFixture(deployTokenFixture);
     });
