@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9 <0.9.0;
-// import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "../contracts/token/ERC721/ERC721F.sol";
+import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721F.sol";
 
 interface WarmInterface {
     function balanceOf(
