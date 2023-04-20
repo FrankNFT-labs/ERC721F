@@ -2,7 +2,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  await deploy("Diamond", {
+  await deploy("FreeMint", {
     from: deployer,
     facets: ["InitFacet", "ERC721FUpgradeable"],
     waitConfirmations: 1,
