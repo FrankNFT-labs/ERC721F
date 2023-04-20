@@ -4,7 +4,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
   await deploy("Diamond", {
     from: deployer,
-    facets: ["InitFacet", "MintFacet", "RenderFacet"],
+    facets: ["InitFacet", "ERC721FUpgradeable"],
     waitConfirmations: 1,
     autoMine: true,
     execute: {
