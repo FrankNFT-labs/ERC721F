@@ -4,6 +4,7 @@ pragma solidity ^0.8.9 <0.9.0;
 import {ERC721FUpgradeableInternal, ERC721FStorage} from "./ERC721FUpgradeableInternal.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import {UsingDiamondOwner} from "hardhat-deploy/solc_0.8/diamond/UsingDiamondOwner.sol";
 
 /**
  * @title ERC721 token receiver interface
@@ -35,9 +36,15 @@ interface IERC721ReceiverUpgradeable {
  * @author @FrankNFT.eth
  *
  */
-contract ERC721FUpgradeable is ERC721FUpgradeableInternal, IERC721Metadata {
+contract ERC721FUpgradeable is
+    ERC721FUpgradeableInternal,
+    IERC721Metadata,
+    UsingDiamondOwner
+{
     using ERC721FStorage for ERC721FStorage.Layout;
     using Strings for uint256;
+
+    // ERC721
 
     /**
      * @dev Returns the number of tokens in ``owner``'s account.
@@ -232,5 +239,57 @@ contract ERC721FUpgradeable is ERC721FUpgradeableInternal, IERC721Metadata {
         address operator
     ) public view virtual returns (bool) {
         return _isApprovedForAll(owner, operator);
+    }
+
+    // ERC721F
+
+    /**
+     * @dev Set the base token URI
+     */
+    function setBaseTokenURI(string memory baseURI) public onlyOwner {
+        ERC721FStorage.layout()._baseTokenURI = baseURI;
+    }
+
+    /**
+     * @dev Gets the total amount of existing tokens stored by the contract.
+     * @return uint256 representing the total amount of tokens
+     */
+    function totalSupply() public view virtual returns (uint256) {
+        return
+            ERC721FStorage.layout()._tokenSupply -
+            ERC721FStorage.layout()._burnCounter;
+    }
+
+    /**
+     * @dev walletofOwner
+     * @return tokens id owned by the given address
+     * This read function is O(totalSupply). If calling from a separate contract, be sure to test gas first.
+     * It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case.
+     */
+    function walletOfOwner(
+        address _owner
+    ) external view virtual returns (uint256[] memory) {
+        uint256 ownerTokenCount = balanceOf(_owner);
+        uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
+        uint256 currentTokenId = _startTokenId();
+        uint256 ownedTokenIndex = 0;
+        uint256 tokenSupply = ERC721FStorage.layout()._tokenSupply;
+
+        unchecked {
+            for (;;) {
+                if (ownedTokenIndex >= ownerTokenCount) {
+                    break;
+                }
+                if (currentTokenId >= tokenSupply) {
+                    break;
+                }
+                if (_ownerOf(currentTokenId) == _owner) {
+                    ownedTokenIds[ownedTokenIndex] = currentTokenId;
+                    ownedTokenIndex++;
+                }
+                currentTokenId++;
+            }
+        }
+        return ownedTokenIds;
     }
 }
