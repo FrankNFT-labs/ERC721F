@@ -2,6 +2,9 @@
   "name": "@franknft.eth/erc721-f",
   "description": "ERC721F contract for Solidity",
   "version": "4.8.1",
+  "workspaces": [
+    "./examples/EIP-2535"
+  ],
   "files": [
     "/contracts/**/*.sol",
     "!/contracts/mocks/**",
@@ -32,7 +35,6 @@
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
     "dotenv": "^16.0.2",
     "hardhat": "^2.12.4",
-    "hardhat-deploy": "^0.11.25",
     "keccak256": "^1.0.6",
     "merkletreejs": "^0.2.32",
     "operator-filter-registry": "^1.3.1"
