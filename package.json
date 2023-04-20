@@ -38,8 +38,7 @@
     "operator-filter-registry": "^1.3.1"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.8.1",
-    "@openzeppelin/contracts-upgradeable": "^4.8.2"
+    "@openzeppelin/contracts": "^4.8.1"
   },
   "bugs": {
     "url": "https://github.com/FrankNFT-labs/ERC721F/issues"
