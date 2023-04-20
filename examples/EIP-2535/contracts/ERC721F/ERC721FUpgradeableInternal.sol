@@ -40,15 +40,6 @@ contract ERC721FUpgradeableInternal is IERC721Upgradeable {
     // ERC721
 
     /**
-     * @dev Base URI for computing {tokenURI}. If set, the resulting URI for each
-     * token will be the concatenation of the `baseURI` and the `tokenId`. Empty
-     * by default, can be overridden in child contracts.
-     */
-    function _baseURI() internal view virtual returns (string memory) {
-        return "";
-    }
-
-    /**
      * @dev Safely transfers `tokenId` token from `from` to `to`, checking first that contract recipients
      * are aware of the ERC721 protocol to prevent tokens from being forever locked.
      *
@@ -179,6 +170,11 @@ contract ERC721FUpgradeableInternal is IERC721Upgradeable {
         emit Transfer(address(0), to, tokenId);
 
         _afterTokenTransfer(address(0), to, tokenId, 1);
+
+        // ERC721F addition
+        unchecked {
+            ERC721FStorage.layout()._tokenSupply++;
+        }
     }
 
     /**
@@ -213,6 +209,11 @@ contract ERC721FUpgradeableInternal is IERC721Upgradeable {
         emit Transfer(owner, address(0), tokenId);
 
         _afterTokenTransfer(owner, address(0), tokenId, 1);
+
+        // ERC721F addition
+        unchecked {
+            ERC721FStorage.layout()._burnCounter++;
+        }
     }
 
     /**
@@ -453,5 +454,36 @@ contract ERC721FUpgradeableInternal is IERC721Upgradeable {
         // of the constructor execution.
 
         return account.code.length > 0;
+    }
+
+    // ERC721F
+    /**
+     * To change the starting tokenId, override this function.
+     */
+    function _startTokenId() internal view virtual returns (uint256) {
+        return 0;
+    }
+
+    /**
+     * @dev Base URI for computing {tokenURI}. If set, the resulting URI for each
+     * token will be the concatenation of the `baseURI` and the `tokenId`. Empty
+     * by default, can be overriden in child contracts.
+     */
+    function _baseURI() internal view virtual returns (string memory) {
+        return ERC721FStorage.layout()._baseTokenURI;
+    }
+
+    /**
+     * @dev Gets total amount of tokens minted by the contract
+     */
+    function _totalMinted() internal view virtual returns (uint256) {
+        return ERC721FStorage.layout()._tokenSupply;
+    }
+
+    /**
+     * @dev Gets total amount of burned tokens
+     */
+    function _totalBurned() internal view virtual returns (uint256) {
+        return ERC721FStorage.layout()._burnCounter;
     }
 }
