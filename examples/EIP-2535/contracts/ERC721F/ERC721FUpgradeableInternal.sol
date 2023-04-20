@@ -286,7 +286,7 @@ contract ERC721FUpgradeableInternal is IERC721Upgradeable {
 
     function _getApproved(
         uint256 tokenId
-    ) public view virtual returns (address) {
+    ) internal view virtual returns (address) {
         _requireMinted(tokenId);
 
         return ERC721FStorage.layout()._tokenApprovals[tokenId];
