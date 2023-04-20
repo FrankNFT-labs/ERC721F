@@ -18,6 +18,8 @@ contract InitFacet is UsingDiamondOwner, WithStorage {
 
         f()._name = "FreeMint";
         f()._symbol = "FM";
+        f()
+            ._baseTokenURI = "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/";
 
         s().MAX_TOKENS = 10000;
         s().MAX_PURCHASE = 31;
