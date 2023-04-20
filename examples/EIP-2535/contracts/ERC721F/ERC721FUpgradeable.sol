@@ -2,7 +2,6 @@
 pragma solidity ^0.8.9 <0.9.0;
 
 import {ERC721FUpgradeableInternal, ERC721FStorage} from "./ERC721FUpgradeableInternal.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import {UsingDiamondOwner} from "hardhat-deploy/solc_0.8/diamond/UsingDiamondOwner.sol";
 
@@ -36,11 +35,7 @@ interface IERC721ReceiverUpgradeable {
  * @author @FrankNFT.eth
  *
  */
-contract ERC721FUpgradeable is
-    ERC721FUpgradeableInternal,
-    IERC721Metadata,
-    UsingDiamondOwner
-{
+contract ERC721FUpgradeable is ERC721FUpgradeableInternal, UsingDiamondOwner {
     using ERC721FStorage for ERC721FStorage.Layout;
     using Strings for uint256;
 
@@ -71,25 +66,25 @@ contract ERC721FUpgradeable is
     }
 
     /**
-     * @dev See {IERC721Metadata-name}.
+     * @dev Returns the token collection name.
      */
-    function name() public view virtual override returns (string memory) {
+    function name() public view virtual returns (string memory) {
         return ERC721FStorage.layout()._name;
     }
 
     /**
-     * @dev See {IERC721Metadata-symbol}.
+     * @dev Returns the token collection symbol.
      */
-    function symbol() public view virtual override returns (string memory) {
+    function symbol() public view virtual returns (string memory) {
         return ERC721FStorage.layout()._symbol;
     }
 
     /**
-     * @dev See {IERC721Metadata-tokenURI}.
+     * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.
      */
     function tokenURI(
         uint256 tokenId
-    ) public view virtual override returns (string memory) {
+    ) public view virtual returns (string memory) {
         _requireMinted(tokenId);
 
         string memory baseURI = _baseURI();
