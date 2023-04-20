@@ -1,8 +1,8 @@
 module.exports = async ({ getNamedAccounts, deployments }) => {
-  const { deploy } = deployments;
+  const { diamond } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  await deploy("EIP-2535", {
+  await diamond.deploy("EIP-2535", {
     from: deployer,
     facets: ["InitFacet", "MintFacet", "SaleControl", "ERC721FUpgradeable"],
     waitConfirmations: 1,
