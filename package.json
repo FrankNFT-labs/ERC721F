@@ -39,8 +39,7 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.8.1",
-    "@openzeppelin/contracts-upgradeable": "^4.8.2",
-    "solady": "^0.0.81"
+    "@openzeppelin/contracts-upgradeable": "^4.8.2"
   },
   "bugs": {
     "url": "https://github.com/FrankNFT-labs/ERC721F/issues"
