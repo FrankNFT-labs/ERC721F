@@ -4,7 +4,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
   await deploy("FreeMint", {
     from: deployer,
-    facets: ["InitFacet", "ERC721FUpgradeable"],
+    facets: ["InitFacet", "MintFacet", "SaleControl", "ERC721FUpgradeable"],
     waitConfirmations: 1,
     autoMine: true,
     execute: {
