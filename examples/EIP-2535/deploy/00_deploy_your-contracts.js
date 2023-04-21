@@ -1,3 +1,8 @@
+/**
+ * Script for the initial deployment of the EIP-2535 contract which is built using 4 facets
+ * The init function of InitFacet gets executed during the deployment/upgrade
+ */
+
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { diamond } = deployments;
   const { deployer } = await getNamedAccounts();
