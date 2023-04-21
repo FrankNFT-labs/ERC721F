@@ -1,6 +1,6 @@
+require("dotenv").config();
 require("@nomicfoundation/hardhat-toolbox");
 require("hardhat-gas-reporter");
-require("dotenv").config();
 require("hardhat-deploy");
 
 // If not set, it uses ours Alchemy's default API key.
@@ -26,7 +26,6 @@ module.exports = {
       },
     },
   },
-  defaultNetwork: "localhost",
   namedAccounts: {
     deployer: {
       // By default, it will take the first Hardhat account as the deployer
@@ -38,14 +37,6 @@ module.exports = {
     tests: "./test",
     cache: "./cache",
     artifacts: "./artifacts",
-  },
-  gasReporter: {
-    enabled: process.env.REPORT_GAS === "true" ? true : false,
-    //outputFile: "gas-report.txt",
-    noColors: true,
-    currency: "USD",
-    //coinmarketcap: process.env.COINMARKET_API_KEY,
-    //gasPrice: 50,
   },
   networks: {
     hardhat: {
