@@ -2,6 +2,7 @@ require("dotenv").config();
 require("@nomicfoundation/hardhat-toolbox");
 require("hardhat-gas-reporter");
 require("hardhat-deploy");
+require("@nomiclabs/hardhat-ethers");
 
 // If not set, it uses ours Alchemy's default API key.
 // You can get your own at https://dashboard.alchemyapi.io

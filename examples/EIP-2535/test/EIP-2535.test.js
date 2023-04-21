@@ -1,11 +1,20 @@
-const { deployments } = require("hardhat");
+const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
+const { expect } = require("chai");
+const { ethers, deployments } = require("hardhat");
 
-describe("Token", () => {
-  it("testing 1 2 3", async function () {
-    await deployments.fixture(["EIP-2535"]);
-    const Token = await deployments.get("EIP-2535"); // Token is available because the fixture was executed
-    console.log(Token.address);
-    // const ERC721BidSale = await deployments.get("ERC721BidSale");
-    // console.log({ ERC721BidSale });
+describe("EIP-2535", function () {
+  async function deployTokenFixture() {
+    await deployments.fixture();
+    const [owner] = await ethers.getSigners();
+
+    const hardhatToken = await ethers.getContract("EIP-2535", owner);
+    return { hardhatToken, owner };
+  }
+
+  describe("owner", function () {
+    it("Owner is owner", async function () {
+      const { hardhatToken, owner } = await loadFixture(deployTokenFixture);
+      expect(await hardhatToken.owner()).to.be.equals(owner.address);
+    });
   });
 });
