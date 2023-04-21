@@ -8,6 +8,9 @@ import {UsingDiamondOwner, IDiamondCut} from "hardhat-deploy/solc_0.8/diamond/Us
 import {ERC721FStorage} from "./ERC721F/ERC721FStorage.sol";
 import {WithStorage} from "./WithStorage.sol";
 
+/**
+ * @dev Contract is utilised to setup initial values and registration of all interfaces utilised by the Diamond supportsInterface
+ */
 contract InitFacet is UsingDiamondOwner, WithStorage {
     function f() internal pure returns (ERC721FStorage.Layout storage) {
         return ERC721FStorage.layout();

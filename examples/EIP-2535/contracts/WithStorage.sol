@@ -10,6 +10,9 @@ struct FreeMintStorage {
     bool saleIsActive;
 }
 
+/**
+ * @dev Contract is utilised to setup the function s to allow access to FreeMintStorage variables and contains mandatory DiamondStorage initialization
+ */
 contract WithStorage {
     function s() internal pure returns (FreeMintStorage storage cs) {
         bytes32 position = keccak256("free.mint.nft.contract.storage");

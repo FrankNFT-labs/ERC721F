@@ -4,6 +4,9 @@ pragma solidity ^0.8.9 <0.9.0;
 import {ERC721FUpgradeableInternal} from "./ERC721F/ERC721FUpgradeableInternal.sol";
 import {FreeMintStorage, WithStorage} from "./WithStorage.sol";
 
+/**
+ * @dev Facet which adds external mint function
+ */
 contract MintFacet is ERC721FUpgradeableInternal, WithStorage {
     function mint(uint256 numberOfTokens) external {
         FreeMintStorage storage freeMintStorage = s();
