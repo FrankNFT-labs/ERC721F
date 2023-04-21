@@ -287,4 +287,25 @@ contract ERC721FUpgradeable is ERC721FUpgradeableInternal, UsingDiamondOwner {
         }
         return ownedTokenIds;
     }
+
+    /**
+     * @notice Burns `tokenId`
+     */
+    function burn(uint256 tokenId) public {
+        _burn(tokenId);
+    }
+
+    /**
+     * @dev Helper function for testing of internal function _totalBurned
+     */
+    function totalBurned() public view returns (uint256) {
+        return _totalBurned();
+    }
+
+    /**
+     * @dev Helper function for testing of internal function _totalMinted
+     */
+    function totalMinted() public view returns (uint256) {
+        return _totalMinted();
+    }
 }
