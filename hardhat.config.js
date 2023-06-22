@@ -14,7 +14,7 @@ module.exports = {
     },
   },
   paths: {
-    sources: "./examples",
+    sources: "./contracts",
     tests: "./test",
     cache: "./cache",
     artifacts: "./artifacts"
