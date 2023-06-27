@@ -229,13 +229,11 @@ contract OnChainOptimized is IERC4883, ERC721F {
      * 6 background colors 
      */
     function getBackground(uint256 id) public pure returns(string memory){
-        string[2] memory header = ['<svg width="1080" height="1080" style="background-color:#','" stroke="#000" xmlns="http://www.w3.org/2000/svg">'];
         string[6] memory colors = ["CEC9DF", "FDF1CA", "EDCCB6", "B2C6DE", "E1E1E1", "C8DCB8"];
         //return '';
         return string(abi.encodePacked(
-            header[0],
-            colors[id%6],
-            header[1]
+            ' style=" background-color:#',
+            colors[id%6]        
         )
         );
     }
@@ -251,7 +249,7 @@ contract OnChainOptimized is IERC4883, ERC721F {
         returns (string memory)
     {
          //header1, header2, body, rest, footer
-        string[5] memory frame = ['<svg width="1080" height="1080" style="background-color:#',
+        string[5] memory frame = ['<svg width="1080" height="1080"',
         '" stroke="#000" xmlns="http://www.w3.org/2000/svg">',
         '<ellipse stroke-width="10" ry="266" rx="200" cy="540" cx="540" fill="#fff"/>',
         '<ellipse transform="rotate(25 660 250)" ry="107" rx="45" cy="250" cx="660" stroke-width="10" fill="#fff"/><ellipse transform="rotate(-25 420 250)" ry="107" rx="45" cy="250" cx="420" stroke-width="10" fill="#fff"/><ellipse transform="rotate(-25 435 283)" ry="68" rx="26" cy="283" cx="435" stroke-width="10" fill="#FFAFCC"/><ellipse transform="rotate(25 645 283)" ry="68" rx="26" cy="283" cx="645" stroke-width="10" fill="#FFAFCC"/><circle cy="427" cx="470" stroke-width="10" r="30"/><circle cy="427" cx="610" stroke-width="10" r="30"/><circle cy="418" cx="465" r="12" fill="#fff" stroke="none"/><circle cy="440" cx="484" r="6" fill="#fff" stroke="none"/><circle cy="418" cx="615" r="12" fill="#fff" stroke="none"/><circle cy="440" cx="600" r="8" fill="#fff" stroke="none"/><circle cy="520" cx="540" stroke-width="4" fill="#FFAFCC" r="14"/><ellipse ry="120" rx="100" cy="685" cx="540" stroke-width="4" fill="#FFE2FF"/><ellipse ry="106" rx="80" cy="697" cx="540" fill="#FFAFCC" stroke="none"/><ellipse transform="rotate(-17 610 804)" ry="43" rx="30" cy="804" cx="610" stroke-width="10" fill="#fff"/><ellipse transform="rotate(17 470 804)" ry="43" rx="30" cy="804" cx="470" stroke-width="10" fill="#fff"/><ellipse transform="rotate(30 750 518)" ry="48" rx="31" cy="518" cx="750" stroke-width="10" fill="#fff"/><ellipse transform="rotate(-30 330 518)" ry="48" rx="31" cy="518" cx="330" stroke-width="10" fill="#fff"/>',
