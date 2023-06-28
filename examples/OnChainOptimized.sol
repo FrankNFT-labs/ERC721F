@@ -99,17 +99,19 @@ contract OnChainOptimized is IERC4883, ERC721F {
      * of compiler to use block.difficulty or block.prevrando
      */
     function createRandomNumber(uint256 tokenId) public view returns (uint256) {
-        uint256 random = uint256(
-            keccak256(
-                abi.encodePacked(
-                    block.timestamp,
-                    block.difficulty,
-                    tokenId,
-                    msg.sender
+        unchecked {
+            uint256 random = uint256(
+                keccak256(
+                    abi.encodePacked(
+                        block.timestamp,
+                        block.difficulty,
+                        tokenId,
+                        msg.sender
+                    )
                 )
-            )
-        ) % 32;
-        return random;
+            ) % 32;
+            return random;
+        }
     }
 
     /**
