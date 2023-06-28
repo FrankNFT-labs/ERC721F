@@ -15,8 +15,8 @@ import "@openzeppelin/contracts/utils/Base64.sol";
  * @dev Example implementation of [ERC721FOnChain] with overridden functions for custom SVG and URI creation
  */
 contract OnChainOptimized is IERC4883, ERC721F {
-    uint256 public constant MAX_TOKENS = 10;
-    uint public constant MAX_PURCHASE = 10;
+    uint256 public constant MAX_TOKENS = 1000;
+    uint public constant MAX_PURCHASE = 1000;
     uint256 public last_selected = 0; //t: total input records dealt with
     bool public saleIsActive;
     //
@@ -78,14 +78,17 @@ contract OnChainOptimized is IERC4883, ERC721F {
             supply + numberOfTokens <= MAX_TOKENS,
             "Purchase would exceed max supply of Tokens"
         );
-        while (numberOfTokens != 0) {
-            uint256 algorithmId = last_selected +
-                createRandomNumber(supply + 1);
-            _mint(msg.sender, supply + 1);
-            supply++;
-            IdToAlgorithmId[supply + 1] = algorithmId;
-            numberOfTokens--;
-            last_selected = algorithmId;
+        unchecked {
+            while (numberOfTokens != 0) {
+                uint256 tokenId = supply + 1;
+                uint256 algorithmId = last_selected +
+                    createRandomNumber(tokenId);
+                _mint(msg.sender, tokenId);
+                IdToAlgorithmId[tokenId] = algorithmId;
+                last_selected = algorithmId;
+                supply++;
+                numberOfTokens--;
+            }
         }
     }
 
