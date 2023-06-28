@@ -71,7 +71,7 @@ contract OnChainOptimized is IERC4883, ERC721F {
         require(numberOfTokens != 0, "numberOfNfts cannot be 0");
         require(
             numberOfTokens < MAX_PURCHASE,
-            "Can only mint 8 tokens at a time"
+            "Can only mint 9 tokens at a time"
         );
         uint256 supply = totalSupply(); //m: number of items selected so far
         require(
