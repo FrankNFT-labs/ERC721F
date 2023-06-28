@@ -17,10 +17,10 @@ import "@openzeppelin/contracts/utils/Base64.sol";
 contract OnChainOptimized is IERC4883, ERC721F {
     uint256 public constant MAX_TOKENS = 10;
     uint public constant MAX_PURCHASE = 10;
-    uint256 public last_selected = 0; //t: total input records dealt with
+    uint256 public lastSelected = 0; //t: total input records dealt with
     bool public saleIsActive;
     //
-    mapping(uint256 => uint256) private IdToAlgorithmId;
+    mapping(uint256 => uint256) private idToAlgorithmId;
 
     constructor() ERC721F("BunniesSamplingOwnAlgorithm", "OC") {}
 
@@ -81,11 +81,11 @@ contract OnChainOptimized is IERC4883, ERC721F {
         unchecked {
             while (numberOfTokens != 0) {
                 uint256 tokenId = supply + 1;
-                uint256 algorithmId = last_selected +
+                uint256 algorithmId = lastSelected +
                     createRandomNumber(tokenId);
                 _mint(msg.sender, tokenId);
-                IdToAlgorithmId[tokenId] = algorithmId;
-                last_selected = algorithmId;
+                idToAlgorithmId[tokenId] = algorithmId;
+                lastSelected = algorithmId;
                 supply++;
                 numberOfTokens--;
             }
@@ -124,19 +124,19 @@ contract OnChainOptimized is IERC4883, ERC721F {
      * so this is not extracted out of the bitfield encoding of the id
      */
     function getBackgroundId(
-        uint256 Id
+        uint256 id
     ) public pure returns (uint256 backgroundId) {
-        return Id % 6;
+        return id % 6;
     }
 
     /**
      * 4 different purses are provided, these are represented with 2 bits
      * Bit 2 and bit 5 represent the purse
      */
-    function getPurseId(uint256 Id) public pure returns (uint256 purseId) {
-        uint256 bit_1 = (Id >> 1) & 1;
-        uint256 bit_2 = (Id >> 4) & 1;
-        return ((bit_2 << 1) | bit_1);
+    function getPurseId(uint256 id) public pure returns (uint256 purseId) {
+        uint256 bit1 = (id >> 1) & 1;
+        uint256 bit2 = (id >> 4) & 1;
+        return ((bit2 << 1) | bit1);
     }
 
     /**
@@ -144,29 +144,29 @@ contract OnChainOptimized is IERC4883, ERC721F {
      * Bit 4 represents this
      */
     function getBraceletId(
-        uint256 Id
+        uint256 id
     ) public pure returns (uint256 braceletId) {
-        uint256 bit_1 = (Id >> 3) & 1;
-        return bit_1;
+        uint256 bit1 = (id >> 3) & 1;
+        return bit1;
     }
 
     /**
      * 4 different glasses are provided, these are represented with 2 bits
      * Bit 1 and bit 3 represent the glasses
      */
-    function getGlassesId(uint256 Id) public pure returns (uint256 glassesId) {
-        uint256 bit_1 = Id & 1;
-        uint256 bit_2 = (Id >> 2) & 1;
-        return ((bit_2 << 1) | bit_1);
+    function getGlassesId(uint256 id) public pure returns (uint256 glassesId) {
+        uint256 bit1 = id & 1;
+        uint256 bit2 = (id >> 2) & 1;
+        return ((bit2 << 1) | bit1);
     }
 
     /**
      * 2 colors represent the bracelets
      */
     function getBracelet(
-        uint256 bracelet_id
+        uint256 braceletId
     ) public pure returns (string memory) {
-        string[2] memory bracelet_colors = ["FFF093", "05faf6"];
+        string[2] memory braceletColors = ["FFF093", "05faf6"];
         string[2] memory bracelet = [
             '<circle cy="520" cx="310" r="8" fill="#FFF093" stroke-width="4"/><circle cy="510" cx="350" r="8" fill="#FFF093" stroke-width="4"/><circle cy="519" cx="331" r="12" fill="#',
             '       " stroke-width="4"/>'
@@ -175,56 +175,50 @@ contract OnChainOptimized is IERC4883, ERC721F {
             string(
                 abi.encodePacked(
                     bracelet[0],
-                    bracelet_colors[bracelet_id % 2],
+                    braceletColors[braceletId % 2],
                     bracelet[1]
                 )
             );
     }
 
-    function getPurse(uint256 purse_id) public pure returns (string memory) {
-        string[2] memory upper_part_purse = [
+    function getPurse(uint256 purseId) public pure returns (string memory) {
+        string[2] memory upperPartPurse = [
             '<circle cy="580" cx="330" r="60" stroke="none"/><circle cy="580" cx="330" r="40" fill="#fff" stroke="none"/>',
             '<rect y="530" x="280" width="100" height="120" stroke-width="8"/><rect y="530" x="290" width="80" height="100" stroke-width="8" fill="#fff"/>'
         ];
         string
-            memory lower_part_purse = '<rect y="580" x="240" width="180" height="120" stroke-width="8" ';
-        string[4] memory design_purse = [
+            memory lowerPartPurse = '<rect y="580" x="240" width="180" height="120" stroke-width="8" ';
+        string[4] memory designPurse = [
             'fill="#f73149"/><rect y="600" x="260" width="140" height="80" stroke-width="8" fill="#f58822"/><rect y="620" x="280" width="100" height="40" stroke-width="8" fill="#f5c43d"/>',
             'fill="#9F87FB"/><rect y="650" x="310" width="30" height="30" stroke-width="8" fill="#e06cf5"/><rect y="590" x="350" width="30" height="30" stroke-width="8" fill="#e06cf5"/><rect y="640" x="380" width="30" height="30" stroke-width="8" fill="#e06cf5"/><rect y="610" x="260" width="30" height="30" stroke-width="8" fill="#e06cf5"/>',
             '<rect y="550" x="240" width="180" height="30" stroke-width="8" fill="#9efa84"/><rect y="580" x="240" width="180" height="30" stroke-width="8" fill="#7ac9fa"/><rect y="610" x="240" width="180" height="30" stroke-width="8" fill="#b67afa"/><rect y="640" x="240" width="180" height="30" stroke-width="8" fill="#ea72f7"/>',
             '<rect y="560" x="240" width="45" height="120" stroke-width="8" fill="#9efa84"/><rect y="560" x="285" width="45" height="120" stroke-width="8" fill="#7ac9fa"/><rect y="560" x="330" width="45" height="120" stroke-width="8" fill="#b67afa"/><rect y="560" x="375" width="45" height="120" stroke-width="8" fill="#ea72f7"/>'
         ];
 
-        if (purse_id == 0) {
-            return
-                string(abi.encodePacked(upper_part_purse[1], design_purse[3]));
-        }
-
-        if (purse_id == 1) {
-            return
-                string(abi.encodePacked(upper_part_purse[1], design_purse[2]));
+        if (purseId == 0) {
+            return string(abi.encodePacked(upperPartPurse[1], designPurse[3]));
+        } else if (purseId == 1) {
+            return string(abi.encodePacked(upperPartPurse[1], designPurse[2]));
         } else {
             return
                 string(
                     abi.encodePacked(
-                        upper_part_purse[0],
-                        lower_part_purse,
-                        design_purse[purse_id - 2]
+                        upperPartPurse[0],
+                        lowerPartPurse,
+                        designPurse[purseId - 2]
                     )
                 );
         }
     }
 
-    function getGlasses(
-        uint256 glasses_id
-    ) public pure returns (string memory) {
-        string[4] memory glasses_colors = [
+    function getGlasses(uint256 glassesId) public pure returns (string memory) {
+        string[4] memory glassesColors = [
             "ed4949",
             "ffff56",
             "ff7f00",
             "00bf00"
         ];
-        string[4] memory big_glasses = [
+        string[4] memory bigGlasses = [
             '<path stroke-width="4" fill="#',
             '" d="M492 417h140v20H492z"/><circle cy="427" cx="470" stroke-width="4" r="55" fill="#',
             '"/><circle cy="427" cx="470" stroke-width="4" r="45" fill="#fff"/><circle cy="427" cx="610" stroke-width="4" r="55" fill="#',
@@ -234,9 +228,9 @@ contract OnChainOptimized is IERC4883, ERC721F {
         string memory output;
         output = string(
             abi.encodePacked(
-                big_glasses[0],
-                glasses_colors[glasses_id % 2],
-                big_glasses[1]
+                bigGlasses[0],
+                glassesColors[glassesId % 2],
+                bigGlasses[1]
             )
         );
 
@@ -244,10 +238,10 @@ contract OnChainOptimized is IERC4883, ERC721F {
             string(
                 abi.encodePacked(
                     output,
-                    glasses_colors[glasses_id % 4],
-                    big_glasses[2],
-                    glasses_colors[glasses_id % 4],
-                    big_glasses[3]
+                    glassesColors[glassesId % 4],
+                    bigGlasses[2],
+                    glassesColors[glassesId % 4],
+                    bigGlasses[3]
                 )
             );
     }
@@ -288,7 +282,7 @@ contract OnChainOptimized is IERC4883, ERC721F {
             "</svg>"
         ];
 
-        uint256 algorithmId = IdToAlgorithmId[tokenId];
+        uint256 algorithmId = idToAlgorithmId[tokenId];
         string memory output = string(
             abi.encodePacked(
                 frame[0],
@@ -323,7 +317,7 @@ contract OnChainOptimized is IERC4883, ERC721F {
         string memory tr3 = '"},{"trait_type": "Glasses","value": "';
         string memory tr4 = '"},{"trait_type": "Purse","value": "';
         string memory tr5 = '"}]';
-        uint256 algorithmId = IdToAlgorithmId[tokenId];
+        uint256 algorithmId = idToAlgorithmId[tokenId];
         string memory o = string(
             abi.encodePacked(
                 tr1,
