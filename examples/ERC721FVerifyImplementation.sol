@@ -29,11 +29,10 @@ contract ERC721FVerifyImplementation is Verify, ERC721F {
      * @param tokenId to be minted
      * @dev msg.sender must have tokens within the FreeMint contract
      */
-    function mint(uint256 tokenId, address vault) external {
+    function mint(uint256 tokenId) external {
         require(
-            Verify.hasTokens(FREEMINT_CONTRACT) ||
-                Verify.isDelegateInContractForVault(address(this), vault),
-            "Must have tokens in FreeMint or be delegated by `vault`"
+            Verify.verifyTokenOwner(FREEMINT_CONTRACT, tokenId),
+            "Must have tokens in FreeMint"
         );
         _mint(msg.sender, tokenId);
     }
