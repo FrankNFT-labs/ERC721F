@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9 <0.9.0;
 
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "../interfaces/DelegateCashInterface.sol";
 import "../interfaces/WarmInterface.sol";
 
@@ -27,25 +28,28 @@ contract Verify {
     }
 
     /**
-     * @notice Returns whether coldWallet of `msg.sender` contains any tokens in `tokenContract`
+     * @notice Verify contract token based claim using warm wallet and delegate cash
+     * @param tokenContract the smart contract address of the token
+     * @param tokenId the tokenId
      */
-    function hasTokens(address tokenContract) internal view returns (bool) {
-        return
-            WarmInterface(WARM_WALLET_CONTRACT).balanceOf(
-                tokenContract,
-                msg.sender
-            ) > 0;
-    }
-
-    /**
-     * @notice Returns whether `msg.sender` is delegate in `tokenContract` on behalf of `vault`
-     */
-    function isDelegateInContractForVault(
+    function verifyTokenOwner(
         address tokenContract,
-        address vault
+        uint256 tokenId
     ) internal view returns (bool) {
+        address tokenOwner = IERC721(tokenContract).ownerOf(tokenId);
+
         return
-            DelegateCashInterface(DELEGATE_CASH_CONTRACT)
-                .checkDelegateForContract(msg.sender, vault, tokenContract);
+            msg.sender == tokenOwner ||
+            msg.sender ==
+            WarmInterface(WARM_WALLET_CONTRACT).ownerOf(
+                tokenContract,
+                tokenId
+            ) ||
+            DelegateCashInterface(DELEGATE_CASH_CONTRACT).checkDelegateForToken(
+                msg.sender,
+                tokenOwner,
+                tokenContract,
+                tokenId
+            );
     }
 }
