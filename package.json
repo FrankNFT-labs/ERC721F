@@ -1,7 +1,12 @@
 {
   "name": "@franknft.eth/erc721-f",
   "description": "ERC721F contract for Solidity",
+
   "version": "4.8.2",
+  "workspaces": [
+    "./examples/EIP-2535"
+  ],
+
   "files": [
     "/contracts/**/*.sol",
     "!/contracts/mocks/**",

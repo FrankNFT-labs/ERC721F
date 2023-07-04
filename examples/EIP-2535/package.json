@@ -1,0 +1,17 @@
+{
+  "name": "eip-2535",
+  "scripts": {
+    "compile": "hardhat compile",
+    "deploy": "hardhat deploy --export-all generated/hardhat_contracts.json",
+    "fork": "MAINNET_FORKING_ENABLED=true hardhat node --network hardhat --no-deploy",
+    "verify": "hardhat etherscan-verify",
+    "test": "hardhat test"
+  },
+  "dependencies": {
+    "hardhat-deploy": "^0.11.26"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@^0.3.0-beta.13",
+    "ethers": "^5.7.2"
+  }
+}

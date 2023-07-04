@@ -1,6 +1,6 @@
+require("dotenv").config();
 require("@nomicfoundation/hardhat-toolbox");
 require("hardhat-gas-reporter");
-require('dotenv').config();
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -17,10 +17,10 @@ module.exports = {
     sources: "./contracts",
     tests: "./test",
     cache: "./cache",
-    artifacts: "./artifacts"
+    artifacts: "./artifacts",
   },
   gasReporter: {
-    enabled: (process.env.REPORT_GAS === "true") ? true : false,
+    enabled: process.env.REPORT_GAS === "true" ? true : false,
     //outputFile: "gas-report.txt",
     noColors: true,
     currency: "USD",
