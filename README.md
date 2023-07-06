@@ -4,6 +4,7 @@
 # ERC721F
 
 The goal of ERC721F is to provide a simple extension of IERC721 with significant gas savings for minting multiple and single NFTs in a single transaction. This project and implementation will be updated regularly and will continue to stay up to date with best practices.
+Another key goal of ERC721F is to facilitate educational opportunities for new web3 developers, fostering a supportive learning environment and driving innovation within the community.
 
 ERC721F Extends ERC721 Non-Fungible Token Standard basic implementation. ERC721F eliminates the need for ERC721Enumerable, yet retains the functionality of totalSupply() and walletOfOwner(address _owner).
 
