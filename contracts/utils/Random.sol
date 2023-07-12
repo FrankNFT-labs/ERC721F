@@ -8,7 +8,7 @@ pragma solidity ^0.8.20 <0.9.0;
  */
 
 abstract contract Random {
-    uint256 incrementer;
+    uint256 nonce;
 
     /**
      * @notice Generates a pseudo-random number using the PrevranDAO.
@@ -18,7 +18,7 @@ abstract contract Random {
      */
     function random() internal returns (uint256) {
         unchecked {
-            incrementer++;
+            nonce++;
         }
         return
             uint256(
@@ -26,7 +26,7 @@ abstract contract Random {
                     abi.encodePacked(
                         block.timestamp,
                         block.prevrandao,
-                        incrementer,
+                        nonce,
                         msg.sender
                     )
                 )
@@ -43,7 +43,7 @@ abstract contract Random {
      */
     function random(uint256 seed) internal returns (uint256) {
         unchecked {
-            incrementer++;
+            nonce++;
         }
         return
             uint256(
@@ -51,7 +51,7 @@ abstract contract Random {
                     abi.encodePacked(
                         block.timestamp,
                         block.prevrandao,
-                        incrementer,
+                        nonce,
                         seed,
                         msg.sender
                     )
