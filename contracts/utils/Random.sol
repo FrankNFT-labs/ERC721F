@@ -8,7 +8,7 @@ pragma solidity ^0.8.20 <0.9.0;
  */
 
 abstract contract Random {
-    uint256 nonce;
+    uint256 private nonce;
 
     /**
      * @notice Generates a pseudo-random number using the PrevranDAO.
