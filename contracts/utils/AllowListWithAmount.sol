@@ -3,6 +3,12 @@ pragma solidity ^0.8.9 <0.9.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+/**
+ * @title AllowListWithAmount
+ * @dev This contract manages an allowList of addresses and their respective token amounts, providing utility functions to add, remove, and modify these amounts. 
+ * It also implements a custom modifier to ensure that only addresses with a sufficient amount of available tokens can perform certain actions. 
+ * The contract is Ownable, allowing only the contract owner to manage the allowList.
+ */
 abstract contract AllowListWithAmount is Ownable {
     mapping(address => uint256) private allowList;
 
