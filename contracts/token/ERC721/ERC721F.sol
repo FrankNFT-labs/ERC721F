@@ -19,9 +19,10 @@ contract ERC721F is Ownable, ERC721 {
     // Base URI for Meta data
     string private _baseTokenURI;
 
-    constructor(string memory name_, string memory symbol_)
-        ERC721(name_, symbol_)
-    {}
+    constructor(
+        string memory name_,
+        string memory symbol_
+    ) ERC721(name_, symbol_) {}
 
     /**
      * @dev walletofOwner
@@ -29,12 +30,9 @@ contract ERC721F is Ownable, ERC721 {
      * This read function is O(totalSupply). If calling from a separate contract, be sure to test gas first.
      * It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case.
      */
-    function walletOfOwner(address _owner)
-        external
-        view
-        virtual
-        returns (uint256[] memory)
-    {
+    function walletOfOwner(
+        address _owner
+    ) external view virtual returns (uint256[] memory) {
         uint256 ownerTokenCount = balanceOf(_owner);
         uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
         uint256 currentTokenId = _startTokenId();
@@ -42,7 +40,7 @@ contract ERC721F is Ownable, ERC721 {
         uint256 tokenSupply = _tokenSupply;
 
         unchecked {
-            for(;;) {
+            for (;;) {
                 if (ownedTokenIndex >= ownerTokenCount) {
                     break;
                 }
@@ -91,6 +89,21 @@ contract ERC721F is Ownable, ERC721 {
         super._mint(to, tokenId);
         unchecked {
             _tokenSupply++;
+        }
+    }
+
+    function _batchMint(
+        address to,
+        uint256 startIndex,
+        uint256 amount
+    ) internal virtual {
+        require(amount > 0, "Must mint at least 1 token");
+        unchecked {
+            for (uint256 i; i < amount; ) {
+                super._mint(to, startIndex + i);
+                i++;
+            }
+            _tokenSupply += amount;
         }
     }
 
