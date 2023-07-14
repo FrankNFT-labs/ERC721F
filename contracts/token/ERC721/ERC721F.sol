@@ -94,6 +94,10 @@ contract ERC721F is Ownable, ERC721 {
         }
     }
 
+    /**
+     * @dev Mints `amount` tokens starting from `startIndex` and transfers them to `to`
+     * @dev Requires that `amount` is larger than one
+     */
     function _batchMint(
         address to,
         uint256 startIndex,
