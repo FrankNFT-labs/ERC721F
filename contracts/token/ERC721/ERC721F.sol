@@ -42,7 +42,7 @@ contract ERC721F is Ownable, ERC721 {
         uint256 tokenSupply = _tokenSupply;
 
         unchecked {
-            for(;;) {
+            for (;;) {
                 if (ownedTokenIndex >= ownerTokenCount) {
                     break;
                 }
@@ -91,6 +91,25 @@ contract ERC721F is Ownable, ERC721 {
         super._mint(to, tokenId);
         unchecked {
             _tokenSupply++;
+        }
+    }
+
+    /**
+     * @dev Mints `amount` tokens starting from `startIndex` and transfers them to `to`
+     * @dev Requires that `amount` is larger than one
+     */
+    function _batchMint(
+        address to,
+        uint256 startIndex,
+        uint256 amount
+    ) internal virtual {
+        require(amount > 0, "Must mint at least 1 token");
+        unchecked {
+            for (uint256 i; i < amount; ) {
+                super._mint(to, startIndex + i);
+                i++;
+            }
+            _tokenSupply += amount;
         }
     }
 
