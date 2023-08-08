@@ -212,7 +212,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
     /**
      * @notice Returns whether a token is transferable
      * @dev See {IERC6454-isTransferable}
-     * @dev Will revert if `tokenId` does not exist when not minting
+     * @dev Will revert if `tokenId` does not exist
      */
     function isTransferable(
         uint256 tokenId,
