@@ -473,7 +473,7 @@ describe("Soulbound", function () {
                         ownerAdress.address,
                         0
                     )
-                ).to.be.revertedWith("Token has been locked");
+                ).to.be.revertedWith("Token can't be transferred");
                 await expect(
                     token
                         .connect(otherAddress)
@@ -482,7 +482,7 @@ describe("Soulbound", function () {
                             ownerAdress.address,
                             0
                         )
-                ).to.be.revertedWith("Token has been locked");
+                ).to.be.revertedWith("Token can't be transferred");
                 await expect(
                     token
                         .connect(addressToBeApproved)
@@ -491,7 +491,7 @@ describe("Soulbound", function () {
                             ownerAdress.address,
                             0
                         )
-                ).to.be.revertedWith("Token has been locked");
+                ).to.be.revertedWith("Token can't be transferred");
 
                 await token.setApprovalForAllOwner(
                     otherAddress.address,
@@ -506,7 +506,7 @@ describe("Soulbound", function () {
                             ownerAdress.address,
                             0
                         )
-                ).to.be.revertedWith("Token has been locked");
+                ).to.be.revertedWith("Token can't be transferred");
             });
         });
 
@@ -693,7 +693,7 @@ describe("Soulbound", function () {
                             ownerAdress.address,
                             0
                         )
-                    ).to.be.revertedWith("Token has been locked");
+                    ).to.be.revertedWith("Token can't be transferred");
                     await expect(
                         token
                             .connect(otherAddress)
@@ -702,7 +702,7 @@ describe("Soulbound", function () {
                                 ownerAdress.address,
                                 0
                             )
-                    ).to.be.revertedWith("Token has been locked");
+                    ).to.be.revertedWith("Token can't be transferred");
                     await expect(
                         token
                             .connect(addressToBeApproved)
@@ -711,7 +711,7 @@ describe("Soulbound", function () {
                                 ownerAdress.address,
                                 0
                             )
-                    ).to.be.revertedWith("Token has been locked");
+                    ).to.be.revertedWith("Token can't be transferred");
 
                     await token.setApprovalForAllOwner(
                         otherAddress.address,
@@ -726,7 +726,7 @@ describe("Soulbound", function () {
                                 ownerAdress.address,
                                 0
                             )
-                    ).to.be.revertedWith("Token has been locked");
+                    ).to.be.revertedWith("Token can't be transferred");
                 });
             });
 
@@ -907,7 +907,7 @@ describe("Soulbound", function () {
                             0,
                             0x00
                         )
-                    ).to.be.revertedWith("Token has been locked");
+                    ).to.be.revertedWith("Token can't be transferred");
                     await expect(
                         token
                             .connect(otherAddress)
@@ -917,7 +917,7 @@ describe("Soulbound", function () {
                                 0,
                                 0x00
                             )
-                    ).to.be.revertedWith("Token has been locked");
+                    ).to.be.revertedWith("Token can't be transferred");
                     await expect(
                         token
                             .connect(addressToBeApproved)
@@ -927,7 +927,7 @@ describe("Soulbound", function () {
                                 0,
                                 0x00
                             )
-                    ).to.be.revertedWith("Token has been locked");
+                    ).to.be.revertedWith("Token can't be transferred");
 
                     await token.setApprovalForAllOwner(
                         otherAddress.address,
@@ -943,7 +943,7 @@ describe("Soulbound", function () {
                                 0,
                                 0x00
                             )
-                    ).to.be.revertedWith("Token has been locked");
+                    ).to.be.revertedWith("Token can't be transferred");
                 });
             });
 
@@ -1142,14 +1142,14 @@ describe("Soulbound", function () {
                 await token.approve(addressToBeApproved.address, 0);
 
                 await expect(token.burn(0)).to.be.revertedWith(
-                    "Token has been locked"
+                    "Token can't be transferred"
                 );
                 await expect(
                     token.connect(otherAddress).burn(0)
-                ).to.be.revertedWith("Token has been locked");
+                ).to.be.revertedWith("Token can't be transferred");
                 await expect(
                     token.connect(addressToBeApproved).burn(0)
-                ).to.be.revertedWith("Token has been locked");
+                ).to.be.revertedWith("Token can't be transferred");
 
                 await token.setApprovalForAllOwner(
                     otherAddress.address,
@@ -1158,7 +1158,7 @@ describe("Soulbound", function () {
                 );
                 await expect(
                     token.connect(addressToBeApproved).burn(0)
-                ).to.be.revertedWith("Token has been locked");
+                ).to.be.revertedWith("Token can't be transferred");
             });
         });
 
@@ -1175,7 +1175,7 @@ describe("Soulbound", function () {
                 await expect(
                     token.connect(addressToBeApproved).burn(0)
                 ).to.be.revertedWith(
-                    "Caller is neither tokenholder which is allowed to burn nor owner of contract nor approved address for token/tokenOwner"
+                    "Token can't be transferred"
                 );
             });
 

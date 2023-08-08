@@ -3,8 +3,9 @@ pragma solidity ^0.8.9 <0.9.0;
 
 import "../ERC721/ERC721F.sol";
 import "../../interfaces/IERC5192.sol";
+import "../../interfaces/IERC6454.sol";
 
-contract Soulbound is IERC5192, ERC721F {
+contract Soulbound is IERC5192, IERC6454, ERC721F {
     // Mapping from owner to operator approvals
     mapping(address => mapping(address => bool)) private _operatorApprovals;
     mapping(uint256 => bool) private _unlockedTokens;
@@ -28,10 +29,17 @@ contract Soulbound is IERC5192, ERC721F {
     }
 
     /**
-     * @dev Only a `tokenId` which is unlocked passes
+     * @dev Only a `tokenId` which is transferable passes
      */
-    modifier onlyUnlocked(uint256 tokenId) {
-        require(_unlockedTokens[tokenId], "Token has been locked");
+    modifier onlyTransferable(
+        uint256 tokenId,
+        address from,
+        address to
+    ) {
+        require(
+            isTransferable(tokenId, from, to),
+            "Token can't be transferred"
+        );
         _;
     }
 
@@ -42,13 +50,14 @@ contract Soulbound is IERC5192, ERC721F {
      * [EIP section](https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified)
      * to learn more about how these ids are created.
      *
-     * @return `true` if the contract implements `interfaceID` or is 0xb45a3c0e, `false` otherwise
+     * @return `true` if the contract implements `interfaceID` or either is 0xb45a3c0e or 0x91a6262f, `false` otherwise
      */
     function supportsInterface(
         bytes4 _interfaceId
     ) public view virtual override returns (bool) {
         return
             _interfaceId == type(IERC5192).interfaceId ||
+            _interfaceId == type(IERC6454).interfaceId ||
             super.supportsInterface(_interfaceId);
     }
 
@@ -113,7 +122,13 @@ contract Soulbound is IERC5192, ERC721F {
     function _mint(
         address to,
         uint256 tokenId
-    ) internal virtual override onlyOwner {
+    )
+        internal
+        virtual
+        override
+        onlyOwner
+        onlyTransferable(tokenId, address(0), to)
+    {
         super._mint(to, tokenId);
         _unlockedStatus(tokenId, false);
     }
@@ -123,14 +138,12 @@ contract Soulbound is IERC5192, ERC721F {
      */
     function _burn(
         uint256 tokenId
-    ) internal virtual override onlyUnlocked(tokenId) {
-        if (
-            !isOwnerOrApproved(msg.sender, tokenId) &&
-            !(ownerOf(tokenId) == msg.sender && _tokenHolderIsAllowedToBurn)
-        )
-            revert(
-                "Caller is neither tokenholder which is allowed to burn nor owner of contract nor approved address for token/tokenOwner"
-            );
+    )
+        internal
+        virtual
+        override
+        onlyTransferable(tokenId, ownerOf(tokenId), address(0))
+    {
         super._burn(tokenId);
     }
 
@@ -147,7 +160,10 @@ contract Soulbound is IERC5192, ERC721F {
     /**
      * @notice Sets the unlockedState of `tokenId` to `_unlocked`
      */
-    function unlockedStatus(uint256 tokenId, bool _unlocked) external onlyOwner {
+    function unlockedStatus(
+        uint256 tokenId,
+        bool _unlocked
+    ) external onlyOwner {
         _unlockedStatus(tokenId, _unlocked);
     }
 
@@ -194,6 +210,34 @@ contract Soulbound is IERC5192, ERC721F {
     }
 
     /**
+     * @notice Returns whether a token is transferable
+     * @dev See {IERC6454-isTransferable}
+     * @dev Will revert if `tokenId` does not exist when not minting
+     */
+    function isTransferable(
+        uint256 tokenId,
+        address from,
+        address to
+    ) public view virtual returns (bool) {
+        bool fromIsZeroAddress = from == address(0);
+        bool toIsZeroAddress = to == address(0);
+        if (!(fromIsZeroAddress && !toIsZeroAddress) && !_exists(tokenId)) {
+            revert("Token does not exist");
+        }
+        if (fromIsZeroAddress && !toIsZeroAddress) {
+            return true;
+        } else if (!fromIsZeroAddress && toIsZeroAddress) {
+            return
+                _unlockedTokens[tokenId] &&
+                ((msg.sender == ownerOf(tokenId) &&
+                    _tokenHolderIsAllowedToBurn) ||
+                    isOwnerOrApproved(msg.sender, tokenId));
+        } else {
+            return _unlockedTokens[tokenId];
+        }
+    }
+
+    /**
      * @notice Transfers `tokenId` from `from` to `to` and locks `tokenId`
      * @dev Only executable on unlocked tokens by owner or approved addresses
      */
@@ -205,7 +249,7 @@ contract Soulbound is IERC5192, ERC721F {
         public
         virtual
         override
-        onlyUnlocked(tokenId)
+        onlyTransferable(tokenId, from, to)
         onlyOwnerOrApproved(msg.sender, tokenId)
     {
         _transfer(from, to, tokenId);
@@ -237,7 +281,7 @@ contract Soulbound is IERC5192, ERC721F {
         public
         virtual
         override
-        onlyUnlocked(tokenId)
+        onlyTransferable(tokenId, from, to)
         onlyOwnerOrApproved(msg.sender, tokenId)
     {
         _safeTransfer(from, to, tokenId, data);
