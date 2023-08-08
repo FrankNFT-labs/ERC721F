@@ -144,14 +144,6 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         override
         onlyTransferable(tokenId, ownerOf(tokenId), address(0))
     {
-        if (
-            msg.sender != ownerOf(tokenId) &&
-            !isOwnerOrApproved(msg.sender, tokenId)
-        ) {
-            revert(
-                "Caller is neither tokenholder nor approved address for token/townerOwner"
-            );
-        }
         super._burn(tokenId);
     }
 
@@ -235,9 +227,13 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         if (fromIsZeroAddress && !toIsZeroAddress) {
             return true;
         } else if (!fromIsZeroAddress && toIsZeroAddress) {
-            return _tokenHolderIsAllowedToBurn;
+            return
+                _unlockedTokens[tokenId] &&
+                ((msg.sender == ownerOf(tokenId) &&
+                    _tokenHolderIsAllowedToBurn) ||
+                    isOwnerOrApproved(msg.sender, tokenId));
         } else {
-            return !_unlockedTokens[tokenId];
+            return _unlockedTokens[tokenId];
         }
     }
 
