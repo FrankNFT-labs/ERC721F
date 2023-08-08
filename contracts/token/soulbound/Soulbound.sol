@@ -201,13 +201,25 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
     /**
      * @notice Returns whether a token is transferable
      * @dev See {IERC6454-isTransferable}
+     * @dev Will revert if `tokenId` does not exist when not minting
      */
     function isTransferable(
         uint256 tokenId,
         address from,
         address to
-    ) public view returns (bool) {
-        return _unlockedTokens[tokenId];
+    ) public view virtual returns (bool) {
+        bool fromIsZeroAddress = from == address(0);
+        bool toIsZeroAddress = to == address(0);
+        if (!(fromIsZeroAddress && !toIsZeroAddress) && !_exists(tokenId)) {
+            revert("Token does not exist");
+        }
+        if (fromIsZeroAddress && !toIsZeroAddress) {
+            return true;
+        } else if (!fromIsZeroAddress && toIsZeroAddress) {
+            return _tokenHolderIsAllowedToBurn;
+        } else {
+            return !_unlockedTokens[tokenId];
+        }
     }
 
     /**
