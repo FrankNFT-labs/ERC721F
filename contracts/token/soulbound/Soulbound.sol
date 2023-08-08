@@ -29,10 +29,17 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
     }
 
     /**
-     * @dev Only a `tokenId` which is unlocked passes
+     * @dev Only a `tokenId` which is transferable passes
      */
-    modifier onlyUnlocked(uint256 tokenId) {
-        require(_unlockedTokens[tokenId], "Token has been locked");
+    modifier onlyTransferable(
+        uint256 tokenId,
+        address from,
+        address to
+    ) {
+        require(
+            isTransferable(tokenId, from, to),
+            "Token can't be transferred"
+        );
         _;
     }
 
@@ -115,7 +122,13 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
     function _mint(
         address to,
         uint256 tokenId
-    ) internal virtual override onlyOwner {
+    )
+        internal
+        virtual
+        override
+        onlyOwner
+        onlyTransferable(tokenId, address(0), to)
+    {
         super._mint(to, tokenId);
         _unlockedStatus(tokenId, false);
     }
@@ -125,14 +138,20 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
      */
     function _burn(
         uint256 tokenId
-    ) internal virtual override onlyUnlocked(tokenId) {
+    )
+        internal
+        virtual
+        override
+        onlyTransferable(tokenId, ownerOf(tokenId), address(0))
+    {
         if (
-            !isOwnerOrApproved(msg.sender, tokenId) &&
-            !(ownerOf(tokenId) == msg.sender && _tokenHolderIsAllowedToBurn)
-        )
+            msg.sender != ownerOf(tokenId) &&
+            !isOwnerOrApproved(msg.sender, tokenId)
+        ) {
             revert(
-                "Caller is neither tokenholder which is allowed to burn nor owner of contract nor approved address for token/tokenOwner"
+                "Caller is neither tokenholder nor approved address for token/townerOwner"
             );
+        }
         super._burn(tokenId);
     }
 
@@ -234,7 +253,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         public
         virtual
         override
-        onlyUnlocked(tokenId)
+        onlyTransferable(tokenId, from, to)
         onlyOwnerOrApproved(msg.sender, tokenId)
     {
         _transfer(from, to, tokenId);
@@ -266,7 +285,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         public
         virtual
         override
-        onlyUnlocked(tokenId)
+        onlyTransferable(tokenId, from, to)
         onlyOwnerOrApproved(msg.sender, tokenId)
     {
         _safeTransfer(from, to, tokenId, data);
