@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -20,7 +20,7 @@ contract ERC721F is Ownable, ERC721 {
     string private _baseTokenURI;
 
     constructor(string memory name_, string memory symbol_)
-        ERC721(name_, symbol_)
+        ERC721(name_, symbol_) Ownable(msg.sender)
     {}
 
     /**
