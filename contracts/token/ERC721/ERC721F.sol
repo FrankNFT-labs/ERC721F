@@ -117,8 +117,8 @@ contract ERC721F is Ownable, ERC721 {
      * @dev See {ERC721-_burn}
      * Increases value of _burnCounter
      */
-    function _burn(uint256 tokenId) internal virtual override {
-        super._burn(tokenId);
+    function _burnERC721F(uint256 tokenId) internal virtual {
+        _burn(tokenId);
         unchecked {
             _burnCounter++;
         }
