@@ -37,7 +37,7 @@ contract OnChainOptimized is IERC4883, ERC721F {
     function tokenURI(
         uint256 tokenId
     ) public view override returns (string memory) {
-        require(_exists(tokenId), "Non-Existing token");
+        _requireOwned(tokenId);
         string memory svgData = renderTokenById(tokenId);
         string memory traits = getTraits(tokenId);
         string memory json = Base64.encode(
@@ -274,7 +274,7 @@ contract OnChainOptimized is IERC4883, ERC721F {
     function renderTokenById(
         uint256 tokenId
     ) public view override returns (string memory) {
-        require(_exists(tokenId), "Non-Existing token");
+        _requireOwned(tokenId);
         //header1, header2, body, rest, footer
         string[5] memory frame = [
             '<svg width="1080" height="1080"',
@@ -313,7 +313,7 @@ contract OnChainOptimized is IERC4883, ERC721F {
      * Does not print out integer
      */
     function getTraits(uint256 tokenId) public view returns (string memory) {
-        require(_exists(tokenId), "Non-Existing token");
+        _requireOwned(tokenId);
         string memory tr1 = '[{"trait_type": "Background","value": "';
         string memory tr2 = '"},{"trait_type": "Bracelet","value": "';
         string memory tr3 = '"},{"trait_type": "Glasses","value": "';

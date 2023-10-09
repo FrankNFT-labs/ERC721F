@@ -65,10 +65,7 @@ contract FreeMint is ERC721F, ERC2981 {
         uint256 _tokenId,
         uint256 _salePrice
     ) public view override returns (address receiver, uint256 royaltyAmount) {
-        require(
-            _exists(_tokenId),
-            "ERC2981RoyaltyStandard: Royalty info for nonexistent token"
-        );
+        _requireOwned(_tokenId);
         return (owner(), (_salePrice * royalties) / 10000);
     }
 

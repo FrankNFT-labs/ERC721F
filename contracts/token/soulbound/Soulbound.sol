@@ -153,7 +153,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
      * @param tokenId The identifier for an SBT
      */
     function locked(uint256 tokenId) external view returns (bool) {
-        require(_exists(tokenId), "Token is owned by zero address");
+        _requireOwned(tokenId);
         return !_unlockedTokens[tokenId];
     }
 
@@ -171,7 +171,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
      * @dev Sets the unlockedState of `tokenId` to `_unlocked`, `tokenId` must exist
      */
     function _unlockedStatus(uint256 tokenId, bool _unlocked) internal {
-        require(_exists(tokenId), "Token has yet to be minted");
+        _requireOwned(tokenId);
         _unlockedTokens[tokenId] = _unlocked;
         if (_unlocked) {
             emit Unlocked(tokenId);

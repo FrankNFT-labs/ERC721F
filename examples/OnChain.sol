@@ -83,7 +83,7 @@ contract OnChain is ERC721FOnChain {
     function renderTokenById(
         uint256 id
     ) public view override returns (string memory) {
-        require(_exists(id), "Non-Existing token");
+        _requireOwned(id);
         string[9] memory parts;
         parts[0] = svgHead;
         parts[1] = name();
@@ -121,7 +121,7 @@ contract OnChain is ERC721FOnChain {
     function getTraits(
         uint256 id
     ) public view override returns (string memory) {
-        require(_exists(id), "Non-Existing token");
+        _requireOwned(id);
         string[2] memory traits;
         traits[0] = string(
             abi.encodePacked(
