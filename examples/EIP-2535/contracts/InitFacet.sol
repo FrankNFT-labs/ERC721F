@@ -3,7 +3,7 @@ pragma solidity ^0.8.9 <0.9.0;
 
 import {IDiamondLoupe} from "hardhat-deploy/solc_0.8/diamond/interfaces/IDiamondLoupe.sol";
 import {IERC173} from "hardhat-deploy/solc_0.8/diamond/interfaces/IERC173.sol";
-import {IERC165, IERC721, IERC721Metadata} from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
+import {IERC721, IERC721Metadata} from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import {UsingDiamondOwner, IDiamondCut} from "hardhat-deploy/solc_0.8/diamond/UsingDiamondOwner.sol";
 import {ERC721FStorage} from "./ERC721F/ERC721FStorage.sol";
 import {WithStorage} from "./WithStorage.sol";
@@ -27,7 +27,6 @@ contract InitFacet is UsingDiamondOwner, WithStorage {
         s().MAX_TOKENS = 10000;
         s().MAX_PURCHASE = 31;
 
-        ds().supportedInterfaces[type(IERC165).interfaceId] = true;
         ds().supportedInterfaces[type(IDiamondCut).interfaceId] = true;
         ds().supportedInterfaces[type(IDiamondLoupe).interfaceId] = true;
         ds().supportedInterfaces[type(IERC173).interfaceId] = true;

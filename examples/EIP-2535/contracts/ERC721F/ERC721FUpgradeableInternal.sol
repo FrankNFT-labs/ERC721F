@@ -131,7 +131,7 @@ contract ERC721FUpgradeableInternal is IERC721Upgradeable {
         uint256 tokenId,
         bytes memory data
     ) internal virtual {
-        _mintERC721F(to, tokenId);
+        _mint(to, tokenId);
         require(
             _checkOnERC721Received(address(0), to, tokenId, data),
             "ERC721: transfer to non ERC721Receiver implementer"
@@ -330,7 +330,7 @@ contract ERC721FUpgradeableInternal is IERC721Upgradeable {
         uint256 tokenId,
         bytes memory data
     ) internal returns (bool) {
-        if (to.isContract()) {
+        if (to.code.length > 0) {
             try
                 IERC721ReceiverUpgradeable(to).onERC721Received(
                     _msgSender(),
