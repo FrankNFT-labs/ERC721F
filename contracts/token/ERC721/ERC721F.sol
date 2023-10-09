@@ -106,7 +106,7 @@ contract ERC721F is Ownable, ERC721 {
         require(amount > 0, "Must mint at least 1 token");
         unchecked {
             for (uint256 i; i < amount; ) {
-                super._mint(to, startIndex + i);
+                _mint(to, startIndex + i);
                 i++;
             }
             _tokenSupply += amount;
