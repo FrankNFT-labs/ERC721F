@@ -19,7 +19,7 @@ contract ERC721FWalletOfOwnerStorageMock is ERC721FWalletOfOwnerStorage {
     function mint(uint256 numberOfTokens) public {
         uint256 supply = totalSupply();
         for (uint256 i; i < numberOfTokens; ) {
-            _mint(msg.sender, supply + i);
+            _mintERC721F(msg.sender, supply + i);
             unchecked {
                 i++;
             }

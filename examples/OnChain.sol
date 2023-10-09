@@ -57,7 +57,7 @@ contract OnChain is ERC721FOnChain {
 
         unchecked {
             for (uint256 i; i < numberOfTokens; ) {
-                _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
+                _mintERC721F(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
                 i++;
             }
         }

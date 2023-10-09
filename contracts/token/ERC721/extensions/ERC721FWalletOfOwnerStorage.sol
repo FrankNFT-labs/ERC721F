@@ -32,8 +32,8 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
     /**
      * @dev Pushes `tokenId` to _walletOfOwner of `to`
      */
-    function _mint(address to, uint256 tokenId) internal virtual override {
-        super._mint(to, tokenId);
+    function _mintERC721F(address to, uint256 tokenId) internal virtual override {
+        super._mintERC721F(to, tokenId);
         _walletOfOwner[to].push(tokenId);
     }
 

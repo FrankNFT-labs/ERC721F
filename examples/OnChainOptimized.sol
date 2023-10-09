@@ -83,7 +83,7 @@ contract OnChainOptimized is IERC4883, ERC721F {
                 uint256 tokenId = supply + 1;
                 uint256 algorithmId = lastSelected +
                     createRandomNumber(tokenId);
-                _mint(msg.sender, tokenId);
+                _mintERC721F(msg.sender, tokenId);
                 idToAlgorithmId[tokenId] = algorithmId;
                 lastSelected = algorithmId;
                 supply++;

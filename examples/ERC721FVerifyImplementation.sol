@@ -34,6 +34,6 @@ contract ERC721FVerifyImplementation is Verify, ERC721F {
             Verify.verifyTokenOwner(FREEMINT_CONTRACT, tokenId),
             "Must have tokens in FreeMint"
         );
-        _mint(msg.sender, tokenId);
+        _mintERC721F(msg.sender, tokenId);
     }
 }

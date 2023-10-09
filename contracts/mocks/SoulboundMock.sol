@@ -18,7 +18,7 @@ contract SoulboundMock is Soulbound {
      */
     function mint(address to) public {
         uint256 totalSupply = _totalMinted();
-        _mint(to, totalSupply);
+        _mintERC721F(to, totalSupply);
     }
 
     /**

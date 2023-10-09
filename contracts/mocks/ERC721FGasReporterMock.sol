@@ -43,7 +43,7 @@ contract ERC721FGasReporterMock is ERC721F {
         uint256 supply = _totalMinted();
         unchecked {
             for (uint256 i; i < numberOfTokens; ) {
-                _mint(to, supply + i);
+                _mintERC721F(to, supply + i);
                 i++;
             }
         }

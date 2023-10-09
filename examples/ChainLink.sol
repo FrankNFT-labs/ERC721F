@@ -103,7 +103,7 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
 
         unchecked {
             for (uint256 i; i < numberOfTokens; ) {
-                _mint(msg.sender, (startingIndex + supply + i) % MAX_TOKENS); // no need to use safeMint as we don't allow contracts.
+                _mintERC721F(msg.sender, (startingIndex + supply + i) % MAX_TOKENS); // no need to use safeMint as we don't allow contracts.
                 i++;
             }
         }

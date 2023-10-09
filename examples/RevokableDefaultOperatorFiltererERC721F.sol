@@ -77,7 +77,7 @@ contract RevokableDefaultOperatorFiltererERC721F is
 
         unchecked {
             for (uint256 i; i < numberOfTokens; ) {
-                _mint(msg.sender, supply + i);
+                _mintERC721F(msg.sender, supply + i);
                 i++;
             }
         }

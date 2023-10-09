@@ -119,7 +119,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
     /**
      * @dev Mint function is only executable by the owner of the contract
      */
-    function _mint(
+    function _mintERC721F(
         address to,
         uint256 tokenId
     )
@@ -129,7 +129,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         onlyOwner
         onlyTransferable(tokenId, address(0), to)
     {
-        super._mint(to, tokenId);
+        super._mintERC721F(to, tokenId);
         _unlockedStatus(tokenId, false);
     }
 
