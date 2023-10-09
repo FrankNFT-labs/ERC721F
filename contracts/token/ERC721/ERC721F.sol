@@ -87,8 +87,8 @@ contract ERC721F is Ownable, ERC721 {
      * @dev Mints `tokenId` and transfers it to `to`.
      *
      */
-    function _mint(address to, uint256 tokenId) internal virtual override {
-        super._mint(to, tokenId);
+    function _mintERC721F(address to, uint256 tokenId) internal virtual {
+        _mint(to, tokenId);
         unchecked {
             _tokenSupply++;
         }
