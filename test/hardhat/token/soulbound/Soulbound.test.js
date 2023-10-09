@@ -303,8 +303,9 @@ describe("Soulbound", function () {
     });
 
     it("Should revert when token has yet to be minted", async function () {
-      await expect(token.unlockedStatus(1, true)).to.be.revertedWith(
-        "Token has yet to be minted"
+      await expect(token.unlockedStatus(1, true)).to.be.revertedWithCustomError(
+        token,
+        "ERC721NonexistentToken"
       );
     });
 
@@ -362,8 +363,9 @@ describe("Soulbound", function () {
     });
 
     it("Should revert when requesting a token owned by the zero address", async function () {
-      await expect(token.locked(1)).to.be.revertedWith(
-        "Token is owned by zero address"
+      await expect(token.locked(1)).to.be.revertedWithCustomError(
+        token,
+        "ERC721NonexistentToken"
       );
 
       await token.unlockedStatus(0, true);
@@ -372,8 +374,9 @@ describe("Soulbound", function () {
 
       await token.burn(0);
 
-      await expect(token.locked(0)).to.be.revertedWith(
-        "Token is owned by zero address"
+      await expect(token.locked(0)).to.be.revertedWithCustomError(
+        token,
+        "ERC721NonexistentToken"
       );
     });
   });
