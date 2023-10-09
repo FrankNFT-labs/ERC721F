@@ -153,18 +153,6 @@ contract RevokableDefaultOperatorFiltererERC721F is
     function safeTransferFrom(
         address from,
         address to,
-        uint256 tokenId
-    ) public override onlyAllowedOperator(from) {
-        super.safeTransferFrom(from, to, tokenId);
-    }
-
-    /**
-     * @notice Safely transfers `tokenId` token from `from`, to `to`
-     * @dev Reverts if caller is filtered in OperatorFilterRegistry or non-approved by `from`
-     */
-    function safeTransferFrom(
-        address from,
-        address to,
         uint256 tokenId,
         bytes memory data
     ) public override onlyAllowedOperator(from) {
