@@ -36,7 +36,7 @@ library Random {
      * @param seed An additional 256-bit integer value to be used in the random number generation.
      * @return A pseudo-random 256-bit integer.
      */
-    function random(uint256 seed, uint256 nonce) internal view returns (uint256) {
+    function random(uint256 nonce, uint256 seed) internal view returns (uint256) {
         return
             uint256(
                 keccak256(
