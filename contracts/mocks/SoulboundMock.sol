@@ -25,7 +25,7 @@ contract SoulboundMock is Soulbound {
      * @notice Burns `tokenId`
      */
     function burn(uint256 tokenId) public {
-        _burn(tokenId);
+        _burnERC721F(tokenId);
     }
 
     /**

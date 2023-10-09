@@ -136,7 +136,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
     /**
      * @dev Burn function is only executable on unlocked tokens by the owner of the contract or approved addresses, increases `_burnCounter` for proper functionality of totalSupply
      */
-    function _burn(
+    function _burnERC721F(
         uint256 tokenId
     )
         internal
@@ -144,7 +144,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         override
         onlyTransferable(tokenId, ownerOf(tokenId), address(0))
     {
-        super._burn(tokenId);
+        super._burnERC721F(tokenId);
     }
 
     /**

@@ -49,8 +49,8 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
     /**
      * @dev Burns `tokenId`
      */
-    function _burn(uint256 tokenId) internal virtual override {
-        super._burn(tokenId);
+    function _burnERC721F(uint256 tokenId) internal virtual override {
+        super._burnERC721F(tokenId);
         _removeTokenFromWallet(tokenId);
     }
 
