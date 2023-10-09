@@ -21,7 +21,7 @@ contract ERC4906Mock is ERC4906 {
     }
 
     function burn(uint256 tokenId) public {
-        _burn(tokenId);
+        _burnERC721F(tokenId);
     }
 
     function totalBurned() public view returns (uint256) {
