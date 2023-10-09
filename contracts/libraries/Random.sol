@@ -14,7 +14,7 @@ library Random {
      * the current block timestamp, previous random value, counter, and sender address.
      * @return A pseudo-random 256-bit integer.
      */
-    function random(uint256 nonce) internal returns (uint256) {
+    function random(uint256 nonce) internal view returns (uint256) {
         return
             uint256(
                 keccak256(
@@ -36,7 +36,7 @@ library Random {
      * @param seed An additional 256-bit integer value to be used in the random number generation.
      * @return A pseudo-random 256-bit integer.
      */
-    function random(uint256 seed, uint256 nonce) internal returns (uint256) {
+    function random(uint256 seed, uint256 nonce) internal view returns (uint256) {
         return
             uint256(
                 keccak256(
