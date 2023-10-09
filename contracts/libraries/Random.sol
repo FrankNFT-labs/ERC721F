@@ -3,11 +3,11 @@ pragma solidity ^0.8.20 <0.9.0;
 
 /**
  * @title Random
- * @dev A contract that provides pseudo-random number generation functionality.
+ * @dev A library that provides pseudo-random number generation functionality.
  * @author @FrankNFT.eth
  */
 
-abstract contract Random {
+library Random {
     uint256 private nonce;
 
     /**
