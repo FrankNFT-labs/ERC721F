@@ -2,10 +2,9 @@
 pragma solidity ^0.8.9 <0.9.0;
 
 import "../contracts/token/ERC721/ERC721F.sol";
-import "../contracts/interfaces/IERC4906.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
+contract ERC4906 is ERC721F, ERC721URIStorage {
     uint256 public constant MAX_TOKENS = 10000;
     uint public constant MAX_PURCHASE = 31; // Theoretical limit 1100
     bool public saleIsActive;
@@ -23,7 +22,7 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
      */
     function supportsInterface(
         bytes4 _interfaceId
-    ) public view virtual override(IERC165, ERC721) returns (bool) {
+    ) public view virtual override(ERC721URIStorage, ERC721) returns (bool) {
         return
             _interfaceId == bytes4(0x49064906) ||
             super.supportsInterface(_interfaceId);
@@ -125,26 +124,5 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
         returns (string memory)
     {
         return ERC721F._baseURI();
-    }
-
-    /**
-     *
-     * @dev Mints `tokenId` and transfers it to `to`.
-     *
-     */
-    function _mint(
-        address to,
-        uint256 tokenId
-    ) internal virtual override(ERC721, ERC721F) {
-        ERC721F._mint(to, tokenId);
-    }
-
-    /**
-     * @dev See {ERC721URIStorage-_burn}
-     */
-    function _burn(
-        uint256 tokenId
-    ) internal virtual override(ERC721URIStorage, ERC721F) {
-        ERC721URIStorage._burn(tokenId);
     }
 }
