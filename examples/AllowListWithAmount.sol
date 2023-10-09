@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9 <0.9.0;
 
-import "../contracts/token/ERC721/ERC721FCOMMON.sol";
-import "../contracts/utils/AllowListWithAmount.sol";
+import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721FCOMMON.sol";
+import "@franknft.eth/erc721-f/contracts/utils/AllowListWithAmount.sol";
 
 /**
  * @title AllowListWithAmountExample

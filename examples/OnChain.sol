@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9 <0.9.0;
 
-import "../contracts/token/ERC721/extensions/ERC721FOnChain.sol";
+import "@franknft.eth/erc721-f/contracts/token/ERC721/extensions/ERC721FOnChain.sol";
 
 /**
  * @title OnChain
