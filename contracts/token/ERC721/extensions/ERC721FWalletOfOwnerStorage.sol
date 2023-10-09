@@ -10,6 +10,10 @@ import "../ERC721F.sol";
  */
 abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
     mapping(address => uint256[]) private _walletOfOwner;
+    
+    function transferFrom(address from, address to, uint256 tokenId) public virtual override {
+        _transferERC721FWalletOfOwnerStorage(from, to, tokenId);
+    }
 
     /**
      * @dev walletOfOwner
@@ -36,12 +40,12 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
     /**
      * @dev Transfers `tokenId` from `from` to `to` and pushes `tokenId` to wallet of `to`
      */
-    function _transfer(
+    function _transferERC721FWalletOfOwnerStorage(
         address from,
         address to,
         uint256 tokenId
-    ) internal virtual override {
-        super._transfer(from, to, tokenId);
+    ) internal virtual {
+        _transfer(from, to, tokenId);
         _removeTokenFromWallet(tokenId, from);
         _walletOfOwner[to].push(tokenId);
     }
