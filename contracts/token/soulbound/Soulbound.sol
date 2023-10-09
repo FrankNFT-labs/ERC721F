@@ -68,7 +68,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         address to,
         uint256 tokenId
     ) public virtual override onlyOwner {
-        _approve(to, tokenId);
+        _approve(to, tokenId, address(0));
     }
 
     /**
