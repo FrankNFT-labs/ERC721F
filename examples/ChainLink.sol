@@ -23,13 +23,13 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
     bytes32 keyHash =
         0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15;
 
-    uint32 constant callbackGasLimit = 100000;
+    uint32 constant CALLBACK_GAS_LIMIT = 100000;
 
     // The default is 3, but you can set this higher.
-    uint16 constant requestConfirmations = 3;
+    uint16 constant REQUEST_CONFIRMATIONS = 3;
 
     // Single number is required for setting the startingIndex
-    uint32 constant numWords = 1;
+    uint32 constant NUM_WORDS = 1;
 
     uint256 public constant MAX_TOKENS = 10000;
     uint256 public constant MAX_PURCHASE = 31;
@@ -74,9 +74,9 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
         uint256 requestId = COORDINATOR.requestRandomWords(
             keyHash,
             subscriptionId,
-            requestConfirmations,
-            callbackGasLimit,
-            numWords
+            REQUEST_CONFIRMATIONS,
+            CALLBACK_GAS_LIMIT,
+            NUM_WORDS
         );
 
         emit REQUESTEDRANDOMNESS(requestId);
