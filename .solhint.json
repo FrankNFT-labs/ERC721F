@@ -1,6 +1,6 @@
 {
   "rules": {
-    "custom-errors": "off",
-    "explicit-types": "warn"
+    "explicit-types": "warn",
+    "max-states-count": ["warn"]
   }
 }
