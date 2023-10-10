@@ -17,7 +17,7 @@ abstract contract AllowListWithAmount is Ownable {
     ) {
         require(
             numberOfTokens <= allowList[msg.sender],
-            "Address does not have sufficient tokens available within allowList"
+            "Address doesn't have sufficient tokens available in allowList"
         );
         _;
     }
