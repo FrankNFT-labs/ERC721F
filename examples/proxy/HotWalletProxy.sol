@@ -56,6 +56,7 @@ interface ERC1155Interface {
  * is in seconds since the epoch. Links will only be good until this time. If an indefinite
  * link is desired, passing in MAX_UINT256 is recommended.
  */
+/* solhint-disable ordering */
 contract HotWalletProxy is
     AccessControlEnumerableUpgradeable,
     OwnableUpgradeable,
