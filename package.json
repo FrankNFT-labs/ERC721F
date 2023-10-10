@@ -13,8 +13,8 @@
     "coverage": "npx hardhat coverage",
     "generate-foundry-gasusage-snapshots": ".\\scripts\\bat\\generate-gasusage-snapshots.bat",
     "generate-foundry-breakeven-snapshots": ".\\scripts\\bat\\generate-breakeven-snapshots.bat",
-    "lint": "npx solhint '**/*.sol'",
-    "lint:foundry": "npx solhint --config test/foundry/.solhint.json 'test/foundry/**/*.sol'",
+    "lint": "npx solhint -f table '**/*.sol'",
+    "lint:foundry": "npx solhint -f table --config test/foundry/.solhint.json 'test/foundry/**/*.sol'",
     "update-example-imports:dev": "node scripts/js/update_example_contract_imports.js dev",
     "update-example-imports:prod": "node scripts/js/update_example_contract_imports.js prod"
   },
