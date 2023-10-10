@@ -39,60 +39,42 @@ contract ERC721FUpgradeable is ERC721FUpgradeableInternal, UsingDiamondOwner {
     using ERC721FStorage for ERC721FStorage.Layout;
     using Strings for uint256;
 
-    // ERC721
+    // ERC721F - External
 
     /**
-     * @dev Returns the number of tokens in ``owner``'s account.
+     * @dev walletofOwner
+     * @return tokens id owned by the given address
+     * This read function is O(totalSupply). If calling from a separate contract, be sure to test gas first.
+     * It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case.
      */
-    function balanceOf(address owner) public view virtual returns (uint256) {
-        require(
-            owner != address(0),
-            "ERC721: address zero is not a valid owner"
-        );
-        return ERC721FStorage.layout()._balances[owner];
+    function walletOfOwner(
+        address _owner
+    ) external view virtual returns (uint256[] memory) {
+        uint256 ownerTokenCount = balanceOf(_owner);
+        uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
+        uint256 currentTokenId = _startTokenId();
+        uint256 ownedTokenIndex = 0;
+        uint256 tokenSupply = ERC721FStorage.layout()._tokenSupply;
+
+        unchecked {
+            for (;;) {
+                if (ownedTokenIndex >= ownerTokenCount) {
+                    break;
+                }
+                if (currentTokenId >= tokenSupply) {
+                    break;
+                }
+                if (_ownerOf(currentTokenId) == _owner) {
+                    ownedTokenIds[ownedTokenIndex] = currentTokenId;
+                    ownedTokenIndex++;
+                }
+                currentTokenId++;
+            }
+        }
+        return ownedTokenIds;
     }
 
-    /**
-     * @dev Returns the owner of the `tokenId` token.
-     *
-     * Requirements:
-     *
-     * - `tokenId` must exist.
-     */
-    function ownerOf(uint256 tokenId) public view virtual returns (address) {
-        address owner = _ownerOf(tokenId);
-        require(owner != address(0), "ERC721: invalid token ID");
-        return owner;
-    }
-
-    /**
-     * @dev Returns the token collection name.
-     */
-    function name() public view virtual returns (string memory) {
-        return ERC721FStorage.layout()._name;
-    }
-
-    /**
-     * @dev Returns the token collection symbol.
-     */
-    function symbol() public view virtual returns (string memory) {
-        return ERC721FStorage.layout()._symbol;
-    }
-
-    /**
-     * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.
-     */
-    function tokenURI(
-        uint256 tokenId
-    ) public view virtual returns (string memory) {
-        _requireMinted(tokenId);
-
-        string memory baseURI = _baseURI();
-        return
-            bytes(baseURI).length > 0
-                ? string(abi.encodePacked(baseURI, tokenId.toString()))
-                : "";
-    }
+    // ERC721 - Public
 
     /**
      * @dev Safely transfers `tokenId` token from `from` to `to`, checking first that contract recipients
@@ -211,6 +193,77 @@ contract ERC721FUpgradeable is ERC721FUpgradeableInternal, UsingDiamondOwner {
         _setApprovalForAll(_msgSender(), operator, approved);
     }
 
+    // ERC721F - Public
+
+    /**
+     * @dev Set the base token URI
+     */
+    function setBaseTokenURI(string memory baseURI) public onlyOwner {
+        ERC721FStorage.layout()._baseTokenURI = baseURI;
+    }
+
+    /**
+     * @notice Burns `tokenId`
+     */
+    function burn(uint256 tokenId) public {
+        _burn(tokenId);
+    }
+
+    // ERC721 - Public view
+
+    /**
+     * @dev Returns the number of tokens in ``owner``'s account.
+     */
+    function balanceOf(address owner) public view virtual returns (uint256) {
+        require(
+            owner != address(0),
+            "ERC721: address zero is not a valid owner"
+        );
+        return ERC721FStorage.layout()._balances[owner];
+    }
+
+    /**
+     * @dev Returns the owner of the `tokenId` token.
+     *
+     * Requirements:
+     *
+     * - `tokenId` must exist.
+     */
+    function ownerOf(uint256 tokenId) public view virtual returns (address) {
+        address owner = _ownerOf(tokenId);
+        require(owner != address(0), "ERC721: invalid token ID");
+        return owner;
+    }
+
+    /**
+     * @dev Returns the token collection name.
+     */
+    function name() public view virtual returns (string memory) {
+        return ERC721FStorage.layout()._name;
+    }
+
+    /**
+     * @dev Returns the token collection symbol.
+     */
+    function symbol() public view virtual returns (string memory) {
+        return ERC721FStorage.layout()._symbol;
+    }
+
+    /**
+     * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.
+     */
+    function tokenURI(
+        uint256 tokenId
+    ) public view virtual returns (string memory) {
+        _requireMinted(tokenId);
+
+        string memory baseURI = _baseURI();
+        return
+            bytes(baseURI).length > 0
+                ? string(abi.encodePacked(baseURI, tokenId.toString()))
+                : "";
+    }
+
     /**
      * @dev Returns the account approved for `tokenId` token.
      *
@@ -236,14 +289,7 @@ contract ERC721FUpgradeable is ERC721FUpgradeableInternal, UsingDiamondOwner {
         return _isApprovedForAll(owner, operator);
     }
 
-    // ERC721F
-
-    /**
-     * @dev Set the base token URI
-     */
-    function setBaseTokenURI(string memory baseURI) public onlyOwner {
-        ERC721FStorage.layout()._baseTokenURI = baseURI;
-    }
+    // ERC721F - Public view
 
     /**
      * @dev Gets the total amount of existing tokens stored by the contract.
@@ -253,46 +299,6 @@ contract ERC721FUpgradeable is ERC721FUpgradeableInternal, UsingDiamondOwner {
         return
             ERC721FStorage.layout()._tokenSupply -
             ERC721FStorage.layout()._burnCounter;
-    }
-
-    /**
-     * @dev walletofOwner
-     * @return tokens id owned by the given address
-     * This read function is O(totalSupply). If calling from a separate contract, be sure to test gas first.
-     * It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case.
-     */
-    function walletOfOwner(
-        address _owner
-    ) external view virtual returns (uint256[] memory) {
-        uint256 ownerTokenCount = balanceOf(_owner);
-        uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
-        uint256 currentTokenId = _startTokenId();
-        uint256 ownedTokenIndex = 0;
-        uint256 tokenSupply = ERC721FStorage.layout()._tokenSupply;
-
-        unchecked {
-            for (;;) {
-                if (ownedTokenIndex >= ownerTokenCount) {
-                    break;
-                }
-                if (currentTokenId >= tokenSupply) {
-                    break;
-                }
-                if (_ownerOf(currentTokenId) == _owner) {
-                    ownedTokenIds[ownedTokenIndex] = currentTokenId;
-                    ownedTokenIndex++;
-                }
-                currentTokenId++;
-            }
-        }
-        return ownedTokenIds;
-    }
-
-    /**
-     * @notice Burns `tokenId`
-     */
-    function burn(uint256 tokenId) public {
-        _burn(tokenId);
     }
 
     /**
