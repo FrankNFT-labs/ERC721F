@@ -12,6 +12,7 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
  * based on https://docs.chain.link/docs/vrf/v2/examples/get-a-random-number/
  */
 contract ChainLink is ERC721F, VRFConsumerBaseV2 {
+    // solhint-disable-next-line var-name-mixedcase
     VRFCoordinatorV2Interface COORDINATOR;
 
     // Your subscription ID.
