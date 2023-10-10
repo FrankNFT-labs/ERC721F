@@ -21,6 +21,7 @@
     "avoid-low-level-calls": "error",
     "avoid-sha3": "error",
     "avoid-suicide": "error",
-    "avoid-throw": "error"
+    "avoid-throw": "error",
+    "check-send-result": "warn"
   }
 }
