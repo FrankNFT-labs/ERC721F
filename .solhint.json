@@ -22,6 +22,7 @@
     "avoid-sha3": "error",
     "avoid-suicide": "error",
     "avoid-throw": "error",
-    "func-visibility": ["error", { "ignoreConstructors": true }]
+    "func-visibility": ["error", { "ignoreConstructors": true }],
+    "no-complex-fallback": "warn"
   }
 }
