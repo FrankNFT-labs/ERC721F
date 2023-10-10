@@ -111,17 +111,6 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
     }
 
     /**
-     * @notice Assigns first index of `randomWords` to `startingIndex`, altered to be between 1 and `MAX_TOKENS`
-     * @dev Function which receives response of setRandomIndex
-     */
-    function fulfillRandomWords(
-        uint256,
-        uint256[] memory randomWords
-    ) internal override {
-        startingIndex = (randomWords[0] % MAX_TOKENS) + 1;
-    }
-
-    /**
      * @notice Returns all tokenIds owned by `_owner`
      * @dev Override of walletOfOwner located in ERC721F, using startingIndex as startpoint of counting instead of _startTokenId
      * @return Array of all tokenIds owned by `_owner` starting from startingIndex
@@ -150,5 +139,16 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
             }
         }
         return ownedTokenIds;
+    }
+
+    /**
+     * @notice Assigns first index of `randomWords` to `startingIndex`, altered to be between 1 and `MAX_TOKENS`
+     * @dev Function which receives response of setRandomIndex
+     */
+    function fulfillRandomWords(
+        uint256,
+        uint256[] memory randomWords
+    ) internal override {
+        startingIndex = (randomWords[0] % MAX_TOKENS) + 1;
     }
 }
