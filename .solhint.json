@@ -11,6 +11,7 @@
     "event-name-camelcase": "warn",
     "func-name-mixedcase": "warn",
     "func-param-name-mixedcase": "warn",
-    "immutable-vars-naming": ["warn", { "immutablesAsConstants": true }]
+    "immutable-vars-naming": ["warn", { "immutablesAsConstants": true }],
+    "modifier-name-mixedcase": "warn"
   }
 }
