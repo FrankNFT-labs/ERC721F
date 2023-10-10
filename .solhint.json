@@ -17,6 +17,7 @@
     "ordering": "warn",
     "imports-on-top": "warn",
     "visibility-modifier-order": "warn",
-    "avoid-call-value": "warn"
+    "avoid-call-value": "warn",
+    "avoid-low-level-calls": "warn"
   }
 }
