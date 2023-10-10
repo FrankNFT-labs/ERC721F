@@ -25,6 +25,7 @@
     "func-visibility": ["error", { "ignoreConstructors": true }],
     "no-complex-fallback": "warn",
     "not-rely-on-block-hash": "error",
-    "reentrancy": "warn"
+    "reentrancy": "warn",
+    "state-visibility": "warn"
   }
 }
