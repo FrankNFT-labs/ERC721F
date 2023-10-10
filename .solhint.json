@@ -4,6 +4,7 @@
     "max-states-count": ["warn", 15],
     "no-console": "error",
     "no-unused-import": "error",
-    "no-unused-vars": "error"
+    "no-unused-vars": "error",
+    "reason-string": ["warn", { "maxLength": 32 }]
   }
 }
