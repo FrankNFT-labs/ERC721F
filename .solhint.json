@@ -1,6 +1,6 @@
 {
   "rules": {
     "explicit-types": "warn",
-    "max-states-count": ["warn"]
+    "max-states-count": ["warn", 15]
   }
 }
