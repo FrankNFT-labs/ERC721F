@@ -22,7 +22,6 @@
     "avoid-sha3": "error",
     "avoid-suicide": "error",
     "avoid-throw": "error",
-    "check-send-result": "warn",
     "func-visibility": ["error", { "ignoreConstructors": true }]
   }
 }
