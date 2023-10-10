@@ -20,6 +20,7 @@
     "avoid-call-value": "error",
     "avoid-low-level-calls": "error",
     "avoid-sha3": "error",
-    "avoid-suicide": "error"
+    "avoid-suicide": "error",
+    "avoid-throw": "error"
   }
 }
