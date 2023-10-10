@@ -22,8 +22,8 @@ abstract contract AllowList is Ownable {
      * @notice Adds an array of addresses to the allowList
      */
     function allowAddresses(address[] calldata _addresses) external onlyOwner {
-        uint length = _addresses.length;
-        for (uint i; i < length; ) {
+        uint256 length = _addresses.length;
+        for (uint256 i; i < length; ) {
             allowAddress(_addresses[i]);
             unchecked {
                 i++;
