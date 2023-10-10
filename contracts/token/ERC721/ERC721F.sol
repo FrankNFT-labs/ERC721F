@@ -19,9 +19,10 @@ contract ERC721F is Ownable, ERC721 {
     // Base URI for Meta data
     string private _baseTokenURI;
 
-    constructor(string memory name_, string memory symbol_)
-        ERC721(name_, symbol_)
-    {}
+    constructor(
+        string memory name_,
+        string memory symbol_
+    ) ERC721(name_, symbol_) {}
 
     /**
      * @dev walletofOwner
@@ -29,12 +30,9 @@ contract ERC721F is Ownable, ERC721 {
      * This read function is O(totalSupply). If calling from a separate contract, be sure to test gas first.
      * It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case.
      */
-    function walletOfOwner(address _owner)
-        external
-        view
-        virtual
-        returns (uint256[] memory)
-    {
+    function walletOfOwner(
+        address _owner
+    ) external view virtual returns (uint256[] memory) {
         uint256 ownerTokenCount = balanceOf(_owner);
         uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
         uint256 currentTokenId = _startTokenId();
@@ -60,22 +58,6 @@ contract ERC721F is Ownable, ERC721 {
     }
 
     /**
-     * To change the starting tokenId, override this function.
-     */
-    function _startTokenId() internal view virtual returns (uint256) {
-        return 0;
-    }
-
-    /**
-     * @dev Base URI for computing {tokenURI}. If set, the resulting URI for each
-     * token will be the concatenation of the `baseURI` and the `tokenId`. Empty
-     * by default, can be overriden in child contracts.
-     */
-    function _baseURI() internal view virtual override returns (string memory) {
-        return _baseTokenURI;
-    }
-
-    /**
      * @dev Set the base token URI
      */
     function setBaseTokenURI(string memory baseURI) public onlyOwner {
@@ -83,15 +65,11 @@ contract ERC721F is Ownable, ERC721 {
     }
 
     /**
-     *
-     * @dev Mints `tokenId` and transfers it to `to`.
-     *
+     * @dev Gets the total amount of existing tokens stored by the contract.
+     * @return uint256 representing the total amount of tokens
      */
-    function _mint(address to, uint256 tokenId) internal virtual override {
-        super._mint(to, tokenId);
-        unchecked {
-            _tokenSupply++;
-        }
+    function totalSupply() public view virtual returns (uint256) {
+        return _tokenSupply - _burnCounter;
     }
 
     /**
@@ -125,11 +103,15 @@ contract ERC721F is Ownable, ERC721 {
     }
 
     /**
-     * @dev Gets the total amount of existing tokens stored by the contract.
-     * @return uint256 representing the total amount of tokens
+     *
+     * @dev Mints `tokenId` and transfers it to `to`.
+     *
      */
-    function totalSupply() public view virtual returns (uint256) {
-        return _tokenSupply - _burnCounter;
+    function _mint(address to, uint256 tokenId) internal virtual override {
+        super._mint(to, tokenId);
+        unchecked {
+            _tokenSupply++;
+        }
     }
 
     /**
@@ -144,5 +126,21 @@ contract ERC721F is Ownable, ERC721 {
      */
     function _totalBurned() internal view virtual returns (uint256) {
         return _burnCounter;
+    }
+
+    /**
+     * To change the starting tokenId, override this function.
+     */
+    function _startTokenId() internal view virtual returns (uint256) {
+        return 0;
+    }
+
+    /**
+     * @dev Base URI for computing {tokenURI}. If set, the resulting URI for each
+     * token will be the concatenation of the `baseURI` and the `tokenId`. Empty
+     * by default, can be overriden in child contracts.
+     */
+    function _baseURI() internal view virtual override returns (string memory) {
+        return _baseTokenURI;
     }
 }
