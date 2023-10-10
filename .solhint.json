@@ -5,6 +5,7 @@
     "no-console": "error",
     "no-unused-import": "error",
     "no-unused-vars": "error",
-    "reason-string": ["warn", { "maxLength": 64 }]
+    "reason-string": ["warn", { "maxLength": 64 }],
+    "const-name-snakecase": "warn"
   }
 }
