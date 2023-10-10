@@ -3,6 +3,7 @@
     "explicit-types": "warn",
     "max-states-count": ["warn", 15],
     "no-console": "error",
-    "no-unused-import": "error"
+    "no-unused-import": "error",
+    "no-unused-vars": "error"
   }
 }
