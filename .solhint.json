@@ -15,6 +15,7 @@
     "modifier-name-mixedcase": "warn",
     "var-name-mixedcase": "warn",
     "ordering": "warn",
-    "imports-on-top": "warn"
+    "imports-on-top": "warn",
+    "visibility-modifier-order": "warn"
   }
 }
