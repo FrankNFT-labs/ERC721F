@@ -68,7 +68,7 @@ contract ERC721FGasReporterMock is ERC721F {
      */
     function transferTenAsc(address to) public {
         unchecked {
-            for (uint i = 0; i < 10; ) {
+            for (uint256 i = 0; i < 10; ) {
                 transferFrom(msg.sender, to, retrieveFirstToken());
                 i++;
             }
@@ -80,7 +80,7 @@ contract ERC721FGasReporterMock is ERC721F {
      */
     function transferTenDesc(address to) public {
         unchecked {
-            for (uint i = 0; i < 10; ) {
+            for (uint256 i = 0; i < 10; ) {
                 transferFrom(msg.sender, to, retrieveLastToken());
                 i++;
             }
@@ -92,7 +92,7 @@ contract ERC721FGasReporterMock is ERC721F {
      */
     function transferFiftyAsc(address to) public {
         unchecked {
-            for (uint i = 0; i < 50; ) {
+            for (uint256 i = 0; i < 50; ) {
                 transferFrom(msg.sender, to, retrieveFirstToken());
                 i++;
             }
@@ -104,7 +104,7 @@ contract ERC721FGasReporterMock is ERC721F {
      */
     function transferFiftyDesc(address to) public {
         unchecked {
-            for (uint i = 0; i < 50; ) {
+            for (uint256 i = 0; i < 50; ) {
                 transferFrom(msg.sender, to, retrieveLastToken());
                 i++;
             }
@@ -113,7 +113,7 @@ contract ERC721FGasReporterMock is ERC721F {
 
     function transferAsc(uint256 total, address to) public {
         unchecked {
-            for (uint i = 0; i < total; ) {
+            for (uint256 i = 0; i < total; ) {
                 transferFrom(msg.sender, to, retrieveFirstToken());
                 i++;
             }
@@ -122,7 +122,7 @@ contract ERC721FGasReporterMock is ERC721F {
 
     function transferDesc(uint256 total, address to) public {
         unchecked {
-            for (uint i = 0; i < total; ) {
+            for (uint256 i = 0; i < total; ) {
                 transferFrom(msg.sender, to, retrieveLastToken());
                 i++;
             }
@@ -135,7 +135,7 @@ contract ERC721FGasReporterMock is ERC721F {
     function retrieveFirstToken()
         internal
         view
-        returns (uint firstOwnedTokenId)
+        returns (uint256 firstOwnedTokenId)
     {
         uint256 totalSupply = _totalMinted();
         unchecked {
@@ -151,7 +151,11 @@ contract ERC721FGasReporterMock is ERC721F {
     /**
      * @dev Returns last id that is encountered which is owned by the sender
      */
-    function retrieveLastToken() internal view returns (uint lastOwnedTokenId) {
+    function retrieveLastToken()
+        internal
+        view
+        returns (uint256 lastOwnedTokenId)
+    {
         uint256 totalSupply = _totalMinted();
         unchecked {
             for (uint256 i = totalSupply - 1; i >= 0; ) {
