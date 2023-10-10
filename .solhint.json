@@ -13,6 +13,7 @@
     "func-param-name-mixedcase": "warn",
     "immutable-vars-naming": ["warn", { "immutablesAsConstants": true }],
     "modifier-name-mixedcase": "warn",
-    "var-name-mixedcase": "warn"
+    "var-name-mixedcase": "warn",
+    "ordering": "error"
   }
 }
