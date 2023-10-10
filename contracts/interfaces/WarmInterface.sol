@@ -7,8 +7,6 @@ interface WarmInterface {
         uint256 expirationTimestamp;
     }
 
-    function version() external pure returns (string memory);
-
     function removeExpiredWalletLinks(address hotWalletAddress) external;
 
     function setHotWallet(
@@ -18,6 +16,10 @@ interface WarmInterface {
     ) external;
 
     function renounceHotWallet() external;
+
+    function setLocked(bool locked) external;
+
+    function setExpirationTimestamp(uint256 expirationTimestamp) external;
 
     function getHotWallet(address coldWallet) external view returns (address);
 
@@ -30,10 +32,6 @@ interface WarmInterface {
     ) external view returns (address[] memory);
 
     function isLocked(address hotWallet) external view returns (bool);
-
-    function setLocked(bool locked) external;
-
-    function setExpirationTimestamp(uint256 expirationTimestamp) external;
 
     function balanceOf(
         address contractAddress,
@@ -56,4 +54,6 @@ interface WarmInterface {
         address owner,
         uint256 tokenId
     ) external view returns (uint256);
+
+    function version() external pure returns (string memory);
 }
