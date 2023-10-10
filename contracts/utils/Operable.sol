@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 /**
  * @dev Contract module which provides a basic access control mechanism, where
  * there is an account (an operator) that can be granted exclusive access to
- * specific functions. 
+ * specific functions.
  *
  * By default, the operator account will be the one that deploys the contract. This
  * can later be changed with {setOperator}.
@@ -19,21 +19,25 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 abstract contract Operable is Ownable {
     address private operator;
 
-    constructor() {
-        operator = msg.sender;
-    }
     /**
      * @dev Throws if called by any account other than the owner or operator.
      */
-    modifier onlyOperator(){
-        require(msg.sender == operator || msg.sender==owner(),"Operable: caller is not the owner or operator.");
+    modifier onlyOperator() {
+        require(
+            msg.sender == operator || msg.sender == owner(),
+            "Operable: caller is not the owner or operator."
+        );
         _;
     }
 
+    constructor() {
+        operator = msg.sender;
+    }
+
     /**
-    * change the operator for this contract.
-    */
-    function setOperator(address _operator) public virtual onlyOwner{
+     * change the operator for this contract.
+     */
+    function setOperator(address _operator) public virtual onlyOwner {
         operator = _operator;
     }
 }
