@@ -15,13 +15,9 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
      * @dev walletOfOwner
      * @return tokens id owned by `_owner`
      */
-    function walletOfOwner(address _owner)
-        public
-        view
-        virtual
-        override
-        returns (uint256[] memory)
-    {
+    function walletOfOwner(
+        address _owner
+    ) public view virtual override returns (uint256[] memory) {
         return _walletOfOwner[_owner];
     }
 
@@ -66,13 +62,13 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
      * @dev Copies last token from wallet of `owner` to the index where `tokenId` is at and pops last element. Removes `tokenId` from wallet
      */
     function _removeTokenFromWallet(uint256 tokenId, address owner) private {
-        uint length = _walletOfOwner[owner].length;
-        for (uint i; i < length; ) {
+        uint256 length = _walletOfOwner[owner].length;
+        for (uint256 i; i < length; ) {
             if (_walletOfOwner[owner][i] == tokenId) {
                 _walletOfOwner[owner][i] = _walletOfOwner[owner][length - 1];
                 _walletOfOwner[owner].pop();
                 break;
-            }     
+            }
             unchecked {
                 i++;
             }
