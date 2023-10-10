@@ -7,6 +7,7 @@
     "no-unused-vars": "error",
     "reason-string": ["warn", { "maxLength": 64 }],
     "const-name-snakecase": "warn",
-    "contract-name-camelcase": "warn"
+    "contract-name-camelcase": "warn",
+    "event-name-camelcase": "warn"
   }
 }
