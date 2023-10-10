@@ -8,9 +8,10 @@ import "../token/ERC721/extensions/ERC721FWalletOfOwnerStorage.sol";
  * This mock provides a public mint and burn function for testing purposes
  */
 contract ERC721FWalletOfOwnerStorageMock is ERC721FWalletOfOwnerStorage {
-    constructor(string memory name, string memory symbol)
-        ERC721F(name, symbol)
-    {}
+    constructor(
+        string memory name,
+        string memory symbol
+    ) ERC721F(name, symbol) {}
 
     /**
      * @notice Mint your tokens here
