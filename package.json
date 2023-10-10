@@ -1,55 +1,55 @@
 {
-  "name": "@franknft.eth/erc721-f",
-  "description": "ERC721F contract for Solidity",
-  "version": "4.8.2",
-  "files": [
-    "/contracts/**/*.sol",
-    "!/contracts/mocks/**",
-    "!/contracts/token/ERC721/artifacts/**/*"
-  ],
-  "scripts": {
-    "compile": "npx hardhat compile",
-    "test": "npx hardhat test",
-    "coverage": "npx hardhat coverage",
-    "generate-foundry-gasusage-snapshots": ".\\scripts\\bat\\generate-gasusage-snapshots.bat",
-    "generate-foundry-breakeven-snapshots": ".\\scripts\\bat\\generate-breakeven-snapshots.bat",
-    "lint": "npx solhint -f table '**/*.sol'",
-    "lint:foundry": "npx solhint -f table --config test/foundry/.solhint.json 'test/foundry/**/*.sol'",
-    "update-example-imports:dev": "node scripts/js/update_example_contract_imports.js dev",
-    "update-example-imports:prod": "node scripts/js/update_example_contract_imports.js prod",
-    "prettier:solidity": "./node_modules/.bin/prettier --write contracts/**/*.sol"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/FrankNFT-labs/ERC721F"
-  },
-  "keywords": [
-    "solidity",
-    "ethereum",
-    "erc721",
-    "nft",
-    "erc721f"
-  ],
-  "author": "FrankNFT-labs",
-  "license": "MIT",
-  "devDependencies": {
-    "@chainlink/contracts": "^0.5.1",
-    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
-    "dotenv": "^16.0.2",
-    "hardhat": "^2.12.4",
-    "keccak256": "^1.0.6",
-    "merkletreejs": "^0.2.32",
-    "operator-filter-registry": "^1.3.1",
-    "prettier": "^2.8.8",
-    "prettier-plugin-solidity": "^1.1.3",
-    "solhint": "^3.6.2",
-    "solhint-plugin-prettier": "^0.0.5"
-  },
-  "dependencies": {
-    "@openzeppelin/contracts": "^4.8.2"
-  },
-  "bugs": {
-    "url": "https://github.com/FrankNFT-labs/ERC721F/issues"
-  },
-  "homepage": "https://github.com/FrankNFT-labs/ERC721F#readme"
+    "name": "@franknft.eth/erc721-f",
+    "description": "ERC721F contract for Solidity",
+    "version": "4.8.2",
+    "files": [
+        "/contracts/**/*.sol",
+        "!/contracts/mocks/**",
+        "!/contracts/token/ERC721/artifacts/**/*"
+    ],
+    "scripts": {
+        "compile": "npx hardhat compile",
+        "test": "npx hardhat test",
+        "coverage": "npx hardhat coverage",
+        "generate-foundry-gasusage-snapshots": ".\\scripts\\bat\\generate-gasusage-snapshots.bat",
+        "generate-foundry-breakeven-snapshots": ".\\scripts\\bat\\generate-breakeven-snapshots.bat",
+        "lint": "npx solhint -f table '**/*.sol'",
+        "lint:foundry": "npx solhint -f table --config test/foundry/.solhint.json 'test/foundry/**/*.sol'",
+        "update-example-imports:dev": "node scripts/js/update_example_contract_imports.js dev",
+        "update-example-imports:prod": "node scripts/js/update_example_contract_imports.js prod",
+        "prettier:solidity": "npx prettier --write --plugin=prettier-plugin-solidity '**/*.sol'"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/FrankNFT-labs/ERC721F"
+    },
+    "keywords": [
+        "solidity",
+        "ethereum",
+        "erc721",
+        "nft",
+        "erc721f"
+    ],
+    "author": "FrankNFT-labs",
+    "license": "MIT",
+    "devDependencies": {
+        "@chainlink/contracts": "^0.5.1",
+        "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+        "dotenv": "^16.0.2",
+        "hardhat": "^2.12.4",
+        "keccak256": "^1.0.6",
+        "merkletreejs": "^0.2.32",
+        "operator-filter-registry": "^1.3.1",
+        "prettier": "^2.8.8",
+        "prettier-plugin-solidity": "^1.1.3",
+        "solhint": "^3.6.2",
+        "solhint-plugin-prettier": "^0.0.5"
+    },
+    "dependencies": {
+        "@openzeppelin/contracts": "^4.8.2"
+    },
+    "bugs": {
+        "url": "https://github.com/FrankNFT-labs/ERC721F/issues"
+    },
+    "homepage": "https://github.com/FrankNFT-labs/ERC721F#readme"
 }
