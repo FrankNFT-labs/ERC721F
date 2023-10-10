@@ -12,10 +12,6 @@ import {WithStorage} from "./WithStorage.sol";
  * @dev Contract is utilised to setup initial values and registration of all interfaces utilised by the Diamond supportsInterface
  */
 contract InitFacet is UsingDiamondOwner, WithStorage {
-    function f() internal pure returns (ERC721FStorage.Layout storage) {
-        return ERC721FStorage.layout();
-    }
-
     function init() external onlyOwner {
         if (s().isInitialized) return;
 
@@ -35,5 +31,9 @@ contract InitFacet is UsingDiamondOwner, WithStorage {
         ds().supportedInterfaces[type(IERC721Metadata).interfaceId] = true;
 
         s().isInitialized = true;
+    }
+
+    function f() internal pure returns (ERC721FStorage.Layout storage) {
+        return ERC721FStorage.layout();
     }
 }
