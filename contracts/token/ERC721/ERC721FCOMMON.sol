@@ -11,29 +11,11 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
 
     event ROYALTIESUPDATED(uint256 royalties);
 
-    constructor(string memory name_, string memory symbol_) ERC721F(name_, symbol_) {
+    constructor(
+        string memory name_,
+        string memory symbol_
+    ) ERC721F(name_, symbol_) {
         setRoyaltyReceiver(address(this));
-    }
-
-    /**
-     * @notice Indicates whether this contract supports an interface
-     * @dev Returns true if this contract implements the interface defined by
-     * `interfaceId`. See the corresponding
-     * [EIP section](https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified)
-     * to learn more about how these ids are created.
-     *
-     * @return `true` if the contract implements `interfaceID` or is 0x2a55205a, `false` otherwise
-     */
-    function supportsInterface(bytes4 _interfaceId)
-        public
-        view
-        virtual
-        override(ERC721, ERC2981)
-        returns (bool)
-    {
-        return
-            _interfaceId == type(IERC2981).interfaceId ||
-            super.supportsInterface(_interfaceId);
     }
 
     /**
@@ -52,11 +34,38 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
     }
 
     /**
+     * @notice Sets `receiver` as royaltyReceiver
+     */
+    function setRoyaltyReceiver(address receiver) public virtual onlyOwner {
+        royaltyReceiver = receiver;
+    }
+
+    /**
+     * @notice Indicates whether this contract supports an interface
+     * @dev Returns true if this contract implements the interface defined by
+     * `interfaceId`. See the corresponding
+     * [EIP section](https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified)
+     * to learn more about how these ids are created.
+     *
+     * @return `true` if the contract implements `interfaceID` or is 0x2a55205a, `false` otherwise
+     */
+    function supportsInterface(
+        bytes4 _interfaceId
+    ) public view virtual override(ERC721, ERC2981) returns (bool) {
+        return
+            _interfaceId == type(IERC2981).interfaceId ||
+            super.supportsInterface(_interfaceId);
+    }
+
+    /**
      * @notice Returns how much royalty is owed and to whom, based on a sale price that may be denominated in any unit of
      * exchange. The royalty amount is denominated and should be paid in that same unit of exchange.
      * @param _tokenId is the token being sold and should exist.
      */
-    function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
+    function royaltyInfo(
+        uint256 _tokenId,
+        uint256 _salePrice
+    )
         public
         view
         virtual
@@ -68,12 +77,5 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
             "ERC2981RoyaltyStandard: Royalty info for nonexistent token"
         );
         return (royaltyReceiver, (_salePrice * royalties) / 10000);
-    }
-
-    /**
-     * @notice Sets `receiver` as royaltyReceiver
-     */
-    function setRoyaltyReceiver(address receiver) public virtual onlyOwner {
-        royaltyReceiver = receiver;
     }
 }
