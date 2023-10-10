@@ -36,21 +36,22 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
         require(_exists(tokenId), "Non-Existing token");
         string memory svgData = renderTokenById(tokenId);
         string memory traits = getTraits(tokenId);
-        return string(
-            abi.encodePacked(
-                'data:application/json;utf-8,{"name": "',
-                name(),
-                " #",
-                Strings.toString(tokenId),
-                '", "description": "',
-                getDescription(),
-                '", "image": "data:image/svg+xml;base64,',
-                Base64.encode(bytes(svgData)),
-                bytes(traits).length == 0 ? '"' : '", "attributes": ',
-                traits,
-                "}"
-            )
-        );
+        return
+            string(
+                abi.encodePacked(
+                    'data:application/json;utf-8,{"name": "',
+                    name(),
+                    " #",
+                    Strings.toString(tokenId),
+                    '", "description": "',
+                    getDescription(),
+                    '", "image": "data:image/svg+xml;base64,',
+                    Base64.encode(bytes(svgData)),
+                    bytes(traits).length == 0 ? '"' : '", "attributes": ',
+                    traits,
+                    "}"
+                )
+            );
     }
 
     /**
