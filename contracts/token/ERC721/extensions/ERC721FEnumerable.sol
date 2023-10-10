@@ -6,19 +6,6 @@ import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 
 abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
     /**
-     * @dev See {IERC721Enumerable-totalSupply}
-     * Returns total amount of tokens stored in the contract
-     */
-    function totalSupply()
-        public
-        view
-        override(ERC721F, IERC721Enumerable)
-        returns (uint256)
-    {
-        return ERC721F.totalSupply();
-    }
-
-    /**
      * @dev See {IERC721Enumerable-tokenOfOwnerByIndex}
      * Returns token ID owned by `owner` at a given `index` of its token list
      * This read function is O(totalSupply). If calling from a seperate contract, be sure to test gas first
@@ -79,5 +66,18 @@ abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
             }
         }
         revert("");
+    }
+
+    /**
+     * @dev See {IERC721Enumerable-totalSupply}
+     * Returns total amount of tokens stored in the contract
+     */
+    function totalSupply()
+        public
+        view
+        override(ERC721F, IERC721Enumerable)
+        returns (uint256)
+    {
+        return ERC721F.totalSupply();
     }
 }
