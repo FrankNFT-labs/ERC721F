@@ -23,7 +23,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         address ownerToken = ERC721.ownerOf(tokenId);
         require(
             isOwnerOrApproved(spender, tokenId),
-            "Address is neither owner of contract nor approved for token/tokenowner"
+            "Address is neither contractowner nor tokenapproved/tokenowner"
         );
         _;
     }
