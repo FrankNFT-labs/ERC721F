@@ -5,7 +5,7 @@ import "../../../../examples/gas-optimisations/RequireNonZero.sol";
 import "../../../../lib/forge-std/src/Test.sol";
 
 contract RequireNonZeroTest is Test {
-    RequireNonZero t;
+    RequireNonZero private t;
 
     function setUp() public {
         t = new RequireNonZero();

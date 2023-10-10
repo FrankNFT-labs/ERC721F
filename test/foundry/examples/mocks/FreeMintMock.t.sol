@@ -11,8 +11,8 @@ import "../../../../lib/forge-std/src/Test.sol";
  * forge test --gas-report --mt '\W*(MintThirty)\W*'
  */
 contract FreeMintTest is Test {
-    FreeMintMock t;
-    address owner = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
+    FreeMintMock private t;
+    address private owner = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
 
     function setUp() public {
         t = new FreeMintMock();

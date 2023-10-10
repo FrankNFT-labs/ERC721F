@@ -10,9 +10,9 @@ import "../../../lib/forge-std/src/Test.sol";
  * @dev Contract utilised to test additional contractfunctionality and retained functionality of overridden functions
  */
 contract ERC4906Test is Test {
-    ERC4906Mock t;
-    address owner;
-    string constant TOKEN_URI = "uri";
+    ERC4906Mock private t;
+    address private owner;
+    string private constant TOKEN_URI = "uri";
 
     event MetadataUpdate(uint256 _tokenId);
     event BatchMetadataUpdate(uint256 _fromTokenId, uint256 _toTokenId);
