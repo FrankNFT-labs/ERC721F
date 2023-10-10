@@ -1,3 +1,6 @@
 {
-  "rules": {}
+  "rules": {
+    "custom-errors": "off",
+    "explicit-types": "warn"
+  }
 }
