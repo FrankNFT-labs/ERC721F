@@ -15,8 +15,8 @@
     "generate-foundry-breakeven-snapshots": ".\\scripts\\bat\\generate-breakeven-snapshots.bat",
     "lint": "npx solhint '**/*.sol'",
     "lint:foundry": "npx solhint --config test/foundry/.solhint.json 'test/foundry/**/*.sol'",
-    "update-example-imports-dev": "node scripts/js/update_example_contract_imports.js dev",
-    "update-example-imports-prod": "node scripts/js/update_example_contract_imports.js prod"
+    "update-example-imports:dev": "node scripts/js/update_example_contract_imports.js dev",
+    "update-example-imports:prod": "node scripts/js/update_example_contract_imports.js prod"
   },
   "repository": {
     "type": "git",
