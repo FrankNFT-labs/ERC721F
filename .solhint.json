@@ -9,6 +9,7 @@
     "const-name-snakecase": "warn",
     "contract-name-camelcase": "warn",
     "event-name-camelcase": "warn",
-    "func-name-mixedcase": "warn"
+    "func-name-mixedcase": "warn",
+    "func-param-name-mixedcase": "warn"
   }
 }
