@@ -26,7 +26,7 @@ contract OnChain is ERC721FOnChain {
     ];
 
     uint256 public constant MAX_TOKENS = 10000;
-    uint public constant MAX_PURCHASE = 31;
+    uint256 public constant MAX_PURCHASE = 31;
     bool public saleIsActive;
 
     constructor() ERC721FOnChain("OnChain", "OC", "Example OnChain Contract") {}

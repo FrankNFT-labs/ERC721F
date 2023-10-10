@@ -32,7 +32,7 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
     uint32 constant numWords = 1;
 
     uint256 public constant MAX_TOKENS = 10000;
-    uint public constant MAX_PURCHASE = 31;
+    uint256 public constant MAX_PURCHASE = 31;
     uint256 startingIndex;
     bool public saleIsActive;
 

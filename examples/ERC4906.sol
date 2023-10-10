@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
     uint256 public constant MAX_TOKENS = 10000;
-    uint public constant MAX_PURCHASE = 31; // Theoretical limit 1100
+    uint256 public constant MAX_PURCHASE = 31; // Theoretical limit 1100
     bool public saleIsActive;
 
     constructor() ERC721F("Example Metadata Update Extension", "EMUE") {}

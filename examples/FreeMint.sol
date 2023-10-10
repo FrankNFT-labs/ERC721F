@@ -13,7 +13,7 @@ contract FreeMint is ERC721F, ERC2981 {
     uint16 private royalties = 500;
 
     uint256 public constant MAX_TOKENS = 10000;
-    uint public constant MAX_PURCHASE = 31; // Theoretical limit 1100
+    uint256 public constant MAX_PURCHASE = 31; // Theoretical limit 1100
     bool public saleIsActive;
 
     event ROYALTIESUPDATED(uint256 royalties);

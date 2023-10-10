@@ -5,7 +5,7 @@ import {LibDiamond} from "hardhat-deploy/solc_0.8/diamond/libraries/LibDiamond.s
 
 struct FreeMintStorage {
     uint256 MAX_TOKENS;
-    uint MAX_PURCHASE;
+    uint256 MAX_PURCHASE;
     bool isInitialized;
     bool saleIsActive;
 }

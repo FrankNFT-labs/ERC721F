@@ -5,8 +5,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * @title AllowListWithAmount
- * @dev This contract manages an allowList of addresses and their respective token amounts, providing utility functions to add, remove, and modify these amounts. 
- * It also implements a custom modifier to ensure that only addresses with a sufficient amount of available tokens can perform certain actions. 
+ * @dev This contract manages an allowList of addresses and their respective token amounts, providing utility functions to add, remove, and modify these amounts.
+ * It also implements a custom modifier to ensure that only addresses with a sufficient amount of available tokens can perform certain actions.
  * The contract is Ownable, allowing only the contract owner to manage the allowList.
  */
 abstract contract AllowListWithAmount is Ownable {
@@ -25,22 +25,22 @@ abstract contract AllowListWithAmount is Ownable {
     /**
      * @notice Adds an address to the allowList and sets `totalTokens` as their token amount
      */
-    function allowAddress(address _address, uint256 totalTokens)
-        public
-        onlyOwner
-    {
+    function allowAddress(
+        address _address,
+        uint256 totalTokens
+    ) public onlyOwner {
         allowList[_address] = totalTokens;
     }
 
     /**
      * @notice Adds an array of addresses to the allowList and sets `totalTokens` as their token amount
      */
-    function allowAddresses(address[] calldata _addresses, uint256 totalTokens)
-        external
-        onlyOwner
-    {
-        uint length = _addresses.length;
-        for (uint i; i < length; ) {
+    function allowAddresses(
+        address[] calldata _addresses,
+        uint256 totalTokens
+    ) external onlyOwner {
+        uint256 length = _addresses.length;
+        for (uint256 i; i < length; ) {
             allowAddress(_addresses[i], totalTokens);
             unchecked {
                 i++;

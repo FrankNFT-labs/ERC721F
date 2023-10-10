@@ -16,7 +16,7 @@ import "@openzeppelin/contracts/utils/Base64.sol";
  */
 contract OnChainOptimized is IERC4883, ERC721F {
     uint256 public constant MAX_TOKENS = 10;
-    uint public constant MAX_PURCHASE = 10;
+    uint256 public constant MAX_PURCHASE = 10;
     uint256 public lastSelected = 0; //t: total input records dealt with
     bool public saleIsActive;
     //

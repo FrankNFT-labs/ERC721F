@@ -12,8 +12,8 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
  */
 contract MerkleRoot is ERC721F, Payable {
     uint256 public constant MAX_TOKENS = 10000;
-    uint public constant MAX_PURCHASE = 31;
-    uint public tokenPrice = 1 ether;
+    uint256 public constant MAX_PURCHASE = 31;
+    uint256 public tokenPrice = 1 ether;
     bool public preSaleIsActive;
     bool public saleIsActive;
     bytes32 public root;
