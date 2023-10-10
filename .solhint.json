@@ -5,6 +5,6 @@
     "no-console": "error",
     "no-unused-import": "error",
     "no-unused-vars": "error",
-    "reason-string": ["warn", { "maxLength": 32 }]
+    "reason-string": ["warn", { "maxLength": 64 }]
   }
 }
