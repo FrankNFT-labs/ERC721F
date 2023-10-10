@@ -37,19 +37,6 @@ contract ERC721FGasReporterMock is ERC721F {
     }
 
     /**
-     * @notice Mints any number of tokens and transfers them to `to`
-     */
-    function mint(address to, uint256 numberOfTokens) internal {
-        uint256 supply = _totalMinted();
-        unchecked {
-            for (uint256 i; i < numberOfTokens; ) {
-                _mint(to, supply + i);
-                i++;
-            }
-        }
-    }
-
-    /**
      * @notice Transfers the first token owned by the sender to `to`
      */
     function transferOneAsc(address to) public {
@@ -124,6 +111,19 @@ contract ERC721FGasReporterMock is ERC721F {
         unchecked {
             for (uint256 i = 0; i < total; ) {
                 transferFrom(msg.sender, to, retrieveLastToken());
+                i++;
+            }
+        }
+    }
+
+    /**
+     * @notice Mints any number of tokens and transfers them to `to`
+     */
+    function mint(address to, uint256 numberOfTokens) internal {
+        uint256 supply = _totalMinted();
+        unchecked {
+            for (uint256 i; i < numberOfTokens; ) {
+                _mint(to, supply + i);
                 i++;
             }
         }
