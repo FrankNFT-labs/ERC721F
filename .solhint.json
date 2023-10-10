@@ -24,6 +24,7 @@
     "avoid-throw": "error",
     "func-visibility": ["error", { "ignoreConstructors": true }],
     "no-complex-fallback": "warn",
-    "not-rely-on-block-hash": "error"
+    "not-rely-on-block-hash": "error",
+    "reentrancy": "warn"
   }
 }
