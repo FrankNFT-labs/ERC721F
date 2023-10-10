@@ -23,16 +23,6 @@ abstract contract AllowListWithAmount is Ownable {
     }
 
     /**
-     * @notice Adds an address to the allowList and sets `totalTokens` as their token amount
-     */
-    function allowAddress(
-        address _address,
-        uint256 totalTokens
-    ) public onlyOwner {
-        allowList[_address] = totalTokens;
-    }
-
-    /**
      * @notice Adds an array of addresses to the allowList and sets `totalTokens` as their token amount
      */
     function allowAddresses(
@@ -56,10 +46,13 @@ abstract contract AllowListWithAmount is Ownable {
     }
 
     /**
-     * @dev Available tokens of `_address` get set to 0
+     * @notice Adds an address to the allowList and sets `totalTokens` as their token amount
      */
-    function _disallowAddress(address _address) internal {
-        delete allowList[_address];
+    function allowAddress(
+        address _address,
+        uint256 totalTokens
+    ) public onlyOwner {
+        allowList[_address] = totalTokens;
     }
 
     /**
@@ -67,6 +60,13 @@ abstract contract AllowListWithAmount is Ownable {
      */
     function getAllowListFunds(address _address) public view returns (uint256) {
         return allowList[_address];
+    }
+
+    /**
+     * @dev Available tokens of `_address` get set to 0
+     */
+    function _disallowAddress(address _address) internal {
+        delete allowList[_address];
     }
 
     /**
