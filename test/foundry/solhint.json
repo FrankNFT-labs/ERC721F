@@ -1,5 +1,0 @@
-{
-  "rules": {
-    "foundry-test-functions": ["error", ["setUp"]]
-  }
-}
