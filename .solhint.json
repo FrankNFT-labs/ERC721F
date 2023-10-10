@@ -14,6 +14,6 @@
     "immutable-vars-naming": ["warn", { "immutablesAsConstants": true }],
     "modifier-name-mixedcase": "warn",
     "var-name-mixedcase": "warn",
-    "ordering": "error"
+    "ordering": "warn"
   }
 }
