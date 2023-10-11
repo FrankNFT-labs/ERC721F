@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20 <0.9.0;
 
-import "../contracts/utils/AllowList.sol";
-import "../contracts/token/ERC721/ERC721FCOMMON.sol";
+import "@franknft.eth/erc721-f/utils/AllowList.sol";
+import "@franknft.eth/erc721-f/token/ERC721/ERC721FCOMMON.sol";
 import "operator-filter-registry/src/RevokableDefaultOperatorFilterer.sol";
 import "operator-filter-registry/src/UpdatableOperatorFilterer.sol";
 
