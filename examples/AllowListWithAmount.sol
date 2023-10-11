@@ -15,7 +15,7 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
     bool public preSaleIsActive;
     bool public saleIsActive;
 
-    constructor() ERC721FCOMMON("AllowListWithAmount", "ALA") {
+    constructor() ERC721FCOMMON("AllowListWithAmount", "ALA", msg.sender) {
         setBaseTokenURI(
             "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
         );

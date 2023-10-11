@@ -15,7 +15,7 @@ contract AllowListExample is ERC721FCOMMON, AllowList {
     bool public preSaleIsActive;
     bool public saleIsActive;
 
-    constructor() ERC721FCOMMON("AllowList", "AL") {
+    constructor() ERC721FCOMMON("AllowList", "AL", msg.sender) {
         setBaseTokenURI(
             "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
         );

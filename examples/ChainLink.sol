@@ -42,7 +42,7 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
     constructor(
         uint64 _subscriptionId,
         address _vrfCoordinator
-    ) VRFConsumerBaseV2(_vrfCoordinator) ERC721F("ChainLink", "Chain") {
+    ) VRFConsumerBaseV2(_vrfCoordinator) ERC721F("ChainLink", "Chain", msg.sender) {
         COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
         subscriptionId = _subscriptionId;
         setBaseTokenURI(
