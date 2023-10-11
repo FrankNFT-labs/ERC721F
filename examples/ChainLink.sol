@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721F.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
@@ -43,7 +43,7 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
     constructor(
         uint64 _subscriptionId,
         address _vrfCoordinator
-    ) VRFConsumerBaseV2(_vrfCoordinator) ERC721F("ChainLink", "Chain") {
+    ) VRFConsumerBaseV2(_vrfCoordinator) ERC721F("ChainLink", "Chain", msg.sender) {
         COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
         subscriptionId = _subscriptionId;
         setBaseTokenURI(

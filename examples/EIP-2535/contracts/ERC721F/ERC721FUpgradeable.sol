@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import {ERC721FUpgradeableInternal, ERC721FStorage} from "./ERC721FUpgradeableInternal.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";

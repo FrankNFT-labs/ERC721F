@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "@franknft.eth/erc721-f/contracts/utils/AllowList.sol";
 import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721FCOMMON.sol";
@@ -21,6 +21,14 @@ contract RevokableDefaultOperatorFiltererERC721F is
     bool public preSaleIsActive;
     bool public saleIsActive;
 
+    constructor()
+        ERC721FCOMMON("RevokableDefaultOperatorFiltererERC721F", "RDOF", msg.sender)
+    {
+        setBaseTokenURI(
+            "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
+        );
+    }
+
     modifier validMintRequest(uint256 numberOfTokens) {
         require(numberOfTokens > 0, "numberOfNfts cannot be 0");
         require(
@@ -32,14 +40,6 @@ contract RevokableDefaultOperatorFiltererERC721F is
             "Ether value sent is not correct"
         );
         _;
-    }
-
-    constructor()
-        ERC721FCOMMON("RevokableDefaultOperatorFiltererERC721F", "RDOF")
-    {
-        setBaseTokenURI(
-            "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
-        );
     }
 
     /**
@@ -144,18 +144,6 @@ contract RevokableDefaultOperatorFiltererERC721F is
         uint256 tokenId
     ) public override onlyAllowedOperator(from) {
         super.transferFrom(from, to, tokenId);
-    }
-
-    /**
-     * @notice Safely transfers `tokenId` token from `from`, to `to`
-     * @dev Reverts if caller is filtered in OperatorFilterRegistry or non-approved by `from`
-     */
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public override onlyAllowedOperator(from) {
-        super.safeTransferFrom(from, to, tokenId);
     }
 
     /**

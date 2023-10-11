@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721F.sol";
 import "@franknft.eth/erc721-f/contracts/utils/Payable.sol";
@@ -12,11 +12,18 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
  */
 contract MerkleRoot is ERC721F, Payable {
     uint256 public constant MAX_TOKENS = 10000;
-    uint256 public constant MAX_PURCHASE = 31;
-    uint256 public tokenPrice = 1 ether;
+    uint public constant MAX_PURCHASE = 31;
+    uint public tokenPrice = 1 ether;
     bool public preSaleIsActive;
     bool public saleIsActive;
     bytes32 public root;
+
+    constructor(bytes32 _root) ERC721F("MerkleRoot Pre-Sale", "Merkle", msg.sender) {
+        root = _root;
+        setBaseTokenURI(
+            "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
+        );
+    }
 
     modifier validMintRequest(uint256 numberOfTokens) {
         require(numberOfTokens > 0, "numberOfNfts cannot be 0");
@@ -29,13 +36,6 @@ contract MerkleRoot is ERC721F, Payable {
             "Ether value sent is not correct"
         );
         _;
-    }
-
-    constructor(bytes32 _root) ERC721F("MerkleRoot Pre-Sale", "Merkle") {
-        root = _root;
-        setBaseTokenURI(
-            "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
-        );
     }
 
     /**
@@ -114,16 +114,16 @@ contract MerkleRoot is ERC721F, Payable {
         }
     }
 
-    function withdraw() external onlyOwner {
-        uint256 balance = address(this).balance;
-        require(balance > 0, "Insufficient balance");
-        _withdraw(owner(), balance);
-    }
-
     function checkValidity(
         bytes32[] calldata merkleProof
     ) internal view returns (bool) {
         bytes32 leafToCheck = keccak256(abi.encodePacked(msg.sender));
         return MerkleProof.verify(merkleProof, root, leafToCheck);
+    }
+
+    function withdraw() external onlyOwner {
+        uint256 balance = address(this).balance;
+        require(balance > 0, "Insufficient balance");
+        _withdraw(owner(), balance);
     }
 }

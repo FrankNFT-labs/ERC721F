@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "./ERC721F.sol";
 import "../../utils/Payable.sol";
@@ -13,31 +13,10 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
 
     constructor(
         string memory name_,
-        string memory symbol_
-    ) ERC721F(name_, symbol_) {
+        string memory symbol_,
+        address initialOwner
+    ) ERC721F(name_, symbol_, initialOwner) {
         setRoyaltyReceiver(address(this));
-    }
-
-    /**
-     * @dev it will update the royalties for token
-     * @param _royalties is new percentage of royalties. It should be more than 0 and least 90
-     */
-    function setRoyalties(uint16 _royalties) external onlyOwner {
-        require(
-            _royalties != 0 && _royalties < 90,
-            "royalties should be between 0 and 90"
-        );
-
-        royalties = (_royalties * 100);
-
-        emit ROYALTIESUPDATED(_royalties);
-    }
-
-    /**
-     * @notice Sets `receiver` as royaltyReceiver
-     */
-    function setRoyaltyReceiver(address receiver) public virtual onlyOwner {
-        royaltyReceiver = receiver;
     }
 
     /**
@@ -55,6 +34,21 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
         return
             _interfaceId == type(IERC2981).interfaceId ||
             super.supportsInterface(_interfaceId);
+    }
+
+    /**
+     * @dev it will update the royalties for token
+     * @param _royalties is new percentage of royalties. It should be more than 0 and least 90
+     */
+    function setRoyalties(uint16 _royalties) external onlyOwner {
+        require(
+            _royalties != 0 && _royalties < 90,
+            "royalties should be between 0 and 90"
+        );
+
+        royalties = (_royalties * 100);
+
+        emit ROYALTIESUPDATED(_royalties);
     }
 
     /**
@@ -77,5 +71,12 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
             "ERC2981RoyaltyStandard: Royalty info for nonexistent token"
         );
         return (royaltyReceiver, (_salePrice * royalties) / 10000);
+    }
+
+    /**
+     * @notice Sets `receiver` as royaltyReceiver
+     */
+    function setRoyaltyReceiver(address receiver) public virtual onlyOwner {
+        royaltyReceiver = receiver;
     }
 }

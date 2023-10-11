@@ -1,7 +1,10 @@
 {
   "name": "@franknft.eth/erc721-f",
   "description": "ERC721F contract for Solidity",
-  "version": "4.8.2",
+  "version": "5.0.0",
+  "workspaces": [
+    "./examples/EIP-2535"
+  ],
   "files": [
     "/contracts/**/*.sol",
     "!/contracts/mocks/**",
@@ -42,7 +45,7 @@
     "solhint": "^3.6.2"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.8.2"
+    "@openzeppelin/contracts": "^5.0.0"
   },
   "bugs": {
     "url": "https://github.com/FrankNFT-labs/ERC721F/issues"

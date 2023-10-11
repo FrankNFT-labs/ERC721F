@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "../ERC721F.sol";
 
@@ -22,32 +22,25 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
     }
 
     /**
-     * @dev Pushes `tokenId` to _walletOfOwner of `to`
+     * @dev Minting: Pushes `tokenId` to _walletOfOwner of `to`
+     * @dev Burning: Removes `tokenId` from wallet sender
+     * @dev Transferring: Removes `tokenId` from wallet `from` and adds `tokenId` to wallet `to`
      */
-    function _mint(address to, uint256 tokenId) internal virtual override {
-        super._mint(to, tokenId);
-        _walletOfOwner[to].push(tokenId);
-    }
-
-    /**
-     * @dev Transfers `tokenId` from `from` to `to` and pushes `tokenId` to wallet of `to`
-     */
-    function _transfer(
-        address from,
+    function _update(
         address to,
-        uint256 tokenId
-    ) internal virtual override {
-        super._transfer(from, to, tokenId);
-        _removeTokenFromWallet(tokenId, from);
-        _walletOfOwner[to].push(tokenId);
-    }
-
-    /**
-     * @dev Burns `tokenId`
-     */
-    function _burn(uint256 tokenId) internal virtual override {
-        super._burn(tokenId);
-        _removeTokenFromWallet(tokenId);
+        uint256 tokenId,
+        address auth
+    ) internal virtual override returns (address) {
+        address from = super._update(to, tokenId, auth);
+        if (from == address(0)) {
+            _walletOfOwner[to].push(tokenId);
+        } else if (to == address(0)) {
+            _removeTokenFromWallet(tokenId);
+        } else {
+            _removeTokenFromWallet(tokenId, from);
+            _walletOfOwner[to].push(tokenId);
+        }
+        return from;
     }
 
     /**

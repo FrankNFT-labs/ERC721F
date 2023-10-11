@@ -1,16 +1,46 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721F.sol";
-import "@franknft.eth/erc721-f/contracts/interfaces/IERC4906.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
+contract ERC4906 is ERC721F, ERC721URIStorage {
     uint256 public constant MAX_TOKENS = 10000;
-    uint256 public constant MAX_PURCHASE = 31; // Theoretical limit 1100
+    uint public constant MAX_PURCHASE = 31; // Theoretical limit 1100
     bool public saleIsActive;
 
-    constructor() ERC721F("Example Metadata Update Extension", "EMUE") {}
+    constructor() ERC721F("Example Metadata Update Extension", "EMUE", msg.sender) {}
+
+    /**
+     * @notice Indicates whether this contract supports an interface
+     * @dev Returns true if this contract implements the interface defined by
+     * `interfaceId`. See the corresponding
+     * [EIP section](https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified)
+     * to learn more about how these ids are created.
+     *
+     * @return `true` if the contract implements `interfaceID` or is 0x49064906, `false` otherwise
+     */
+    function supportsInterface(
+        bytes4 _interfaceId
+    ) public view virtual override(ERC721, ERC721URIStorage) returns (bool) {
+        return
+            ERC721URIStorage.supportsInterface(_interfaceId);
+    }
+
+    /**
+     * @dev See {ERC721URIStorage-tokenURI}.
+     */
+    function tokenURI(
+        uint256 tokenId
+    )
+        public
+        view
+        virtual
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
+        return ERC721URIStorage.tokenURI(tokenId);
+    }
 
     /**
      * Changes the state of saleIsActive from true to false and false to true
@@ -43,38 +73,6 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
                 i++;
             }
         }
-    }
-
-    /**
-     * @notice Indicates whether this contract supports an interface
-     * @dev Returns true if this contract implements the interface defined by
-     * `interfaceId`. See the corresponding
-     * [EIP section](https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified)
-     * to learn more about how these ids are created.
-     *
-     * @return `true` if the contract implements `interfaceID` or is 0x49064906, `false` otherwise
-     */
-    function supportsInterface(
-        bytes4 _interfaceId
-    ) public view virtual override(IERC165, ERC721) returns (bool) {
-        return
-            _interfaceId == bytes4(0x49064906) ||
-            super.supportsInterface(_interfaceId);
-    }
-
-    /**
-     * @dev See {ERC721URIStorage-tokenURI}.
-     */
-    function tokenURI(
-        uint256 tokenId
-    )
-        public
-        view
-        virtual
-        override(ERC721, ERC721URIStorage)
-        returns (string memory)
-    {
-        return ERC721URIStorage.tokenURI(tokenId);
     }
 
     /**
@@ -113,27 +111,6 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
     }
 
     /**
-     *
-     * @dev Mints `tokenId` and transfers it to `to`.
-     *
-     */
-    function _mint(
-        address to,
-        uint256 tokenId
-    ) internal virtual override(ERC721, ERC721F) {
-        ERC721F._mint(to, tokenId);
-    }
-
-    /**
-     * @dev See {ERC721URIStorage-_burn}
-     */
-    function _burn(
-        uint256 tokenId
-    ) internal virtual override(ERC721URIStorage, ERC721F) {
-        ERC721URIStorage._burn(tokenId);
-    }
-
-    /**
      * @dev Base URI for computing {tokenURI}. If set, the resulting URI for each
      * token will be the concatenation of the `baseURI` and the `tokenId`. Empty
      * by default, can be overridden in child contracts.
@@ -146,5 +123,12 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
         returns (string memory)
     {
         return ERC721F._baseURI();
+    }
+
+    /**
+     * @dev See {ERC721F-_burn}
+     */
+    function _update(address to, uint256 tokenId, address auth) internal virtual override(ERC721, ERC721F) returns (address) {
+        return ERC721F._update(to, tokenId, auth);
     }
 }

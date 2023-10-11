@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
@@ -15,8 +15,9 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
     constructor(
         string memory name_,
         string memory symbol_,
+        address intialOwner,
         string memory description_
-    ) ERC721F(name_, symbol_) {
+    ) ERC721F(name_, symbol_, intialOwner) {
         description = description_;
     }
 
@@ -36,21 +37,22 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
         require(_exists(tokenId), "Non-Existing token");
         string memory svgData = renderTokenById(tokenId);
         string memory traits = getTraits(tokenId);
-        return string(
-            abi.encodePacked(
-                'data:application/json;utf-8,{"name": "',
-                name(),
-                " #",
-                Strings.toString(tokenId),
-                '", "description": "',
-                getDescription(),
-                '", "image": "data:image/svg+xml;base64,',
-                Base64.encode(bytes(svgData)),
-                bytes(traits).length == 0 ? '"' : '", "attributes": ',
-                traits,
-                "}"
-            )
-        );
+        return
+            string(
+                abi.encodePacked(
+                    'data:application/json;utf-8,{"name": "',
+                    name(),
+                    " #",
+                    Strings.toString(tokenId),
+                    '", "description": "',
+                    getDescription(),
+                    '", "image": "data:image/svg+xml;base64,',
+                    Base64.encode(bytes(svgData)),
+                    bytes(traits).length == 0 ? '"' : '", "attributes": ',
+                    traits,
+                    "}"
+                )
+            );
     }
 
     /**

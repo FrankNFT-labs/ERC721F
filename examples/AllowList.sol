@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721FCOMMON.sol";
 import "@franknft.eth/erc721-f/contracts/utils/AllowList.sol";
@@ -10,10 +10,16 @@ import "@franknft.eth/erc721-f/contracts/utils/AllowList.sol";
  */
 contract AllowListExample is ERC721FCOMMON, AllowList {
     uint256 public constant MAX_TOKENS = 10000;
-    uint256 public constant MAX_PURCHASE = 31;
-    uint256 public tokenPrice = 1 ether;
+    uint public constant MAX_PURCHASE = 31;
+    uint public tokenPrice = 1 ether;
     bool public preSaleIsActive;
     bool public saleIsActive;
+
+    constructor() ERC721FCOMMON("AllowList", "AL", msg.sender) {
+        setBaseTokenURI(
+            "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
+        );
+    }
 
     modifier validMintRequest(uint256 numberOfTokens) {
         require(numberOfTokens > 0, "numberOfNfts cannot be 0");
@@ -26,12 +32,6 @@ contract AllowListExample is ERC721FCOMMON, AllowList {
             "Ether value sent is not correct"
         );
         _;
-    }
-
-    constructor() ERC721FCOMMON("AllowList", "AL") {
-        setBaseTokenURI(
-            "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
-        );
     }
 
     /**
