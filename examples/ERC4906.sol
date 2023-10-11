@@ -6,10 +6,12 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract ERC4906 is ERC721F, ERC721URIStorage {
     uint256 public constant MAX_TOKENS = 10000;
-    uint public constant MAX_PURCHASE = 31; // Theoretical limit 1100
+    uint256 public constant MAX_PURCHASE = 31; // Theoretical limit 1100
     bool public saleIsActive;
 
-    constructor() ERC721F("Example Metadata Update Extension", "EMUE", msg.sender) {}
+    constructor()
+        ERC721F("Example Metadata Update Extension", "EMUE", msg.sender)
+    {}
 
     /**
      * @notice Indicates whether this contract supports an interface
@@ -23,8 +25,7 @@ contract ERC4906 is ERC721F, ERC721URIStorage {
     function supportsInterface(
         bytes4 _interfaceId
     ) public view virtual override(ERC721, ERC721URIStorage) returns (bool) {
-        return
-            ERC721URIStorage.supportsInterface(_interfaceId);
+        return ERC721URIStorage.supportsInterface(_interfaceId);
     }
 
     /**
@@ -128,7 +129,11 @@ contract ERC4906 is ERC721F, ERC721URIStorage {
     /**
      * @dev See {ERC721F-_burn}
      */
-    function _update(address to, uint256 tokenId, address auth) internal virtual override(ERC721, ERC721F) returns (address) {
+    function _update(
+        address to,
+        uint256 tokenId,
+        address auth
+    ) internal virtual override(ERC721, ERC721F) returns (address) {
         return ERC721F._update(to, tokenId, auth);
     }
 }
