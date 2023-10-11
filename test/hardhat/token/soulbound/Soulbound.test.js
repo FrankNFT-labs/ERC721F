@@ -443,7 +443,7 @@ describe("Soulbound", function () {
             .connect(addressToBeApproved)
             .transferFrom(otherAddress.address, ownerAdress.address, 0)
         ).to.be.revertedWith(
-          "Address is neither owner of contract nor approved for token/tokenowner"
+          "Address is neither contractowner nor tokenapproved/tokenowner"
         );
       });
 
@@ -541,7 +541,7 @@ describe("Soulbound", function () {
         expect(
           await token.transferFrom(otherAddress.address, ownerAdress.address, 0)
         ).to.be.revertedWith(
-          "Address is neither owner of contract nor approved for token/tokenowner"
+          "Address is neither contractowner nor tokenapproved/tokenowner"
         );
       });
 
@@ -643,7 +643,7 @@ describe("Soulbound", function () {
                 0
               )
           ).to.be.revertedWith(
-            "Address is neither owner of contract nor approved for token/tokenowner"
+            "Address is neither contractowner nor tokenapproved/tokenowner"
           );
         });
 
@@ -765,7 +765,7 @@ describe("Soulbound", function () {
               0
             )
           ).to.be.revertedWith(
-            "Address is neither owner of contract nor approved for token/tokenowner"
+            "Address is neither contractowner nor tokenapproved/tokenowner"
           );
         });
 
@@ -860,7 +860,7 @@ describe("Soulbound", function () {
                 0x00
               )
           ).to.be.revertedWith(
-            "Address is neither owner of contract nor approved for token/tokenowner"
+            "Address is neither contractowner nor tokenapproved/tokenowner"
           );
         });
 
@@ -988,7 +988,7 @@ describe("Soulbound", function () {
               0x00
             )
           ).to.be.revertedWith(
-            "Address is neither owner of contract nor approved for token/tokenowner"
+            "Address is neither contractowner nor tokenapproved/tokenowner"
           );
         });
 
@@ -1133,7 +1133,7 @@ describe("Soulbound", function () {
         );
 
         expect(await token.burn(0)).to.be.revertedWith(
-          "Address is neither owner of contract nor approved for token/tokenowner"
+          "Address is neither contractowner nor tokenapproved/tokenowner"
         );
       });
     });
