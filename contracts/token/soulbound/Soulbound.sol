@@ -121,12 +121,16 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         address to,
         uint256 tokenId,
         address auth
-    ) internal virtual override onlyOwner returns (address) {
+    ) internal virtual override returns (address) {
+        address from = _ownerOf(tokenId);
+        if (from == address(0)) {
+            _checkOwner();
+        }
         require(
-            isTransferable(tokenId, _ownerOf(tokenId), to),
+            isTransferable(tokenId, from, to),
             "Token can't be transferred"
         );
-        address from = super._update(to, tokenId, auth);
+        super._update(to, tokenId, auth);
         if (from == address(0)) {
             _unlockedStatus(tokenId, false);
         }
