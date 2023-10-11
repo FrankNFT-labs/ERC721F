@@ -61,7 +61,7 @@ Or just import the file directly from Gitlab like this:
 
 ```solidity
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "https://github.com/FrankNFT-labs/ERC721F/blob/v.4.8.2/contracts/token/ERC721/ERC721FCOMMON.sol";
 ```
