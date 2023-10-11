@@ -81,14 +81,13 @@ contract ERC721F is Ownable, ERC721 {
         _baseTokenURI = baseURI;
     }
 
-    /**
-     *
-     * @dev Mints `tokenId` and transfers it to `to`.
-     *
-     */
-    function _mint(address to, uint256 tokenId) internal virtual override {
-        super._mint(to, tokenId);
-        unchecked {
+    function _update(
+        address to,
+        uint256 tokenId,
+        address auth
+    ) internal virtual returns (address) {
+        address from = super._update(to, tokenId, auth);
+        if (from == address(0)) {
             _tokenSupply++;
         }
     }
