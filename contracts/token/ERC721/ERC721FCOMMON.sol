@@ -20,6 +20,28 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
     }
 
     /**
+     * @dev it will update the royalties for token
+     * @param _royalties is new percentage of royalties. It should be more than 0 and least 90
+     */
+    function setRoyalties(uint16 _royalties) external onlyOwner {
+        require(
+            _royalties != 0 && _royalties < 90,
+            "royalties should be between 0 and 90"
+        );
+
+        royalties = (_royalties * 100);
+
+        emit ROYALTIESUPDATED(_royalties);
+    }
+
+    /**
+     * @notice Sets `receiver` as royaltyReceiver
+     */
+    function setRoyaltyReceiver(address receiver) public virtual onlyOwner {
+        royaltyReceiver = receiver;
+    }
+
+    /**
      * @notice Indicates whether this contract supports an interface
      * @dev Returns true if this contract implements the interface defined by
      * `interfaceId`. See the corresponding
@@ -35,22 +57,7 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
             _interfaceId == type(IERC2981).interfaceId ||
             super.supportsInterface(_interfaceId);
     }
-
-    /**
-     * @dev it will update the royalties for token
-     * @param _royalties is new percentage of royalties. It should be more than 0 and least 90
-     */
-    function setRoyalties(uint16 _royalties) external onlyOwner {
-        require(
-            _royalties != 0 && _royalties < 90,
-            "royalties should be between 0 and 90"
-        );
-
-        royalties = (_royalties * 100);
-
-        emit ROYALTIESUPDATED(_royalties);
-    }
-
+    
     /**
      * @notice Returns how much royalty is owed and to whom, based on a sale price that may be denominated in any unit of
      * exchange. The royalty amount is denominated and should be paid in that same unit of exchange.
@@ -71,12 +78,5 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
             "ERC2981RoyaltyStandard: Royalty info for nonexistent token"
         );
         return (royaltyReceiver, (_salePrice * royalties) / 10000);
-    }
-
-    /**
-     * @notice Sets `receiver` as royaltyReceiver
-     */
-    function setRoyaltyReceiver(address receiver) public virtual onlyOwner {
-        royaltyReceiver = receiver;
     }
 }
