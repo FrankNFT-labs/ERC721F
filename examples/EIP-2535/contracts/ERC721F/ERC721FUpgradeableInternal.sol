@@ -330,7 +330,7 @@ contract ERC721FUpgradeableInternal is IERC721Upgradeable {
         uint256 tokenId,
         bytes memory data
     ) internal returns (bool) {
-        if (to.isContract()) {
+        if (to.code.length > 0) {
             try
                 IERC721ReceiverUpgradeable(to).onERC721Received(
                     _msgSender(),
