@@ -29,7 +29,9 @@ contract OnChain is ERC721FOnChain {
     uint256 public constant MAX_PURCHASE = 31;
     bool public saleIsActive;
 
-    constructor() ERC721FOnChain("OnChain", "OC", msg.sender, "Example OnChain Contract") {}
+    constructor()
+        ERC721FOnChain("OnChain", "OC", msg.sender, "Example OnChain Contract")
+    {}
 
     /**
      * Changes the state of saleIsActive from true to false and false to true

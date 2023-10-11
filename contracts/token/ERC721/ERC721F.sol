@@ -65,7 +65,7 @@ contract ERC721F is Ownable, ERC721 {
         _baseTokenURI = baseURI;
     }
 
-     /**
+    /**
      * @dev Gets the total amount of existing tokens stored by the contract.
      * @return uint256 representing the total amount of tokens
      */
@@ -73,7 +73,7 @@ contract ERC721F is Ownable, ERC721 {
         return _tokenSupply - _burnCounter;
     }
 
-     /**
+    /**
      * @dev Minting: Increases _tokenSupply
      * @dev Burning:  Increases _burnCounter
      */
@@ -89,7 +89,7 @@ contract ERC721F is Ownable, ERC721 {
             _burnCounter++;
         }
         return from;
-    } 
+    }
 
     /**
      * To change the starting tokenId, override this function.

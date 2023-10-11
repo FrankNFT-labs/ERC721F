@@ -57,7 +57,7 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
             _interfaceId == type(IERC2981).interfaceId ||
             super.supportsInterface(_interfaceId);
     }
-    
+
     /**
      * @notice Returns how much royalty is owed and to whom, based on a sale price that may be denominated in any unit of
      * exchange. The royalty amount is denominated and should be paid in that same unit of exchange.

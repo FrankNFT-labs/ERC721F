@@ -20,7 +20,10 @@ contract ERC721FVerifyImplementation is Verify, ERC721F {
         address _warmContract,
         address _delegateCashContract,
         address _freeMintContract
-    ) Verify(_warmContract, _delegateCashContract) ERC721F("test", "test", msg.sender) {
+    )
+        Verify(_warmContract, _delegateCashContract)
+        ERC721F("test", "test", msg.sender)
+    {
         FREEMINT_CONTRACT = _freeMintContract;
     }
 
