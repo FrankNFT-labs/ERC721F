@@ -11,7 +11,11 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
 
     event ROYALTIESUPDATED(uint256 royalties);
 
-    constructor(string memory name_, string memory symbol_) ERC721F(name_, symbol_) {
+    constructor(
+        string memory name_,
+        string memory symbol_,
+        address initialOwner
+    ) ERC721F(name_, symbol_, initialOwner) {
         setRoyaltyReceiver(address(this));
     }
 
@@ -24,13 +28,9 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
      *
      * @return `true` if the contract implements `interfaceID` or is 0x2a55205a, `false` otherwise
      */
-    function supportsInterface(bytes4 _interfaceId)
-        public
-        view
-        virtual
-        override(ERC721, ERC2981)
-        returns (bool)
-    {
+    function supportsInterface(
+        bytes4 _interfaceId
+    ) public view virtual override(ERC721, ERC2981) returns (bool) {
         return
             _interfaceId == type(IERC2981).interfaceId ||
             super.supportsInterface(_interfaceId);
@@ -56,7 +56,10 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
      * exchange. The royalty amount is denominated and should be paid in that same unit of exchange.
      * @param _tokenId is the token being sold and should exist.
      */
-    function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
+    function royaltyInfo(
+        uint256 _tokenId,
+        uint256 _salePrice
+    )
         public
         view
         virtual
