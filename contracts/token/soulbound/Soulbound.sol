@@ -242,18 +242,6 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
     }
 
     /**
-     * @dev See {IERC721-safeTransferFrom}.
-     * @dev Only executable on unlocked tokens by owner or approved addresses
-     */
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public virtual override {
-        safeTransferFrom(from, to, tokenId, "");
-    }
-
-    /**
      * @dev See {IERC721-safeTransferFrom} and locks `tokenId`
      * @dev Only executable on unlocked tokens by owner or approved addresses
      */
