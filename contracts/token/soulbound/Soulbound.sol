@@ -117,6 +117,10 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         return _operatorApprovals[owner][operator];
     }
 
+    /**
+     * @dev Minting: Can only be executed by owner contract, locks `tokenId`
+     * @dev Requires that the token can be transferred
+     */
     function _update(
         address to,
         uint256 tokenId,
