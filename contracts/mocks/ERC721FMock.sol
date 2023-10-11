@@ -8,9 +8,10 @@ import "../token/ERC721/ERC721F.sol";
  * This mock provides public helper functions for testing purposes
  */
 contract ERC721FMock is ERC721F {
-    constructor(string memory name_, string memory symbol_)
-        ERC721F(name_, symbol_)
-    {}
+    constructor(
+        string memory name_,
+        string memory symbol_
+    ) ERC721F(name_, symbol_, msg.sender) {}
 
     /**
      * @notice Mint your tokens here

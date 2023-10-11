@@ -8,9 +8,10 @@ import "../token/ERC721/extensions/ERC721FEnumerable.sol";
  * This mock provides a public mint function for testing purposes
  */
 contract ERC721FEnumerableMock is ERC721FEnumerable {
-    constructor(string memory name, string memory symbol)
-        ERC721F(name, symbol)
-    {}
+    constructor(
+        string memory name,
+        string memory symbol
+    ) ERC721F(name, symbol, msg.sender) {}
 
     /**
      * @notice Mint your tokens here

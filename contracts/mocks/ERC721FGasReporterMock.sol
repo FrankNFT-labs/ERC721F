@@ -13,7 +13,7 @@ contract ERC721FGasReporterMock is ERC721F {
     constructor(
         string memory name_,
         string memory symbol_
-    ) ERC721F(name_, symbol_) {}
+    ) ERC721F(name_, symbol_, msg.sender) {}
 
     /**
      * @notice Mints a single token

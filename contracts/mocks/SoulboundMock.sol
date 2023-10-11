@@ -8,9 +8,10 @@ import "../token/soulbound/Soulbound.sol";
  * This mock provides a public mint and burn function for testing purposes
  */
 contract SoulboundMock is Soulbound {
-    constructor(string memory name, string memory symbol)
-        Soulbound(name, symbol)
-    {}
+    constructor(
+        string memory name,
+        string memory symbol
+    ) Soulbound(name, symbol, msg.sender) {}
 
     /**
      * @notice Mint your tokens here
