@@ -21,6 +21,11 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
         return _walletOfOwner[_owner];
     }
 
+    /**
+     * @dev Minting: Pushes `tokenId` to _walletOfOwner of `to`
+     * @dev Burning: Removes `tokenId` from wallet sender
+     * @dev Transferring: Removes `tokenId` from wallet `from` and adds `tokenId` to wallet `to`
+     */
     function _update(
         address to,
         uint256 tokenId,
