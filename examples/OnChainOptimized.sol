@@ -22,7 +22,7 @@ contract OnChainOptimized is IERC4883, ERC721F {
     //
     mapping(uint256 => uint256) private idToAlgorithmId;
 
-    constructor() ERC721F("BunniesSamplingOwnAlgorithm", "OC") {}
+    constructor() ERC721F("BunniesSamplingOwnAlgorithm", "OC", msg.sender) {}
 
     /**
      * Changes the state of saleIsActive from true to false and false to true

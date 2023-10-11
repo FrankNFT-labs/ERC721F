@@ -18,7 +18,7 @@ contract MerkleRoot is ERC721F, Payable {
     bool public saleIsActive;
     bytes32 public root;
 
-    constructor(bytes32 _root) ERC721F("MerkleRoot Pre-Sale", "Merkle") {
+    constructor(bytes32 _root) ERC721F("MerkleRoot Pre-Sale", "Merkle", msg.sender) {
         root = _root;
         setBaseTokenURI(
             "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"

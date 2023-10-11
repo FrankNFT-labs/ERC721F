@@ -22,7 +22,7 @@ contract RevokableDefaultOperatorFiltererERC721F is
     bool public saleIsActive;
 
     constructor()
-        ERC721FCOMMON("RevokableDefaultOperatorFiltererERC721F", "RDOF")
+        ERC721FCOMMON("RevokableDefaultOperatorFiltererERC721F", "RDOF", msg.sender)
     {
         setBaseTokenURI(
             "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"

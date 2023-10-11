@@ -18,7 +18,7 @@ contract FreeMint is ERC721F, ERC2981 {
 
     event ROYALTIESUPDATED(uint256 royalties);
 
-    constructor() ERC721F("FreeMint", "Free") {
+    constructor() ERC721F("FreeMint", "Free", msg.sender) {
         setBaseTokenURI(
             "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
         );
