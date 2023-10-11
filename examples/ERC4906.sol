@@ -126,6 +126,9 @@ contract ERC4906 is ERC721F, ERC721URIStorage {
         return ERC721F._baseURI();
     }
 
+    /**
+     * @dev See {ERC721F-_burn}
+     */
     function _update(address to, uint256 tokenId, address auth) internal virtual override(ERC721, ERC721F) returns (address) {
         return ERC721F._update(to, tokenId, auth);
     }
