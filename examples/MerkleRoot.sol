@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721F.sol";
 import "@franknft.eth/erc721-f/contracts/utils/Payable.sol";
@@ -31,7 +31,9 @@ contract MerkleRoot is ERC721F, Payable {
         _;
     }
 
-    constructor(bytes32 _root) ERC721F("MerkleRoot Pre-Sale", "Merkle") {
+    constructor(
+        bytes32 _root
+    ) ERC721F("MerkleRoot Pre-Sale", "Merkle", msg.sender) {
         root = _root;
         setBaseTokenURI(
             "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"

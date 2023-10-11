@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "../token/ERC721/ERC721F.sol";
 
@@ -11,7 +11,7 @@ contract ERC721FMock is ERC721F {
     constructor(
         string memory name_,
         string memory symbol_
-    ) ERC721F(name_, symbol_) {}
+    ) ERC721F(name_, symbol_, msg.sender) {}
 
     /**
      * @notice Mint your tokens here
