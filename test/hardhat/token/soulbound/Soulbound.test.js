@@ -283,10 +283,7 @@ describe("Soulbound", function () {
       await token.approve(addressToBeApproved.address, 0);
       await expect(
         token.connect(addressToBeApproved).unlockedStatus(0, true)
-      ).to.be.revertedWithCustomError(
-        hardhatToken,
-        "OwnableUnauthorizedAccount"
-      );
+      ).to.be.revertedWithCustomError(token, "OwnableUnauthorizedAccount");
 
       await token.approve(ethers.constants.AddressZero, 0);
       await token.setApprovalForAllOwner(
@@ -296,19 +293,13 @@ describe("Soulbound", function () {
       );
       await expect(
         token.connect(addressToBeApproved).unlockedStatus(0, true)
-      ).to.be.revertedWithCustomError(
-        hardhatToken,
-        "OwnableUnauthorizedAccount"
-      );
+      ).to.be.revertedWithCustomError(token, "OwnableUnauthorizedAccount");
     });
 
     it("Shouldn't be executable by other addresses", async function () {
       await expect(
         token.connect(otherAddress).unlockedStatus(0, true)
-      ).to.be.revertedWithCustomError(
-        hardhatToken,
-        "OwnableUnauthorizedAccount"
-      );
+      ).to.be.revertedWithCustomError(token, "OwnableUnauthorizedAccount");
     });
 
     it("Should revert when token has yet to be minted", async function () {
