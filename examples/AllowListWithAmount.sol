@@ -15,12 +15,6 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
     bool public preSaleIsActive;
     bool public saleIsActive;
 
-    constructor() ERC721FCOMMON("AllowListWithAmount", "ALA", msg.sender) {
-        setBaseTokenURI(
-            "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
-        );
-    }
-
     modifier validMintRequest(uint256 numberOfTokens) {
         require(numberOfTokens > 0, "numberOfNfts cannot be 0");
         require(
@@ -32,6 +26,12 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
             "Ether value sent is not correct"
         );
         _;
+    }
+
+    constructor() ERC721FCOMMON("AllowListWithAmount", "ALA", msg.sender) {
+        setBaseTokenURI(
+            "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
+        );
     }
 
     /**
