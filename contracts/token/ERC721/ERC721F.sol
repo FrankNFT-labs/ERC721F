@@ -92,6 +92,7 @@ contract ERC721F is Ownable, ERC721 {
         } else if (to == address(0)) {
             _burnCounter++;
         }
+        return from;
     }
 
     /**
