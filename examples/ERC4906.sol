@@ -9,7 +9,7 @@ contract ERC4906 is ERC721F, ERC721URIStorage {
     uint public constant MAX_PURCHASE = 31; // Theoretical limit 1100
     bool public saleIsActive;
 
-    constructor() ERC721F("Example Metadata Update Extension", "EMUE") {}
+    constructor() ERC721F("Example Metadata Update Extension", "EMUE", msg.sender) {}
 
     /**
      * @notice Indicates whether this contract supports an interface
@@ -126,24 +126,7 @@ contract ERC4906 is ERC721F, ERC721URIStorage {
         return ERC721F._baseURI();
     }
 
-    /**
-     *
-     * @dev Mints `tokenId` and transfers it to `to`.
-     *
-     */
-    function _mint(
-        address to,
-        uint256 tokenId
-    ) internal virtual override(ERC721, ERC721F) {
-        ERC721F._mint(to, tokenId);
-    }
-
-    /**
-     * @dev See {ERC721URIStorage-_burn}
-     */
-    function _burn(
-        uint256 tokenId
-    ) internal virtual override(ERC721URIStorage, ERC721F) {
-        ERC721URIStorage._burn(tokenId);
+    function _update(address to, uint256 tokenId, address auth) internal virtual override(ERC721, ERC721F) returns (address) {
+        return ERC721F._update(to, tokenId, auth);
     }
 }
