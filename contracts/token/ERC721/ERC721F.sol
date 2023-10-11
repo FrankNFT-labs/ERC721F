@@ -89,16 +89,7 @@ contract ERC721F is Ownable, ERC721 {
         address from = super._update(to, tokenId, auth);
         if (from == address(0)) {
             _tokenSupply++;
-        }
-    }
-
-    /**
-     * @dev See {ERC721-_burn}
-     * Increases value of _burnCounter
-     */
-    function _burn(uint256 tokenId) internal virtual override {
-        super._burn(tokenId);
-        unchecked {
+        } else if (to == address(0)) {
             _burnCounter++;
         }
     }
