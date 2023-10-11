@@ -59,29 +59,21 @@ contract ERC721F is Ownable, ERC721 {
     }
 
     /**
-     * To change the starting tokenId, override this function.
-     */
-    function _startTokenId() internal view virtual returns (uint256) {
-        return 0;
-    }
-
-    /**
-     * @dev Base URI for computing {tokenURI}. If set, the resulting URI for each
-     * token will be the concatenation of the `baseURI` and the `tokenId`. Empty
-     * by default, can be overriden in child contracts.
-     */
-    function _baseURI() internal view virtual override returns (string memory) {
-        return _baseTokenURI;
-    }
-
-    /**
      * @dev Set the base token URI
      */
     function setBaseTokenURI(string memory baseURI) public onlyOwner {
         _baseTokenURI = baseURI;
     }
 
-    /**
+     /**
+     * @dev Gets the total amount of existing tokens stored by the contract.
+     * @return uint256 representing the total amount of tokens
+     */
+    function totalSupply() public view virtual returns (uint256) {
+        return _tokenSupply - _burnCounter;
+    }
+
+     /**
      * @dev Minting: Increases _tokenSupply
      * @dev Burning:  Increases _burnCounter
      */
@@ -97,14 +89,22 @@ contract ERC721F is Ownable, ERC721 {
             _burnCounter++;
         }
         return from;
+    } 
+
+    /**
+     * To change the starting tokenId, override this function.
+     */
+    function _startTokenId() internal view virtual returns (uint256) {
+        return 0;
     }
 
     /**
-     * @dev Gets the total amount of existing tokens stored by the contract.
-     * @return uint256 representing the total amount of tokens
+     * @dev Base URI for computing {tokenURI}. If set, the resulting URI for each
+     * token will be the concatenation of the `baseURI` and the `tokenId`. Empty
+     * by default, can be overriden in child contracts.
      */
-    function totalSupply() public view virtual returns (uint256) {
-        return _tokenSupply - _burnCounter;
+    function _baseURI() internal view virtual override returns (string memory) {
+        return _baseTokenURI;
     }
 
     /**
