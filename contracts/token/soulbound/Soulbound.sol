@@ -116,35 +116,20 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         return _operatorApprovals[owner][operator];
     }
 
-    /**
-     * @dev Mint function is only executable by the owner of the contract
-     */
-    function _mint(
+    function _update(
         address to,
-        uint256 tokenId
-    )
-        internal
-        virtual
-        override
-        onlyOwner
-        onlyTransferable(tokenId, address(0), to)
-    {
-        super._mint(to, tokenId);
-        _unlockedStatus(tokenId, false);
-    }
-
-    /**
-     * @dev Burn function is only executable on unlocked tokens by the owner of the contract or approved addresses, increases `_burnCounter` for proper functionality of totalSupply
-     */
-    function _burn(
-        uint256 tokenId
-    )
-        internal
-        virtual
-        override
-        onlyTransferable(tokenId, ownerOf(tokenId), address(0))
-    {
-        super._burn(tokenId);
+        uint256 tokenId,
+        address auth
+    ) internal virtual override onlyOwner returns (address) {
+        require(
+            isTransferable(tokenId, _ownerOf(tokenId), to),
+            "Token can't be transferred"
+        );
+        address from = super._update(to, tokenId, auth);
+        if (from == address(0)) {
+            _unlockedStatus(tokenId, false);
+        }
+        return from;
     }
 
     /**
