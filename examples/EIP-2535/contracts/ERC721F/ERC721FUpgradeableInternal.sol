@@ -73,42 +73,6 @@ contract ERC721FUpgradeableInternal is IERC721Upgradeable {
     }
 
     /**
-     * @dev Returns the owner of the `tokenId`. Does NOT revert if token doesn't exist
-     */
-    function _ownerOf(uint256 tokenId) internal view virtual returns (address) {
-        return ERC721FStorage.layout()._owners[tokenId];
-    }
-
-    /**
-     * @dev Returns whether `tokenId` exists.
-     *
-     * Tokens can be managed by their owner or approved accounts via {approve} or {setApprovalForAll}.
-     *
-     * Tokens start existing when they are minted (`_mint`),
-     * and stop existing when they are burned (`_burn`).
-     */
-    function _exists(uint256 tokenId) internal view virtual returns (bool) {
-        return _ownerOf(tokenId) != address(0);
-    }
-
-    /**
-     * @dev Returns whether `spender` is allowed to manage `tokenId`.
-     *
-     * Requirements:
-     *
-     * - `tokenId` must exist.
-     */
-    function _isApprovedOrOwner(
-        address spender,
-        uint256 tokenId
-    ) internal view virtual returns (bool) {
-        address owner = _ownerOf(tokenId);
-        return (spender == owner ||
-            _isApprovedForAll(owner, spender) ||
-            _getApproved(tokenId) == spender);
-    }
-
-    /**
      * @dev Safely mints `tokenId` and transfers it to `to`.
      *
      * Requirements:
@@ -277,21 +241,6 @@ contract ERC721FUpgradeableInternal is IERC721Upgradeable {
         emit Approval(_ownerOf(tokenId), to, tokenId);
     }
 
-    function _isApprovedForAll(
-        address owner,
-        address operator
-    ) internal view returns (bool) {
-        return ERC721FStorage.layout()._operatorApprovals[owner][operator];
-    }
-
-    function _getApproved(
-        uint256 tokenId
-    ) internal view virtual returns (address) {
-        _requireMinted(tokenId);
-
-        return ERC721FStorage.layout()._tokenApprovals[tokenId];
-    }
-
     /**
      * @dev Approve `operator` to operate on all of `owner` tokens
      *
@@ -305,13 +254,6 @@ contract ERC721FUpgradeableInternal is IERC721Upgradeable {
         require(owner != operator, "ERC721: approve to caller");
         ERC721FStorage.layout()._operatorApprovals[owner][operator] = approved;
         emit ApprovalForAll(owner, operator, approved);
-    }
-
-    /**
-     * @dev Reverts if the `tokenId` has not been minted yet.
-     */
-    function _requireMinted(uint256 tokenId) internal view virtual {
-        require(_exists(tokenId), "ERC721: invalid token ID");
     }
 
     /**
@@ -414,6 +356,64 @@ contract ERC721FUpgradeableInternal is IERC721Upgradeable {
         uint256 amount
     ) internal {
         ERC721FStorage.layout()._balances[account] += amount;
+    }
+
+    /**
+     * @dev Returns the owner of the `tokenId`. Does NOT revert if token doesn't exist
+     */
+    function _ownerOf(uint256 tokenId) internal view virtual returns (address) {
+        return ERC721FStorage.layout()._owners[tokenId];
+    }
+
+    /**
+     * @dev Returns whether `tokenId` exists.
+     *
+     * Tokens can be managed by their owner or approved accounts via {approve} or {setApprovalForAll}.
+     *
+     * Tokens start existing when they are minted (`_mint`),
+     * and stop existing when they are burned (`_burn`).
+     */
+    function _exists(uint256 tokenId) internal view virtual returns (bool) {
+        return _ownerOf(tokenId) != address(0);
+    }
+
+    /**
+     * @dev Returns whether `spender` is allowed to manage `tokenId`.
+     *
+     * Requirements:
+     *
+     * - `tokenId` must exist.
+     */
+    function _isApprovedOrOwner(
+        address spender,
+        uint256 tokenId
+    ) internal view virtual returns (bool) {
+        address owner = _ownerOf(tokenId);
+        return (spender == owner ||
+            _isApprovedForAll(owner, spender) ||
+            _getApproved(tokenId) == spender);
+    }
+
+    function _isApprovedForAll(
+        address owner,
+        address operator
+    ) internal view returns (bool) {
+        return ERC721FStorage.layout()._operatorApprovals[owner][operator];
+    }
+
+    function _getApproved(
+        uint256 tokenId
+    ) internal view virtual returns (address) {
+        _requireMinted(tokenId);
+
+        return ERC721FStorage.layout()._tokenApprovals[tokenId];
+    }
+
+    /**
+     * @dev Reverts if the `tokenId` has not been minted yet.
+     */
+    function _requireMinted(uint256 tokenId) internal view virtual {
+        require(_exists(tokenId), "ERC721: invalid token ID");
     }
 
     function _msgSender() internal view virtual returns (address) {

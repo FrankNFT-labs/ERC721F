@@ -6,29 +6,15 @@ import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 
 abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
     /**
-     * @dev See {IERC721Enumerable-totalSupply}
-     * Returns total amount of tokens stored in the contract
-     */
-    function totalSupply()
-        public
-        view
-        override(ERC721F, IERC721Enumerable)
-        returns (uint256)
-    {
-        return ERC721F.totalSupply();
-    }
-
-    /**
      * @dev See {IERC721Enumerable-tokenOfOwnerByIndex}
      * Returns token ID owned by `owner` at a given `index` of its token list
      * This read function is O(totalSupply). If calling from a seperate contract, be sure to test gas first
      * It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case
      */
-    function tokenOfOwnerByIndex(address owner, uint256 index)
-        external
-        view
-        returns (uint256)
-    {
+    function tokenOfOwnerByIndex(
+        address owner,
+        uint256 index
+    ) external view returns (uint256) {
         require(
             index < balanceOf(owner),
             "Index out of bounds for owned tokens"
@@ -52,7 +38,7 @@ abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
         }
 
         // Execution should never reach this point.
-        revert();
+        revert("");
     }
 
     /**
@@ -74,11 +60,24 @@ abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
         unchecked {
             for (uint256 i; i < totalMinted; i++) {
                 if (currentTokenIndex == index) {
-                        return i;
-                    }
+                    return i;
+                }
                 currentTokenIndex++;
             }
         }
-        revert();
+        revert("");
+    }
+
+    /**
+     * @dev See {IERC721Enumerable-totalSupply}
+     * Returns total amount of tokens stored in the contract
+     */
+    function totalSupply()
+        public
+        view
+        override(ERC721F, IERC721Enumerable)
+        returns (uint256)
+    {
+        return ERC721F.totalSupply();
     }
 }

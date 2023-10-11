@@ -16,7 +16,7 @@ import "@openzeppelin/contracts/utils/Base64.sol";
  */
 contract OnChainOptimized is IERC4883, ERC721F {
     uint256 public constant MAX_TOKENS = 10;
-    uint public constant MAX_PURCHASE = 10;
+    uint256 public constant MAX_PURCHASE = 10;
     uint256 public lastSelected = 0; //t: total input records dealt with
     bool public saleIsActive;
     //
@@ -29,6 +29,36 @@ contract OnChainOptimized is IERC4883, ERC721F {
      */
     function flipSaleState() external onlyOwner {
         saleIsActive = !saleIsActive;
+    }
+
+    /**
+     * @notice Mints `numberOfTokens` tokens for `sender`
+     */
+    function mint(uint256 numberOfTokens) external {
+        require(msg.sender == tx.origin, "No Contracts allowed.");
+        require(saleIsActive, "Sale NOT active yet");
+        require(numberOfTokens != 0, "numberOfNfts cannot be 0");
+        require(
+            numberOfTokens < MAX_PURCHASE,
+            "Can only mint 9 tokens at a time"
+        );
+        uint256 supply = totalSupply(); //m: number of items selected so far
+        require(
+            supply + numberOfTokens <= MAX_TOKENS,
+            "Purchase would exceed max supply of Tokens"
+        );
+        unchecked {
+            while (numberOfTokens != 0) {
+                uint256 tokenId = supply + 1;
+                uint256 algorithmId = lastSelected +
+                    createRandomNumber(tokenId);
+                _mint(msg.sender, tokenId);
+                idToAlgorithmId[tokenId] = algorithmId;
+                lastSelected = algorithmId;
+                supply++;
+                numberOfTokens--;
+            }
+        }
     }
 
     /**
@@ -63,36 +93,6 @@ contract OnChainOptimized is IERC4883, ERC721F {
     }
 
     /**
-     * @notice Mints `numberOfTokens` tokens for `sender`
-     */
-    function mint(uint256 numberOfTokens) external {
-        require(msg.sender == tx.origin, "No Contracts allowed.");
-        require(saleIsActive, "Sale NOT active yet");
-        require(numberOfTokens != 0, "numberOfNfts cannot be 0");
-        require(
-            numberOfTokens < MAX_PURCHASE,
-            "Can only mint 9 tokens at a time"
-        );
-        uint256 supply = totalSupply(); //m: number of items selected so far
-        require(
-            supply + numberOfTokens <= MAX_TOKENS,
-            "Purchase would exceed max supply of Tokens"
-        );
-        unchecked {
-            while (numberOfTokens != 0) {
-                uint256 tokenId = supply + 1;
-                uint256 algorithmId = lastSelected +
-                    createRandomNumber(tokenId);
-                _mint(msg.sender, tokenId);
-                idToAlgorithmId[tokenId] = algorithmId;
-                lastSelected = algorithmId;
-                supply++;
-                numberOfTokens--;
-            }
-        }
-    }
-
-    /**
      * Creates a random number between 1 and the number of combonations
      * number of combinations = 4 purses * 4 glasses * 2 bracelets = 32
      * prevrandao is used to calculate random number: check which version
@@ -112,6 +112,80 @@ contract OnChainOptimized is IERC4883, ERC721F {
             ) % 32;
             return random;
         }
+    }
+
+    /**
+     * @notice Overridden function which creates custom SVG image
+     * @dev `id` changes the displayed name in `parts[3]`, every 100th you get mew
+     */
+    function renderTokenById(
+        uint256 tokenId
+    ) public view override returns (string memory) {
+        require(_exists(tokenId), "Non-Existing token");
+        //header1, header2, body, rest, footer
+        string[5] memory frame = [
+            '<svg width="1080" height="1080"',
+            '" stroke="#000" xmlns="http://www.w3.org/2000/svg">',
+            '<ellipse stroke-width="10" ry="266" rx="200" cy="540" cx="540" fill="#fff"/>',
+            '<ellipse transform="rotate(25 660 250)" ry="107" rx="45" cy="250" cx="660" stroke-width="10" fill="#fff"/><ellipse transform="rotate(-25 420 250)" ry="107" rx="45" cy="250" cx="420" stroke-width="10" fill="#fff"/><ellipse transform="rotate(-25 435 283)" ry="68" rx="26" cy="283" cx="435" stroke-width="10" fill="#FFAFCC"/><ellipse transform="rotate(25 645 283)" ry="68" rx="26" cy="283" cx="645" stroke-width="10" fill="#FFAFCC"/><circle cy="427" cx="470" stroke-width="10" r="30"/><circle cy="427" cx="610" stroke-width="10" r="30"/><circle cy="418" cx="465" r="12" fill="#fff" stroke="none"/><circle cy="440" cx="484" r="6" fill="#fff" stroke="none"/><circle cy="418" cx="615" r="12" fill="#fff" stroke="none"/><circle cy="440" cx="600" r="8" fill="#fff" stroke="none"/><circle cy="520" cx="540" stroke-width="4" fill="#FFAFCC" r="14"/><ellipse ry="120" rx="100" cy="685" cx="540" stroke-width="4" fill="#FFE2FF"/><ellipse ry="106" rx="80" cy="697" cx="540" fill="#FFAFCC" stroke="none"/><ellipse transform="rotate(-17 610 804)" ry="43" rx="30" cy="804" cx="610" stroke-width="10" fill="#fff"/><ellipse transform="rotate(17 470 804)" ry="43" rx="30" cy="804" cx="470" stroke-width="10" fill="#fff"/><ellipse transform="rotate(30 750 518)" ry="48" rx="31" cy="518" cx="750" stroke-width="10" fill="#fff"/><ellipse transform="rotate(-30 330 518)" ry="48" rx="31" cy="518" cx="330" stroke-width="10" fill="#fff"/>',
+            "</svg>"
+        ];
+
+        uint256 algorithmId = idToAlgorithmId[tokenId];
+        string memory output = string(
+            abi.encodePacked(
+                frame[0],
+                getBackground(getBackgroundId(algorithmId)),
+                frame[1],
+                frame[2],
+                getGlasses(getGlassesId(algorithmId))
+            )
+        );
+        output = string(
+            abi.encodePacked(
+                output,
+                frame[3],
+                getBracelet(getBraceletId(algorithmId)),
+                getPurse(getPurseId(algorithmId)),
+                frame[4]
+            )
+        );
+        return string(output);
+    }
+
+    /**
+     * @notice Overridden function to show how to disable traits being included in the URI
+     * Optional: with mapping int to text
+     * Lot of extra work because recreate bunnie
+     * Does not print out integer
+     */
+    function getTraits(uint256 tokenId) public view returns (string memory) {
+        require(_exists(tokenId), "Non-Existing token");
+        string memory tr1 = '[{"trait_type": "Background","value": "';
+        string memory tr2 = '"},{"trait_type": "Bracelet","value": "';
+        string memory tr3 = '"},{"trait_type": "Glasses","value": "';
+        string memory tr4 = '"},{"trait_type": "Purse","value": "';
+        string memory tr5 = '"}]';
+        uint256 algorithmId = idToAlgorithmId[tokenId];
+        string memory o = string(
+            abi.encodePacked(
+                tr1,
+                Strings.toString(getBackgroundId(algorithmId)),
+                tr2,
+                Strings.toString(getBraceletId(algorithmId)),
+                tr3,
+                Strings.toString(getGlassesId(algorithmId))
+            )
+        );
+        return
+            string(
+                abi.encodePacked(
+                    o,
+                    tr4,
+                    Strings.toString(getPurseId(algorithmId)),
+                    tr5
+                )
+            );
     }
 
     /**
@@ -264,80 +338,6 @@ contract OnChainOptimized is IERC4883, ERC721F {
         return
             string(
                 abi.encodePacked(' style=" background-color:#', colors[id % 6])
-            );
-    }
-
-    /**
-     * @notice Overridden function which creates custom SVG image
-     * @dev `id` changes the displayed name in `parts[3]`, every 100th you get mew
-     */
-    function renderTokenById(
-        uint256 tokenId
-    ) public view override returns (string memory) {
-        require(_exists(tokenId), "Non-Existing token");
-        //header1, header2, body, rest, footer
-        string[5] memory frame = [
-            '<svg width="1080" height="1080"',
-            '" stroke="#000" xmlns="http://www.w3.org/2000/svg">',
-            '<ellipse stroke-width="10" ry="266" rx="200" cy="540" cx="540" fill="#fff"/>',
-            '<ellipse transform="rotate(25 660 250)" ry="107" rx="45" cy="250" cx="660" stroke-width="10" fill="#fff"/><ellipse transform="rotate(-25 420 250)" ry="107" rx="45" cy="250" cx="420" stroke-width="10" fill="#fff"/><ellipse transform="rotate(-25 435 283)" ry="68" rx="26" cy="283" cx="435" stroke-width="10" fill="#FFAFCC"/><ellipse transform="rotate(25 645 283)" ry="68" rx="26" cy="283" cx="645" stroke-width="10" fill="#FFAFCC"/><circle cy="427" cx="470" stroke-width="10" r="30"/><circle cy="427" cx="610" stroke-width="10" r="30"/><circle cy="418" cx="465" r="12" fill="#fff" stroke="none"/><circle cy="440" cx="484" r="6" fill="#fff" stroke="none"/><circle cy="418" cx="615" r="12" fill="#fff" stroke="none"/><circle cy="440" cx="600" r="8" fill="#fff" stroke="none"/><circle cy="520" cx="540" stroke-width="4" fill="#FFAFCC" r="14"/><ellipse ry="120" rx="100" cy="685" cx="540" stroke-width="4" fill="#FFE2FF"/><ellipse ry="106" rx="80" cy="697" cx="540" fill="#FFAFCC" stroke="none"/><ellipse transform="rotate(-17 610 804)" ry="43" rx="30" cy="804" cx="610" stroke-width="10" fill="#fff"/><ellipse transform="rotate(17 470 804)" ry="43" rx="30" cy="804" cx="470" stroke-width="10" fill="#fff"/><ellipse transform="rotate(30 750 518)" ry="48" rx="31" cy="518" cx="750" stroke-width="10" fill="#fff"/><ellipse transform="rotate(-30 330 518)" ry="48" rx="31" cy="518" cx="330" stroke-width="10" fill="#fff"/>',
-            "</svg>"
-        ];
-
-        uint256 algorithmId = idToAlgorithmId[tokenId];
-        string memory output = string(
-            abi.encodePacked(
-                frame[0],
-                getBackground(getBackgroundId(algorithmId)),
-                frame[1],
-                frame[2],
-                getGlasses(getGlassesId(algorithmId))
-            )
-        );
-        output = string(
-            abi.encodePacked(
-                output,
-                frame[3],
-                getBracelet(getBraceletId(algorithmId)),
-                getPurse(getPurseId(algorithmId)),
-                frame[4]
-            )
-        );
-        return string(output);
-    }
-
-    /**
-     * @notice Overridden function to show how to disable traits being included in the URI
-     * Optional: with mapping int to text
-     * Lot of extra work because recreate bunnie
-     * Does not print out integer
-     */
-    function getTraits(uint256 tokenId) public view returns (string memory) {
-        require(_exists(tokenId), "Non-Existing token");
-        string memory tr1 = '[{"trait_type": "Background","value": "';
-        string memory tr2 = '"},{"trait_type": "Bracelet","value": "';
-        string memory tr3 = '"},{"trait_type": "Glasses","value": "';
-        string memory tr4 = '"},{"trait_type": "Purse","value": "';
-        string memory tr5 = '"}]';
-        uint256 algorithmId = idToAlgorithmId[tokenId];
-        string memory o = string(
-            abi.encodePacked(
-                tr1,
-                Strings.toString(getBackgroundId(algorithmId)),
-                tr2,
-                Strings.toString(getBraceletId(algorithmId)),
-                tr3,
-                Strings.toString(getGlassesId(algorithmId))
-            )
-        );
-        return
-            string(
-                abi.encodePacked(
-                    o,
-                    tr4,
-                    Strings.toString(getPurseId(algorithmId)),
-                    tr5
-                )
             );
     }
 }

@@ -24,6 +24,7 @@ import {ERC165} from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
  * @custom:coauthor john (gnosis safe)
  * @custom:coauthor 0xrusowsky
  */
+/* solhint-disable ordering */
 contract DelegationRegistry is IDelegationRegistry, ERC165 {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.Bytes32Set;

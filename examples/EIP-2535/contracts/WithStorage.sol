@@ -4,8 +4,10 @@ pragma solidity ^0.8.20 <0.9.0;
 import {LibDiamond} from "hardhat-deploy/solc_0.8/diamond/libraries/LibDiamond.sol";
 
 struct FreeMintStorage {
+    // solhint-disable-next-line var-name-mixedcase
     uint256 MAX_TOKENS;
-    uint MAX_PURCHASE;
+    // solhint-disable-next-line var-name-mixedcase
+    uint256 MAX_PURCHASE;
     bool isInitialized;
     bool saleIsActive;
 }

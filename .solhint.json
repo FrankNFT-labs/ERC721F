@@ -1,0 +1,31 @@
+{
+  "rules": {
+    "explicit-types": "error",
+    "max-states-count": ["warn", 15],
+    "no-console": "error",
+    "no-unused-import": "error",
+    "no-unused-vars": "error",
+    "reason-string": ["error", { "maxLength": 64 }],
+    "const-name-snakecase": "warn",
+    "contract-name-camelcase": "warn",
+    "event-name-camelcase": "warn",
+    "func-name-mixedcase": "warn",
+    "func-param-name-mixedcase": "warn",
+    "immutable-vars-naming": ["warn", { "immutablesAsConstants": true }],
+    "modifier-name-mixedcase": "warn",
+    "var-name-mixedcase": "warn",
+    "ordering": "error",
+    "imports-on-top": "error",
+    "visibility-modifier-order": "error",
+    "avoid-call-value": "error",
+    "avoid-low-level-calls": "error",
+    "avoid-sha3": "error",
+    "avoid-suicide": "error",
+    "avoid-throw": "error",
+    "func-visibility": ["error", { "ignoreConstructors": true }],
+    "no-complex-fallback": "warn",
+    "not-rely-on-block-hash": "error",
+    "reentrancy": "warn",
+    "state-visibility": "error"
+  }
+}

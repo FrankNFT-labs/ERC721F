@@ -9,10 +9,10 @@ import "@franknft.eth/erc721-f/contracts/token/ERC721/extensions/ERC721FOnChain.
  * @dev Example implementation of [ERC721FOnChain] with overridden functions for custom SVG and URI creation
  */
 contract OnChain is ERC721FOnChain {
-    string constant svgHead =
+    string private constant SVG_HEAD =
         '<svg viewBox="0 0 350 350" xmlns="http://www.w3.org/2000/svg"><style>.centered-text{text-anchor:middle;dominant-baseline:middle}</style><defs><linearGradient id="rainbow" x1="0" x2="0" y1="0" y2="100%" gradientUnits="userSpaceOnUse"><stop stop-color="#FF5B99" offset="0%"/><stop stop-color="#FF5447" offset="20%"/><stop stop-color="#FF7B21" offset="40%"/><stop stop-color="#EAFC37" offset="60%"/><stop stop-color="#4FCB6B" offset="80%"/><stop stop-color="#51F7FE" offset="100%"/></linearGradient></defs><rect width="100%" height="100%" rx="35"/><text fill="url(#rainbow)" class="centered-text"><tspan font-size="30" x="50%" y="30%">';
-    string constant svgFooter = "</text></svg>";
-    string[10] pokemon = [
+    string private constant SVG_FOOTER = "</text></svg>";
+    string[10] private pokemon = [
         "Bulbasaur",
         "Ivysaur",
         "Venusaur",
@@ -26,7 +26,7 @@ contract OnChain is ERC721FOnChain {
     ];
 
     uint256 public constant MAX_TOKENS = 10000;
-    uint public constant MAX_PURCHASE = 31;
+    uint256 public constant MAX_PURCHASE = 31;
     bool public saleIsActive;
 
     constructor() ERC721FOnChain("OnChain", "OC", msg.sender, "Example OnChain Contract") {}
@@ -85,7 +85,7 @@ contract OnChain is ERC721FOnChain {
     ) public view override returns (string memory) {
         require(_exists(id), "Non-Existing token");
         string[9] memory parts;
-        parts[0] = svgHead;
+        parts[0] = SVG_HEAD;
         parts[1] = name();
         parts[2] = '</tspan><tspan font-size="65" x="50%" dy="20%">';
         parts[3] = id % 100 == 0 && id != 0
@@ -97,7 +97,7 @@ contract OnChain is ERC721FOnChain {
             6
         ] = '</tspan></text><path fill="transparent" stroke="gold" stroke-width="2" d="M338.971 322.5 300 345l-38.971-22.5v-45L300 255l38.971 22.5z"/><text font-size="15" fill="#fff" font-weight="bold" font-family="Cursive" x="300" y="300" class="centered-text">';
         parts[7] = Strings.toString(id);
-        parts[8] = svgFooter;
+        parts[8] = SVG_FOOTER;
 
         return
             string(

@@ -12,28 +12,29 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
  * based on https://docs.chain.link/docs/vrf/v2/examples/get-a-random-number/
  */
 contract ChainLink is ERC721F, VRFConsumerBaseV2 {
-    VRFCoordinatorV2Interface COORDINATOR;
+    // solhint-disable-next-line var-name-mixedcase
+    VRFCoordinatorV2Interface private COORDINATOR;
 
     // Your subscription ID.
-    uint64 subscriptionId;
+    uint64 private subscriptionId;
 
     // Respective values of goerli test network, find other networks keyHash/vrfCoordinator at https://docs.chain.link/docs/vrf/v2/subscription/supported-networks/#configurations
     // vrfCoordinator is not utilised within contract due to hardhat testing utilising different address, when deploying in for example remix copy address
-    address vrfCoordinator = 0x2Ca8E0C643bDe4C2E08ab1fA0da3401AdAD7734D;
-    bytes32 keyHash =
+    address private vrfCoordinator = 0x2Ca8E0C643bDe4C2E08ab1fA0da3401AdAD7734D;
+    bytes32 private keyHash =
         0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15;
 
-    uint32 constant callbackGasLimit = 100000;
+    uint32 private constant CALLBACK_GAS_LIMIT = 100000;
 
     // The default is 3, but you can set this higher.
-    uint16 constant requestConfirmations = 3;
+    uint16 private constant REQUEST_CONFIRMATIONS = 3;
 
     // Single number is required for setting the startingIndex
-    uint32 constant numWords = 1;
+    uint32 private constant NUM_WORDS = 1;
 
     uint256 public constant MAX_TOKENS = 10000;
-    uint public constant MAX_PURCHASE = 31;
-    uint256 startingIndex;
+    uint256 public constant MAX_PURCHASE = 31;
+    uint256 private startingIndex;
     bool public saleIsActive;
 
     // Event utilised in hardhat testing to retrieve requestId from ChainLink request
@@ -74,9 +75,9 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
         uint256 requestId = COORDINATOR.requestRandomWords(
             keyHash,
             subscriptionId,
-            requestConfirmations,
-            callbackGasLimit,
-            numWords
+            REQUEST_CONFIRMATIONS,
+            CALLBACK_GAS_LIMIT,
+            NUM_WORDS
         );
 
         emit REQUESTEDRANDOMNESS(requestId);
@@ -110,17 +111,6 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
     }
 
     /**
-     * @notice Assigns first index of `randomWords` to `startingIndex`, altered to be between 1 and `MAX_TOKENS`
-     * @dev Function which receives response of setRandomIndex
-     */
-    function fulfillRandomWords(
-        uint256,
-        uint256[] memory randomWords
-    ) internal override {
-        startingIndex = (randomWords[0] % MAX_TOKENS) + 1;
-    }
-
-    /**
      * @notice Returns all tokenIds owned by `_owner`
      * @dev Override of walletOfOwner located in ERC721F, using startingIndex as startpoint of counting instead of _startTokenId
      * @return Array of all tokenIds owned by `_owner` starting from startingIndex
@@ -149,5 +139,16 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
             }
         }
         return ownedTokenIds;
+    }
+
+    /**
+     * @notice Assigns first index of `randomWords` to `startingIndex`, altered to be between 1 and `MAX_TOKENS`
+     * @dev Function which receives response of setRandomIndex
+     */
+    function fulfillRandomWords(
+        uint256,
+        uint256[] memory randomWords
+    ) internal override {
+        startingIndex = (randomWords[0] % MAX_TOKENS) + 1;
     }
 }
