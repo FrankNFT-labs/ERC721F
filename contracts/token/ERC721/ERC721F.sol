@@ -94,25 +94,6 @@ contract ERC721F is Ownable, ERC721 {
     }
 
     /**
-     * @dev Mints `amount` tokens starting from `startIndex` and transfers them to `to`
-     * @dev Requires that `amount` is larger than zero
-     */
-    function _batchMint(
-        address to,
-        uint256 startIndex,
-        uint256 amount
-    ) internal virtual {
-        require(amount > 0, "Must mint at least 1 token");
-        unchecked {
-            for (uint256 i; i < amount; ) {
-                super._mint(to, startIndex + i);
-                i++;
-            }
-            _tokenSupply += amount;
-        }
-    }
-
-    /**
      * @dev See {ERC721-_burn}
      * Increases value of _burnCounter
      */
