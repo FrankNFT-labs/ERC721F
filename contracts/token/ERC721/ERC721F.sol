@@ -19,9 +19,10 @@ contract ERC721F is Ownable, ERC721 {
     // Base URI for Meta data
     string private _baseTokenURI;
 
-    constructor(string memory name_, string memory symbol_)
-        ERC721(name_, symbol_)
-    {}
+    constructor(
+        string memory name_,
+        string memory symbol_
+    ) ERC721(name_, symbol_) {}
 
     /**
      * @dev walletofOwner
@@ -29,12 +30,9 @@ contract ERC721F is Ownable, ERC721 {
      * This read function is O(totalSupply). If calling from a separate contract, be sure to test gas first.
      * It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case.
      */
-    function walletOfOwner(address _owner)
-        external
-        view
-        virtual
-        returns (uint256[] memory)
-    {
+    function walletOfOwner(
+        address _owner
+    ) external view virtual returns (uint256[] memory) {
         uint256 ownerTokenCount = balanceOf(_owner);
         uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
         uint256 currentTokenId = _startTokenId();
@@ -144,5 +142,17 @@ contract ERC721F is Ownable, ERC721 {
      */
     function _totalBurned() internal view virtual returns (uint256) {
         return _burnCounter;
+    }
+
+    /**
+     * @dev Returns whether `tokenId` exists.
+     *
+     * Tokens can be managed by their owner or approved accounts via {approve} or {setApprovalForAll}.
+     *
+     * Tokens start existing when they are minted (`_mint`),
+     * and stop existing when they are burned (`_burn`).
+     */
+    function _exists(uint256 tokenId) internal view virtual returns (bool) {
+        return _ownerOf(tokenId) != address(0);
     }
 }
