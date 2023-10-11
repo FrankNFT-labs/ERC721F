@@ -18,15 +18,6 @@ contract MerkleRoot is ERC721F, Payable {
     bool public saleIsActive;
     bytes32 public root;
 
-    constructor(
-        bytes32 _root
-    ) ERC721F("MerkleRoot Pre-Sale", "Merkle", msg.sender) {
-        root = _root;
-        setBaseTokenURI(
-            "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
-        );
-    }
-
     modifier validMintRequest(uint256 numberOfTokens) {
         require(numberOfTokens > 0, "numberOfNfts cannot be 0");
         require(
@@ -38,6 +29,15 @@ contract MerkleRoot is ERC721F, Payable {
             "Ether value sent is not correct"
         );
         _;
+    }
+
+    constructor(
+        bytes32 _root
+    ) ERC721F("MerkleRoot Pre-Sale", "Merkle", msg.sender) {
+        root = _root;
+        setBaseTokenURI(
+            "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
+        );
     }
 
     /**
@@ -116,16 +116,16 @@ contract MerkleRoot is ERC721F, Payable {
         }
     }
 
+    function withdraw() external onlyOwner {
+        uint256 balance = address(this).balance;
+        require(balance > 0, "Insufficient balance");
+        _withdraw(owner(), balance);
+    }
+
     function checkValidity(
         bytes32[] calldata merkleProof
     ) internal view returns (bool) {
         bytes32 leafToCheck = keccak256(abi.encodePacked(msg.sender));
         return MerkleProof.verify(merkleProof, root, leafToCheck);
-    }
-
-    function withdraw() external onlyOwner {
-        uint256 balance = address(this).balance;
-        require(balance > 0, "Insufficient balance");
-        _withdraw(owner(), balance);
     }
 }
