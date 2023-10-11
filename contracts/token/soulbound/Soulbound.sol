@@ -13,8 +13,9 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
 
     constructor(
         string memory name_,
-        string memory symbol_
-    ) ERC721F(name_, symbol_) {}
+        string memory symbol_,
+        address initialOwner
+    ) ERC721F(name_, symbol_, initialOwner) {}
 
     /**
      * @dev Only a `spender` that is the owner of the contract or approved for `tokenId`/owner of `tokenId` passes
