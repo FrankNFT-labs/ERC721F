@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -19,9 +19,11 @@ contract ERC721F is Ownable, ERC721 {
     // Base URI for Meta data
     string private _baseTokenURI;
 
-    constructor(string memory name_, string memory symbol_)
-        ERC721(name_, symbol_)
-    {}
+    constructor(
+        string memory name_,
+        string memory symbol_,
+        address initialOwner
+    ) ERC721(name_, symbol_) Ownable(initialOwner) {}
 
     /**
      * @dev walletofOwner
@@ -29,12 +31,9 @@ contract ERC721F is Ownable, ERC721 {
      * This read function is O(totalSupply). If calling from a separate contract, be sure to test gas first.
      * It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case.
      */
-    function walletOfOwner(address _owner)
-        external
-        view
-        virtual
-        returns (uint256[] memory)
-    {
+    function walletOfOwner(
+        address _owner
+    ) external view virtual returns (uint256[] memory) {
         uint256 ownerTokenCount = balanceOf(_owner);
         uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
         uint256 currentTokenId = _startTokenId();
@@ -83,45 +82,21 @@ contract ERC721F is Ownable, ERC721 {
     }
 
     /**
-     *
-     * @dev Mints `tokenId` and transfers it to `to`.
-     *
+     * @dev Minting: Increases _tokenSupply
+     * @dev Burning:  Increases _burnCounter
      */
-    function _mint(address to, uint256 tokenId) internal virtual override {
-        super._mint(to, tokenId);
-        unchecked {
-            _tokenSupply++;
-        }
-    }
-
-    /**
-     * @dev Mints `amount` tokens starting from `startIndex` and transfers them to `to`
-     * @dev Requires that `amount` is larger than zero
-     */
-    function _batchMint(
+    function _update(
         address to,
-        uint256 startIndex,
-        uint256 amount
-    ) internal virtual {
-        require(amount > 0, "Must mint at least 1 token");
-        unchecked {
-            for (uint256 i; i < amount; ) {
-                super._mint(to, startIndex + i);
-                i++;
-            }
-            _tokenSupply += amount;
-        }
-    }
-
-    /**
-     * @dev See {ERC721-_burn}
-     * Increases value of _burnCounter
-     */
-    function _burn(uint256 tokenId) internal virtual override {
-        super._burn(tokenId);
-        unchecked {
+        uint256 tokenId,
+        address auth
+    ) internal virtual override returns (address) {
+        address from = super._update(to, tokenId, auth);
+        if (from == address(0)) {
+            _tokenSupply++;
+        } else if (to == address(0)) {
             _burnCounter++;
         }
+        return from;
     }
 
     /**
@@ -144,5 +119,17 @@ contract ERC721F is Ownable, ERC721 {
      */
     function _totalBurned() internal view virtual returns (uint256) {
         return _burnCounter;
+    }
+
+    /**
+     * @dev Returns whether `tokenId` exists.
+     *
+     * Tokens can be managed by their owner or approved accounts via {approve} or {setApprovalForAll}.
+     *
+     * Tokens start existing when they are minted (`_mint`),
+     * and stop existing when they are burned (`_burn`).
+     */
+    function _exists(uint256 tokenId) internal view virtual returns (bool) {
+        return _ownerOf(tokenId) != address(0);
     }
 }

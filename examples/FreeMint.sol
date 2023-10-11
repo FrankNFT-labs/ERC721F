@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721F.sol";
 import "@openzeppelin/contracts/token/common/ERC2981.sol";
@@ -18,7 +18,7 @@ contract FreeMint is ERC721F, ERC2981 {
 
     event ROYALTIESUPDATED(uint256 royalties);
 
-    constructor() ERC721F("FreeMint", "Free") {
+    constructor() ERC721F("FreeMint", "Free", msg.sender) {
         setBaseTokenURI(
             "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
         );

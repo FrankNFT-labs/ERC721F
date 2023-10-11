@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "../../../../contracts/mocks/ERC721FGasReporterMock.sol";
 import "../../../../lib/forge-std/src/Test.sol";

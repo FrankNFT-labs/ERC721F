@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "@franknft.eth/erc721-f/contracts/interfaces/IERC4883.sol";
 import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721F.sol";
@@ -22,7 +22,7 @@ contract OnChainOptimized is IERC4883, ERC721F {
     //
     mapping(uint256 => uint256) private idToAlgorithmId;
 
-    constructor() ERC721F("BunniesSamplingOwnAlgorithm", "OC") {}
+    constructor() ERC721F("BunniesSamplingOwnAlgorithm", "OC", msg.sender) {}
 
     /**
      * Changes the state of saleIsActive from true to false and false to true
@@ -104,7 +104,7 @@ contract OnChainOptimized is IERC4883, ERC721F {
                 keccak256(
                     abi.encodePacked(
                         block.timestamp,
-                        block.difficulty,
+                        block.prevrandao,
                         tokenId,
                         msg.sender
                     )

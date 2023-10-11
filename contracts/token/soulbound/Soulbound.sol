@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "../ERC721/ERC721F.sol";
 import "../../interfaces/IERC5192.sol";
@@ -13,8 +13,9 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
 
     constructor(
         string memory name_,
-        string memory symbol_
-    ) ERC721F(name_, symbol_) {}
+        string memory symbol_,
+        address initialOwner
+    ) ERC721F(name_, symbol_, initialOwner) {}
 
     /**
      * @dev Only a `spender` that is the owner of the contract or approved for `tokenId`/owner of `tokenId` passes
@@ -68,7 +69,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         address to,
         uint256 tokenId
     ) public virtual override onlyOwner {
-        _approve(to, tokenId);
+        _approve(to, tokenId, address(0));
     }
 
     /**
@@ -117,34 +118,27 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
     }
 
     /**
-     * @dev Mint function is only executable by the owner of the contract
+     * @dev Minting: Can only be executed by owner contract, locks `tokenId`
+     * @dev Requires that the token can be transferred
      */
-    function _mint(
+    function _update(
         address to,
-        uint256 tokenId
-    )
-        internal
-        virtual
-        override
-        onlyOwner
-        onlyTransferable(tokenId, address(0), to)
-    {
-        super._mint(to, tokenId);
-        _unlockedStatus(tokenId, false);
-    }
-
-    /**
-     * @dev Burn function is only executable on unlocked tokens by the owner of the contract or approved addresses, increases `_burnCounter` for proper functionality of totalSupply
-     */
-    function _burn(
-        uint256 tokenId
-    )
-        internal
-        virtual
-        override
-        onlyTransferable(tokenId, ownerOf(tokenId), address(0))
-    {
-        super._burn(tokenId);
+        uint256 tokenId,
+        address auth
+    ) internal virtual override returns (address) {
+        address from = _ownerOf(tokenId);
+        if (from == address(0)) {
+            _checkOwner();
+        }
+        require(
+            isTransferable(tokenId, from, to),
+            "Token can't be transferred"
+        );
+        super._update(to, tokenId, auth);
+        if (from == address(0)) {
+            _unlockedStatus(tokenId, false);
+        }
+        return from;
     }
 
     /**
@@ -254,18 +248,6 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
     {
         _transfer(from, to, tokenId);
         _unlockedStatus(tokenId, false);
-    }
-
-    /**
-     * @dev See {IERC721-safeTransferFrom}.
-     * @dev Only executable on unlocked tokens by owner or approved addresses
-     */
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public virtual override {
-        safeTransferFrom(from, to, tokenId, "");
     }
 
     /**

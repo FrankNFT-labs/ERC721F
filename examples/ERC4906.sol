@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721F.sol";
-import "@franknft.eth/erc721-f/contracts/interfaces/IERC4906.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
+contract ERC4906 is ERC721F, ERC721URIStorage {
     uint256 public constant MAX_TOKENS = 10000;
     uint public constant MAX_PURCHASE = 31; // Theoretical limit 1100
     bool public saleIsActive;
 
-    constructor() ERC721F("Example Metadata Update Extension", "EMUE") {}
+    constructor() ERC721F("Example Metadata Update Extension", "EMUE", msg.sender) {}
 
     /**
      * @notice Indicates whether this contract supports an interface
@@ -23,10 +22,9 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
      */
     function supportsInterface(
         bytes4 _interfaceId
-    ) public view virtual override(IERC165, ERC721) returns (bool) {
+    ) public view virtual override(ERC721, ERC721URIStorage) returns (bool) {
         return
-            _interfaceId == bytes4(0x49064906) ||
-            super.supportsInterface(_interfaceId);
+            ERC721URIStorage.supportsInterface(_interfaceId);
     }
 
     /**
@@ -128,23 +126,9 @@ contract ERC4906 is ERC721F, IERC4906, ERC721URIStorage {
     }
 
     /**
-     *
-     * @dev Mints `tokenId` and transfers it to `to`.
-     *
+     * @dev See {ERC721F-_burn}
      */
-    function _mint(
-        address to,
-        uint256 tokenId
-    ) internal virtual override(ERC721, ERC721F) {
-        ERC721F._mint(to, tokenId);
-    }
-
-    /**
-     * @dev See {ERC721URIStorage-_burn}
-     */
-    function _burn(
-        uint256 tokenId
-    ) internal virtual override(ERC721URIStorage, ERC721F) {
-        ERC721URIStorage._burn(tokenId);
+    function _update(address to, uint256 tokenId, address auth) internal virtual override(ERC721, ERC721F) returns (address) {
+        return ERC721F._update(to, tokenId, auth);
     }
 }

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "@franknft.eth/erc721-f/contracts/token/ERC721/extensions/ERC721FOnChain.sol";
 
@@ -29,7 +29,7 @@ contract OnChain is ERC721FOnChain {
     uint public constant MAX_PURCHASE = 31;
     bool public saleIsActive;
 
-    constructor() ERC721FOnChain("OnChain", "OC", "Example OnChain Contract") {}
+    constructor() ERC721FOnChain("OnChain", "OC", msg.sender, "Example OnChain Contract") {}
 
     /**
      * Changes the state of saleIsActive from true to false and false to true

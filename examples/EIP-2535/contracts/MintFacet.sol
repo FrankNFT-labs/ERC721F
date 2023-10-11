@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import {ERC721FUpgradeableInternal} from "./ERC721F/ERC721FUpgradeableInternal.sol";
 import {FreeMintStorage, WithStorage} from "./WithStorage.sol";

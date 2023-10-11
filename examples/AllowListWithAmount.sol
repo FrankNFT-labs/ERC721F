@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721FCOMMON.sol";
 import "@franknft.eth/erc721-f/contracts/utils/AllowListWithAmount.sol";
@@ -15,7 +15,7 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
     bool public preSaleIsActive;
     bool public saleIsActive;
 
-    constructor() ERC721FCOMMON("AllowListWithAmount", "ALA") {
+    constructor() ERC721FCOMMON("AllowListWithAmount", "ALA", msg.sender) {
         setBaseTokenURI(
             "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
         );
