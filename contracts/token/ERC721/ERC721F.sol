@@ -82,7 +82,8 @@ contract ERC721F is Ownable, ERC721 {
     }
 
     /**
-     * @dev Increases _tokenSupply when minting and _burnCounter when burning
+     * @dev Minting: Increases _tokenSupply
+     * @dev Burning:  Increases _burnCounter
      */
     function _update(
         address to,
