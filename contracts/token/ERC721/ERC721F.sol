@@ -81,6 +81,9 @@ contract ERC721F is Ownable, ERC721 {
         _baseTokenURI = baseURI;
     }
 
+    /**
+     * @dev Increases _tokenSupply when minting and _burnCounter when burning
+     */
     function _update(
         address to,
         uint256 tokenId,
