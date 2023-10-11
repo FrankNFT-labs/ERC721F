@@ -104,7 +104,7 @@ contract OnChainOptimized is IERC4883, ERC721F {
                 keccak256(
                     abi.encodePacked(
                         block.timestamp,
-                        block.difficulty,
+                        block.prevrandao,
                         tokenId,
                         msg.sender
                     )
