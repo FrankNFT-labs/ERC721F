@@ -85,7 +85,7 @@ contract ERC721F is Ownable, ERC721 {
         address to,
         uint256 tokenId,
         address auth
-    ) internal virtual returns (address) {
+    ) internal virtual override returns (address) {
         address from = super._update(to, tokenId, auth);
         if (from == address(0)) {
             _tokenSupply++;
