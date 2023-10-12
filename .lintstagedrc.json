@@ -1,0 +1,7 @@
+{
+    "*.sol": [
+        "npx prettier --write --plugin=prettier-plugin-solidity",
+        "npx solhint",
+        "scripts/sh/filtered-compile.sh"
+    ]
+}
