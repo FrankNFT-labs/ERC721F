@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import {ERC721FStorage} from "./ERC721FStorage.sol";
 import {IERC721Upgradeable} from "./IERC721Upgradeable.sol";
@@ -272,7 +272,7 @@ contract ERC721FUpgradeableInternal is IERC721Upgradeable {
         uint256 tokenId,
         bytes memory data
     ) internal returns (bool) {
-        if (to.isContract()) {
+        if (to.code.length > 0) {
             try
                 IERC721ReceiverUpgradeable(to).onERC721Received(
                     _msgSender(),

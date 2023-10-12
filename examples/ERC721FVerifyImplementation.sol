@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721F.sol";
 import "@franknft.eth/erc721-f/contracts/utils/Verify.sol";
@@ -20,7 +20,10 @@ contract ERC721FVerifyImplementation is Verify, ERC721F {
         address _warmContract,
         address _delegateCashContract,
         address _freeMintContract
-    ) Verify(_warmContract, _delegateCashContract) ERC721F("test", "test") {
+    )
+        Verify(_warmContract, _delegateCashContract)
+        ERC721F("test", "test", msg.sender)
+    {
         FREEMINT_CONTRACT = _freeMintContract;
     }
 

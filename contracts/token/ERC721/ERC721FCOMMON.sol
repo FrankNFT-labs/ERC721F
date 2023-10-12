@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "./ERC721F.sol";
 import "../../utils/Payable.sol";
@@ -13,8 +13,9 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
 
     constructor(
         string memory name_,
-        string memory symbol_
-    ) ERC721F(name_, symbol_) {
+        string memory symbol_,
+        address initialOwner
+    ) ERC721F(name_, symbol_, initialOwner) {
         setRoyaltyReceiver(address(this));
     }
 

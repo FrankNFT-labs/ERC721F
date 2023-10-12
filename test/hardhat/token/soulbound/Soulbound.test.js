@@ -31,7 +31,10 @@ describe("Soulbound", function () {
       await expect(hardhatToken.approve(addr1.address, 0)).to.not.be.reverted;
       await expect(
         hardhatToken.connect(addr1).approve(addr1.address, 0)
-      ).to.be.revertedWith("Ownable: caller is not the owner");
+      ).to.be.revertedWithCustomError(
+        hardhatToken,
+        "OwnableUnauthorizedAccount"
+      );
     });
 
     it("Should set the address as the approved of the token", async function () {
@@ -77,7 +80,10 @@ describe("Soulbound", function () {
         .be.reverted;
       await expect(
         hardhatToken.connect(addr1).setApprovalForAll(addr1.address, true)
-      ).to.be.revertedWith("Ownable: caller is not the owner");
+      ).to.be.revertedWithCustomError(
+        hardhatToken,
+        "OwnableUnauthorizedAccount"
+      );
     });
 
     it("Should set the address as the approved of the owner address", async function () {
@@ -122,7 +128,10 @@ describe("Soulbound", function () {
         hardhatToken
           .connect(addr1)
           .setApprovalForAllOwner(addr1.address, addr1.address, true)
-      ).to.be.revertedWith("Ownable: caller is not the owner");
+      ).to.be.revertedWithCustomError(
+        hardhatToken,
+        "OwnableUnauthorizedAccount"
+      );
     });
 
     it("Should allow that the owner of the token can be the one being approved", async function () {
@@ -187,7 +196,10 @@ describe("Soulbound", function () {
       await expect(hardhatToken.allowBurn(true)).to.not.be.reverted;
       await expect(
         hardhatToken.connect(addr2).allowBurn(true)
-      ).to.be.revertedWith("Ownable: caller is not the owner");
+      ).to.be.revertedWithCustomError(
+        hardhatToken,
+        "OwnableUnauthorizedAccount"
+      );
     });
 
     it("Should change the allowal of a tokenholder when setting to true/false", async function () {
@@ -214,7 +226,10 @@ describe("Soulbound", function () {
       await expect(hardhatToken.mint(addr1.address)).to.not.be.reverted;
       await expect(
         hardhatToken.connect(addr1).mint(addr1.address)
-      ).to.be.revertedWith("Ownable: caller is not the owner");
+      ).to.be.revertedWithCustomError(
+        hardhatToken,
+        "OwnableUnauthorizedAccount"
+      );
     });
 
     it("Should increase the tokenbalance of the recipient", async function () {
@@ -268,7 +283,7 @@ describe("Soulbound", function () {
       await token.approve(addressToBeApproved.address, 0);
       await expect(
         token.connect(addressToBeApproved).unlockedStatus(0, true)
-      ).to.be.revertedWith("Ownable: caller is not the owner");
+      ).to.be.revertedWithCustomError(token, "OwnableUnauthorizedAccount");
 
       await token.approve(ethers.constants.AddressZero, 0);
       await token.setApprovalForAllOwner(
@@ -278,13 +293,13 @@ describe("Soulbound", function () {
       );
       await expect(
         token.connect(addressToBeApproved).unlockedStatus(0, true)
-      ).to.be.revertedWith("Ownable: caller is not the owner");
+      ).to.be.revertedWithCustomError(token, "OwnableUnauthorizedAccount");
     });
 
     it("Shouldn't be executable by other addresses", async function () {
       await expect(
         token.connect(otherAddress).unlockedStatus(0, true)
-      ).to.be.revertedWith("Ownable: caller is not the owner");
+      ).to.be.revertedWithCustomError(token, "OwnableUnauthorizedAccount");
     });
 
     it("Should revert when token has yet to be minted", async function () {
@@ -1092,8 +1107,9 @@ describe("Soulbound", function () {
       it("Should destroy the burned token", async function () {
         await token.burn(0);
 
-        await expect(token.tokenURI(0)).to.be.revertedWith(
-          "ERC721: invalid token ID"
+        await expect(token.tokenURI(0)).to.be.revertedWithCustomError(
+          token,
+          "ERC721NonexistentToken"
         );
       });
 

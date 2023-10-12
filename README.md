@@ -6,7 +6,7 @@
 The goal of ERC721F is to provide a simple extension of IERC721 with significant gas savings for minting multiple and single NFTs in a single transaction. This project and implementation will be updated regularly and will continue to stay up to date with best practices.
 Another key goal of ERC721F is to facilitate educational opportunities for new web3 developers, fostering a supportive learning environment and driving innovation within the community.
 
-ERC721F Extends ERC721 Non-Fungible Token Standard basic implementation. ERC721F eliminates the need for ERC721Enumerable, yet retains the functionality of totalSupply() and walletOfOwner(address _owner).
+ERC721F Extends ERC721 Non-Fungible Token Standard basic implementation. ERC721F eliminates the need for ERC721Enumerable, yet retains the functionality of totalSupply() and walletOfOwner(address \_owner).
 
 The Author is not liable for any outcomes as a result of using ERC721F. **DYOR!**
 
@@ -34,12 +34,12 @@ Just import the file from the package like this:
 
 ```solidity
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721FCOMMON.sol";
 
 contract Example is ERC721F {
-    constructor() ERC721F("Example", "Example") {
+    constructor() ERC721F("Example", "Example", msg.sender) {
         setBaseTokenURI("ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/");
     }
 
@@ -61,7 +61,7 @@ Or just import the file directly from Gitlab like this:
 
 ```solidity
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "https://github.com/FrankNFT-labs/ERC721F/blob/v.4.8.2/contracts/token/ERC721/ERC721FCOMMON.sol";
 ```

@@ -1,12 +1,12 @@
 {
   "rules": {
     "prettier/prettier": "error",
-    "explicit-types": "warn",
+    "explicit-types": "error",
     "max-states-count": ["warn", 15],
     "no-console": "error",
     "no-unused-import": "error",
     "no-unused-vars": "error",
-    "reason-string": ["warn", { "maxLength": 64 }],
+    "reason-string": ["error", { "maxLength": 64 }],
     "const-name-snakecase": "warn",
     "contract-name-camelcase": "warn",
     "event-name-camelcase": "warn",
@@ -15,9 +15,9 @@
     "immutable-vars-naming": ["warn", { "immutablesAsConstants": true }],
     "modifier-name-mixedcase": "warn",
     "var-name-mixedcase": "warn",
-    "ordering": "warn",
-    "imports-on-top": "warn",
-    "visibility-modifier-order": "warn",
+    "ordering": "error",
+    "imports-on-top": "error",
+    "visibility-modifier-order": "error",
     "avoid-call-value": "error",
     "avoid-low-level-calls": "error",
     "avoid-sha3": "error",
@@ -27,7 +27,7 @@
     "no-complex-fallback": "warn",
     "not-rely-on-block-hash": "error",
     "reentrancy": "warn",
-    "state-visibility": "warn"
+    "state-visibility": "error"
   },
   "plugins": ["prettier"]
 }

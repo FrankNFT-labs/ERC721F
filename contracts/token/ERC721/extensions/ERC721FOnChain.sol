@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9 <0.9.0;
+pragma solidity ^0.8.20 <0.9.0;
 
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
@@ -15,8 +15,9 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
     constructor(
         string memory name_,
         string memory symbol_,
+        address intialOwner,
         string memory description_
-    ) ERC721F(name_, symbol_) {
+    ) ERC721F(name_, symbol_, intialOwner) {
         description = description_;
     }
 
