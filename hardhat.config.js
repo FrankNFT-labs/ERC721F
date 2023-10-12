@@ -31,7 +31,6 @@ subtask(
                     solidityFilePath === process.env.WHITELIST_PATH
                 );
             } else {
-                console.log(relativePath);
                 return true;
             }
         });
