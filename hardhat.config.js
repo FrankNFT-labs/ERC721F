@@ -4,7 +4,9 @@ require("hardhat-gas-reporter");
 
 const {
     TASK_COMPILE_SOLIDITY_GET_SOURCE_PATHS,
+    TASK_TEST_GET_TEST_FILES,
 } = require("hardhat/builtin-tasks/task-names");
+const { subtask } = require("hardhat/config");
 const path = require("path");
 
 subtask(
@@ -36,6 +38,22 @@ subtask(
         });
     }
 );
+
+subtask(TASK_TEST_GET_TEST_FILES, async (_, { config }, runSuper) => {
+    const paths = await runSuper();
+
+    return paths.filter((testFilePath) => {
+        const relativePath = path.relative(config.paths.sources, testFilePath);
+
+        if (process.env.WHITELIST_CONTRACT) {
+            return relativePath.endsWith(
+                `/${process.env.WHITELIST_CONTRACT}.test.js`
+            );
+        } else {
+            return true;
+        }
+    });
+});
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
