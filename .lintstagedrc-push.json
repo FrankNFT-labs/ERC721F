@@ -1,0 +1,8 @@
+{
+    "!(examples)/**/*.sol": ["scripts/sh/verify-contract.sh"],
+    "examples/**/*.sol": [
+        "node scripts/js/update_example_contract_imports.js dev",
+        "scripts/sh/verify-contract.sh",
+        "node scripts/js/update_example_contract_imports.js prod"
+    ]
+}

@@ -1,14 +1,6 @@
 {
-    "!(examples)/**/*.sol": [
+    "*.sol": [
         "npx prettier --write --plugin=prettier-plugin-solidity",
-        "npx solhint",
-        "scripts/sh/verify-contract.sh"
-    ],
-    "examples/**/*.sol": [
-        "npx prettier --write --plugin=prettier-plugin-solidity",
-        "npx solhint",
-        "node scripts/js/update_example_contract_imports.js dev",
-        "scripts/sh/verify-contract.sh",
-        "node scripts/js/update_example_contract_imports.js prod"
+        "npx solhint"
     ]
 }
