@@ -1,5 +1,6 @@
 {
   "rules": {
+    "prettier/prettier": "error",
     "explicit-types": "error",
     "max-states-count": ["warn", 15],
     "no-console": "error",
@@ -27,5 +28,6 @@
     "not-rely-on-block-hash": "error",
     "reentrancy": "warn",
     "state-visibility": "error"
-  }
+  },
+  "plugins": ["prettier"]
 }

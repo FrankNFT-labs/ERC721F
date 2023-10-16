@@ -1,0 +1,6 @@
+node_modules/*
+lib/*
+out/*
+artifacts/*
+examples/EIP-2535/artifacts/*
+.deps/*
