@@ -1,6 +1,13 @@
 #!/bin/bash
 
-FILTER="$1"
+filter="$1"
 
-# Run the 'npx hardhat compile' command
-WHITELIST_PATH=$FILTER npx hardhat compile
+if [[ $filter != *.sol ]]; then
+    echo "Invalid filepath. It must end with '.sol'."
+    exit 1
+else
+    filename=$(basename "$filter" .sol)
+
+    WHITELIST_PATH=$filter npx hardhat compile
+fi
+
