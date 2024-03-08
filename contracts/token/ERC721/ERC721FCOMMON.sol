@@ -16,7 +16,7 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
         string memory symbol_,
         address initialOwner
     ) ERC721F(name_, symbol_, initialOwner) {
-        setRoyaltyReceiver(address(this));
+        setRoyaltyReceiver(initialOwner);
     }
 
     /**
