@@ -5,11 +5,11 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
- * @dev Contract module which provides a basic access control mechanism, in which
+ * @notice Contract module which provides a basic access control mechanism, in which
  * an account (an operator) can be granted exclusive access to
  * specific functions.
  *
- * This module is used through inheritance. It will make available the modifier
+ * @dev This module is used through inheritance. It will make available the modifier
  * `onlyOperators`, which can be applied to your functions to restrict their use to
  * the owner or an operator account.
  */
