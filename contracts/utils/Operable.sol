@@ -35,9 +35,16 @@ abstract contract Operable is Ownable {
     }
 
     /**
-     * change the operator for this contract.
+     * Change the operator for this contract.
      */
     function setOperator(address _operator) public virtual onlyOwner {
         operator = _operator;
+    }
+
+    /**
+     * @dev Returns the address of the current operator.
+     */
+    function operator() public view virtual returns (address) {
+        return operator;
     }
 }

@@ -16,18 +16,15 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
         string memory symbol_,
         address initialOwner
     ) ERC721F(name_, symbol_, initialOwner) {
-        setRoyaltyReceiver(address(this));
+        setRoyaltyReceiver(initialOwner);
     }
 
     /**
      * @dev it will update the royalties for token
      * @param _royalties is new percentage of royalties. It should be more than 0 and least 90
      */
-    function setRoyalties(uint16 _royalties) external onlyOwner {
-        require(
-            _royalties != 0 && _royalties < 90,
-            "royalties should be between 0 and 90"
-        );
+    function setRoyalties(uint16 _royalties) public onlyOwner {
+        require(_royalties < 90, "royalties should be lower then 90");
 
         royalties = (_royalties * 100);
 
