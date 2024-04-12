@@ -24,10 +24,7 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
      * @param _royalties is new percentage of royalties. It should be more than 0 and least 90
      */
     function setRoyalties(uint16 _royalties) public onlyOwner {
-        require(
-            _royalties < 90,
-            "royalties should be lower then 90"
-        );
+        require(_royalties < 90, "royalties should be lower then 90");
 
         royalties = (_royalties * 100);
 

@@ -1,6 +1,7 @@
 node_modules/
 remix-compiler.config.js
-.env
+.env*
+!.env.example
 
 #Hardhat files
 cache
