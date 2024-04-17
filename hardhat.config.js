@@ -28,9 +28,10 @@ subtask(
             ) {
                 return false;
             } else if (process.env.WHITELIST_PATH) {
+                const paths = process.env.WHITELIST_PATH.split(" ");
                 return (
-                    relativePath === process.env.WHITELIST_PATH ||
-                    solidityFilePath === process.env.WHITELIST_PATH
+                    paths.includes(relativePath) ||
+                    paths.includes(solidityFilePath)
                 );
             } else {
                 return true;
