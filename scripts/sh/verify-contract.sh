@@ -1,6 +1,6 @@
 #!/bin/bash
 
-filter="$1"
+filter="${@:1}"
 
 if [[ $filter != *.sol ]]; then
     echo "Invalid filepath. It must end with '.sol'."
