@@ -1,10 +1,8 @@
-name: Update README Version
-
 on:
   release:
     types: [created]
   workflow_dispatch:
-
+  
 jobs:
   update-readme:
     runs-on: ubuntu-latest
@@ -21,19 +19,14 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
           });
-          return release.data.tag_name; # Ensure this returns the tag name correctly
-      env:
-        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
+          return release.data.tag_name;
     - name: Update README
       run: |
         sed -i 's|/v[^/]*/contracts|/v${{ steps.latest-release.outputs.result }}/contracts|' README.md
-      shell: bash
-
     - name: Commit and push if changed
       run: |
         git config --global user.email "frank.poncelet@gmail.com"
         git config --global user.name "FrankNFT"
         git add README.md
-        git diff-index --quiet HEAD || git commit -m "Update README with latest release version"
+        git commit -m "Update README with latest release version" || exit 0
         git push
