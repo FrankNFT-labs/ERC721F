@@ -22,7 +22,7 @@ jobs:
           return release.data.tag_name;
     - name: Update README
       run: |
-        sed -i 's|/v[^/]*/contracts|/v${{ steps.latest-release.outputs.result }}/contracts|' README.md
+        sed -i "s|/v[0-9.]\+/contracts|/v${{ steps.latest-release.outputs.result }}/contracts|" README.md
     - name: Commit and push if changed
       run: |
         git config --global user.email "frank.poncelet@gmail.com"
