@@ -1,0 +1,35 @@
+name: Update README Version
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Get the latest release
+      id: latest-release
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const release = await github.rest.repos.getLatestRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+          });
+          return release.data.tag_name;
+
+    - name: Update README
+      run: |
+        sed -i 's|/v.*\//contracts|/${{ steps.latest-release.outputs.result }}/contracts|' README.md
+
+    - name: Commit and push if changed
+      run: |
+        git config --global user.email "frank.poncelet@gmail.com"
+        git config --global user.name "FrankNFT"
+        git add README.md
+        git commit -m "Update README with latest release version" || exit 0
+        git push
