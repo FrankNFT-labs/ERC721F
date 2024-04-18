@@ -3,7 +3,8 @@ name: Update README Version
 on:
   release:
     types: [created]
-
+  workflow_dispatch:
+  
 jobs:
   update-readme:
     runs-on: ubuntu-latest
