@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 /**
  * @title AddressUtils
  * @dev A collection of utility functions related to the address type.
+ * @author FrankNFT.eth
  */
 library AddressUtils {
     /**
