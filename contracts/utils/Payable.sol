@@ -5,6 +5,7 @@ pragma solidity ^0.8.20 <0.9.0;
  * @title Payable
  * @notice This abstract contract provides a simple and secure way to handle Ether payments and withdrawals.
  * It allows the contract to receive Ether and provides an internal function for derived contracts to withdraw Ether.
+ * @author @FrankNFT.eth
  */
 abstract contract Payable {
     /**
