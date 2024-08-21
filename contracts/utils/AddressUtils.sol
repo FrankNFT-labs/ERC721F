@@ -50,9 +50,12 @@ library AddressUtils {
         bytes memory ss = bytes(s);
         require(ss.length % 2 == 0, "Hex string has odd length");
         bytes memory r = new bytes(ss.length / 2);
-        for (uint i = 0; i < ss.length / 2; ++i) {
+        for (uint i = 0; i < ss.length / 2;) {
             r[i] = bytes1(fromHexChar(uint8(ss[2 * i])) * 16 +
                           fromHexChar(uint8(ss[2 * i + 1])));
+            unchecked {
+                i++;
+            }
         }
         return r;
     }
