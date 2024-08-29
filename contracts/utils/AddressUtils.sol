@@ -24,18 +24,56 @@ library AddressUtils {
     }
 
     /**
-    * @dev Generates a pseudo-random address.
-    *
-    * This function creates a pseudo-random address by hashing the current block timestamp
-    * and the previous block's random number (prevrandao). The resulting hash is then
-    * converted to a uint256, cast to a uint160, and finally to an address.
-    *
-    * @return addr A pseudo-randomly generated address.
-    */
-    function randomAddress() internal view returns (address addr) {
-        return address(uint160(uint256(keccak256(abi.encodePacked(block.timestamp,block.prevrandao)))));
+     * @dev Generates a pseudo-random address.
+     *
+     * This function creates a pseudo-random address by hashing the current block timestamp
+     * and the previous block's random number (prevrandao). The resulting hash is then
+     * converted to a uint256, cast to a uint160, and finally to an address.
+     *
+     * @param nonce An integer value to introduce additional variability to the hash.
+     * @return addr A pseudo-randomly generated address.
+     */
+    function randomAddress(int256 nonce) internal view returns (address addr) {
+        return
+            address(
+                uint160(
+                    uint256(
+                        keccak256(
+                            abi.encodePacked(
+                                block.timestamp,
+                                block.prevrandao,
+                                nonce
+                            )
+                        )
+                    )
+                )
+            );
     }
-    
+
+    /**
+     * @dev Generates a pseudo-random address.
+     * This function is deprecated and should not be used. Instead, use the function with the
+     * `nonce` parameter to introduce additional randomness.
+     *
+     * This function creates a pseudo-random address by hashing the current block timestamp
+     * and the previous block's random number (prevrandao). The resulting hash is then
+     * converted to a uint256, cast to a uint160, and finally to an address.
+     *
+     * @return addr A pseudo-randomly generated address.
+     */
+    function randomAddress() internal view returns (address addr) {
+        return
+            address(
+                uint160(
+                    uint256(
+                        keccak256(
+                            abi.encodePacked(block.timestamp, block.prevrandao)
+                        )
+                    )
+                )
+            );
+    }
+
     /**
      * @notice Calculates an Ethereum address from a given public key.
      * @param publicKey The public key as a hex string.
