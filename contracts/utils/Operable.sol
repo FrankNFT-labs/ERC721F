@@ -17,34 +17,34 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * the owner or the operator account.
  */
 abstract contract Operable is Ownable {
-    address private operator;
+    address private _operator;
 
     /**
      * @dev Throws if called by any account other than the owner or operator.
      */
     modifier onlyOperator() {
         require(
-            msg.sender == operator || msg.sender == owner(),
+            msg.sender == _operator || msg.sender == owner(),
             "Operable: caller is not the owner or operator."
         );
         _;
     }
 
     constructor() {
-        operator = msg.sender;
+        _operator = msg.sender;
     }
 
     /**
      * Change the operator for this contract.
      */
-    function setOperator(address _operator) public virtual onlyOwner {
-        operator = _operator;
+    function setOperator(address newOperator) public virtual onlyOwner {
+        _operator = newOperator;
     }
 
     /**
      * @dev Returns the address of the current operator.
      */
     function operator() public view virtual returns (address) {
-        return operator;
+        return _operator;
     }
 }
