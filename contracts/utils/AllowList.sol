@@ -3,6 +3,25 @@ pragma solidity ^0.8.20 <0.9.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+/**
+ * @title AllowList
+ * @dev This contract provides functionality for managing an allow list of addresses.
+ * It extends the Ownable contract from OpenZeppelin, allowing only the owner to modify the allow list.
+ *
+ * The contract includes functions to:
+ * - Add single or multiple addresses to the allow list
+ * - Remove addresses from the allow list
+ * - Check if an address is on the allow list
+ *
+ * It also provides a modifier `onlyAllowList` that can be used to restrict function access
+ * to only addresses on the allow list.
+ *
+ * @notice This contract is useful for implementing access control mechanisms where certain
+ * operations should be restricted to a pre-approved set of addresses.
+ *
+ * @author @FrankNFT.eth
+ */
+
 abstract contract AllowList is Ownable {
     mapping(address => bool) private allowList;
 

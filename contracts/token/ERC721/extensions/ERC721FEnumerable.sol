@@ -4,6 +4,18 @@ pragma solidity ^0.8.20 <0.9.0;
 import "../ERC721F.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 
+/**
+ * @title ERC721FEnumerable
+ * @dev This contract extends ERC721F to implement the IERC721Enumerable interface.
+ * It provides functions to enumerate over all tokens and tokens owned by a specific address.
+ *
+ * @notice This implementation uses O(n) time complexity for enumeration operations,
+ * where n is the total supply of tokens. This may become inefficient for large collections.
+ * Consider using alternative data structures for better performance in such cases.
+ *
+ * @dev Implementation of the {IERC721Enumerable} interface.
+ */
+
 abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
     /**
      * @dev See {IERC721Enumerable-tokenOfOwnerByIndex}

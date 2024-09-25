@@ -5,6 +5,21 @@ import "./ERC721F.sol";
 import "../../utils/Payable.sol";
 import "@openzeppelin/contracts/token/common/ERC2981.sol";
 
+/**
+ * @title ERC721FCOMMON
+ * @dev Extends ERC721F with additional functionality including royalties and payment handling.
+ * This contract combines ERC721F, Payable, and ERC2981 to create a more feature-rich NFT implementation.
+ *
+ * Key features:
+ * - Royalty support (ERC2981)
+ * - Payment handling (Payable)
+ * - Customizable royalty percentage and receiver
+ *
+ * @notice This contract inherits from ERC721F, Payable, and ERC2981, providing a comprehensive
+ * solution for NFT creators who want to include royalty and payment functionalities.
+ * @author @FrankNFT.eth
+ */
+
 contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
     uint16 private royalties = 500;
     address private royaltyReceiver;

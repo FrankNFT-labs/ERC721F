@@ -5,6 +5,25 @@ import "../ERC721/ERC721F.sol";
 import "../../interfaces/IERC5192.sol";
 import "../../interfaces/IERC6454.sol";
 
+/**
+ * @title Soulbound
+ * @dev Implementation of a soulbound token, which is a non-transferable ERC721 token.
+ * This contract implements the IERC5192 and IERC6454 interfaces for locked tokens and transfer validation.
+ * It extends the ERC721F contract to provide additional functionality specific to soulbound tokens.
+ *
+ * Key features:
+ * - Tokens are non-transferable by default (locked)
+ * - Owner can set individual tokens to be unlocked
+ * - Implements ERC5192 for querying locked status
+ * - Implements ERC6454 for transfer validation
+ * - Optionally allows token holders to burn their own tokens
+ *
+ * @notice This contract creates non-transferable tokens that can be selectively unlocked by the contract owner.
+ * It's suitable for use cases where tokens represent non-transferable rights, credentials, or identities.
+ *
+ * @author @FrankNFT.eth
+ */
+
 contract Soulbound is IERC5192, IERC6454, ERC721F {
     // Mapping from owner to operator approvals
     mapping(address => mapping(address => bool)) private _operatorApprovals;
