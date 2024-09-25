@@ -13,7 +13,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
  * where n is the total supply of tokens. This may become inefficient for large collections.
  * Consider using alternative data structures for better performance in such cases.
  *
- * @dev Implementation of the {IERC721Enumerable} interface.
+ * @author @FrankNFT.eth
  */
 
 abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
