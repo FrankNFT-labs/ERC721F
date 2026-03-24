@@ -28,6 +28,7 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
 
     error RoyaltiesTooHigh();
     error RoyaltyInfoForNonexistentToken();
+    error RoyaltyReceiverIsZeroAddress();
 
     constructor(
         string memory name_,
@@ -38,8 +39,9 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
     }
 
     /**
-     * @dev it will update the royalties for token
-     * @param _royalties is new percentage of royalties. It should be more than 0 and least 90
+     * @dev Updates the royalty percentage for the token.
+     * @param _royalties Royalty percentage (0–89 inclusive). A value of 0 disables royalties.
+     *        Values >= 90 are rejected. Stored internally as basis points (_royalties * 100).
      */
     function setRoyalties(uint16 _royalties) public onlyOwner {
         if (_royalties >= 90) revert RoyaltiesTooHigh();
@@ -50,9 +52,10 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
     }
 
     /**
-     * @notice Sets `receiver` as royaltyReceiver
+     * @notice Sets `receiver` as royaltyReceiver. Reverts if receiver is the zero address.
      */
     function setRoyaltyReceiver(address receiver) public virtual onlyOwner {
+        if (receiver == address(0)) revert RoyaltyReceiverIsZeroAddress();
         royaltyReceiver = receiver;
     }
 
