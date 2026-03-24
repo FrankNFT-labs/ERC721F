@@ -106,4 +106,15 @@ abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
     {
         return ERC721F.totalSupply();
     }
+
+    /**
+     * @dev See {IERC165-supportsInterface}.
+     */
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override(IERC165, ERC721) returns (bool) {
+        return
+            interfaceId == type(IERC721Enumerable).interfaceId ||
+            super.supportsInterface(interfaceId);
+    }
 }

@@ -222,4 +222,29 @@ describe("ERC721FEnumerable", function () {
             });
         });
     });
+
+    describe("supportsInterface", function () {
+        let token;
+
+        beforeEach(async () => {
+            const { hardhatToken } = await loadFixture(deployTokenFixture);
+            token = hardhatToken;
+        });
+
+        it("returns true for IERC721Enumerable (0x780e9d63)", async function () {
+            expect(await token.supportsInterface("0x780e9d63")).to.equal(true);
+        });
+
+        it("returns true for IERC721 (0x80ac58cd)", async function () {
+            expect(await token.supportsInterface("0x80ac58cd")).to.equal(true);
+        });
+
+        it("returns true for IERC721Metadata (0x5b5e139f)", async function () {
+            expect(await token.supportsInterface("0x5b5e139f")).to.equal(true);
+        });
+
+        it("returns false for unsupported interface", async function () {
+            expect(await token.supportsInterface("0xdeadbeef")).to.equal(false);
+        });
+    });
 });
