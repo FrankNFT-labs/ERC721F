@@ -38,14 +38,14 @@ contract ERC721F is Ownable, ERC721 {
         uint256[] memory ownedTokenIds = new uint256[](ownerTokenCount);
         uint256 currentTokenId = _startTokenId();
         uint256 ownedTokenIndex = 0;
-        uint256 tokenSupply = _tokenSupply;
+        uint256 endTokenId = currentTokenId + _tokenSupply;
 
         unchecked {
             for (;;) {
                 if (ownedTokenIndex >= ownerTokenCount) {
                     break;
                 }
-                if (currentTokenId >= tokenSupply) {
+                if (currentTokenId >= endTokenId) {
                     break;
                 }
                 if (_ownerOf(currentTokenId) == _owner) {

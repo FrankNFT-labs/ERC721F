@@ -35,7 +35,7 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
         if (from == address(0)) {
             _walletOfOwner[to].push(tokenId);
         } else if (to == address(0)) {
-            _removeTokenFromWallet(tokenId);
+            _removeTokenFromWallet(tokenId, from);
         } else {
             _removeTokenFromWallet(tokenId, from);
             _walletOfOwner[to].push(tokenId);

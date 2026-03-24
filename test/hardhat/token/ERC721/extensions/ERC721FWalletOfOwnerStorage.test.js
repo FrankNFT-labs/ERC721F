@@ -92,6 +92,15 @@ describe("ERC721FWalletOfOwnerStorage", function () {
                 expect(walletOfOwner.map(t => t.toNumber())).to.not.have.members([0, 1, 2, 3, 4]);
             })
 
+            it("Should remove burned token from owner wallet when burned by operator", async function () {
+                // Grant operator approval
+                await token.setApprovalForAll(ownerAddress.address, true);
+                // Operator burns token 2 (owned by ownerAddress)
+                await token.connect(ownerAddress).burn(2);
+                const wallet = await token.walletOfOwner(ownerAddress.address);
+                expect(wallet.map(t => t.toNumber())).to.have.members([0, 1, 4]);
+            });
+
             it("Shouldn't remove the non-burned tokens from the wallet", async function () {
                 const walletOfOwner = await token.walletOfOwner(ownerAddress.address);
 
