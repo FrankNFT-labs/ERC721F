@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.16;
+pragma solidity ^0.8.20 <0.9.0;
 
 /// @title EIP-6454 Minimalistic Non-Transferable interface for NFTs
 /// @dev See https://eips.ethereum.org/EIPS/eip-6454
