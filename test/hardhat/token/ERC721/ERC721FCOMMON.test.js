@@ -73,6 +73,36 @@ describe("ERC721FCOMMON", function () {
         });
     });
 
+    describe("withdraw", function () {
+        it("reverts when withdrawing to the zero address", async function () {
+            const { token, owner } = await loadFixture(deployFixture);
+            await owner.sendTransaction({
+                to: token.address,
+                value: ethers.utils.parseEther("1"),
+            });
+            await expect(
+                token.withdraw(
+                    ethers.constants.AddressZero,
+                    ethers.utils.parseEther("1")
+                )
+            ).to.be.revertedWithCustomError(token, "WithdrawToZeroAddress");
+        });
+
+        it("succeeds when withdrawing to a valid address", async function () {
+            const { token, addr1 } = await loadFixture(deployFixture);
+            await (
+                await ethers.getSigners()
+            )[0].sendTransaction({
+                to: token.address,
+                value: ethers.utils.parseEther("1"),
+            });
+            const before = await ethers.provider.getBalance(addr1.address);
+            await token.withdraw(addr1.address, ethers.utils.parseEther("1"));
+            const after = await ethers.provider.getBalance(addr1.address);
+            expect(after.sub(before)).to.equal(ethers.utils.parseEther("1"));
+        });
+    });
+
     describe("royaltyInfo", function () {
         it("reverts for non-existent token", async function () {
             const { token } = await loadFixture(deployFixture);

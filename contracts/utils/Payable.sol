@@ -9,11 +9,13 @@ pragma solidity ^0.8.20 <0.9.0;
  */
 abstract contract Payable {
     error EtherWithdrawFailed();
+    error WithdrawToZeroAddress();
 
     /**
      * Helper method to allow ETH withdraws.
      */
     function _withdraw(address _address, uint256 _amount) internal {
+        if (_address == address(0)) revert WithdrawToZeroAddress();
         (bool success, ) = _address.call{value: _amount}("");
         if (!success) revert EtherWithdrawFailed();
     }

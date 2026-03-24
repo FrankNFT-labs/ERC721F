@@ -13,9 +13,6 @@ contract ERC721FCOMMONMock is ERC721FCOMMON {
         string memory symbol_
     ) ERC721FCOMMON(name_, symbol_, msg.sender) {}
 
-    /**
-     * @notice Mint tokens for testing purposes.
-     */
     function mint(uint256 numberOfTokens) public {
         uint256 supply = _totalMinted();
         for (uint256 i; i < numberOfTokens; ) {
@@ -24,5 +21,9 @@ contract ERC721FCOMMONMock is ERC721FCOMMON {
                 i++;
             }
         }
+    }
+
+    function withdraw(address to, uint256 amount) public onlyOwner {
+        _withdraw(to, amount);
     }
 }
