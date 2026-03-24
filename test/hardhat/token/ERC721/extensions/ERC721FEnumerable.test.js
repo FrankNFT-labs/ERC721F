@@ -213,6 +213,13 @@ describe("ERC721FEnumerable", function () {
                     ).to.be.equal(2);
                 });
             });
+
+            describe("tokenByIndex", function () {
+                it("Returns token IDs from start token id", async function () {
+                    expect(await token.tokenByIndex(0)).to.be.equal(1);
+                    expect(await token.tokenByIndex(1)).to.be.equal(2);
+                });
+            });
         });
     });
 });

@@ -60,18 +60,35 @@ abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
      * It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case
      */
     function tokenByIndex(uint256 index) external view returns (uint256) {
-        uint256 totalMinted = ERC721FEnumerable.totalSupply();
-        if (index >= totalMinted) revert TotalIndexOutOfBounds();
-        uint256 currentTokenIndex;
+        uint256 totalMinted = _totalMinted();
+        uint256 totalBurned = _totalBurned();
+        uint256 currentSupply;
+
+        unchecked {
+            currentSupply = totalMinted - totalBurned;
+        }
+
+        if (index >= currentSupply) revert TotalIndexOutOfBounds();
+
+        uint256 currentTokenId = _startTokenId();
+
+        if (totalBurned == 0) {
+            return currentTokenId + index;
+        }
+
+        uint256 endTokenId = currentTokenId + totalMinted;
+        uint256 validTokenIndex;
 
         // Counter overflow is impossible as the loop breaks when
-        // uint256 i is equal to another uint256 totalMinted.
+        // currentTokenId reaches endTokenId.
         unchecked {
-            for (uint256 i; i < totalMinted; i++) {
-                if (currentTokenIndex == index) {
-                    return i;
+            for (; currentTokenId < endTokenId; currentTokenId++) {
+                if (_ownerOf(currentTokenId) != address(0)) {
+                    if (validTokenIndex == index) {
+                        return currentTokenId;
+                    }
+                    validTokenIndex++;
                 }
-                currentTokenIndex++;
             }
         }
         revert UnexpectedEnumerationState();
