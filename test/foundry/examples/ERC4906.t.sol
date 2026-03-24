@@ -18,10 +18,10 @@ contract ERC4906Test is Test {
     event BatchMetadataUpdate(uint256 _fromTokenId, uint256 _toTokenId);
 
     function setUp() public {
+        owner = makeAddr("owner");
+        vm.startPrank(owner, owner);
         t = new ERC4906Mock();
         t.flipSaleState();
-        owner = t.owner();
-        vm.startPrank(owner, owner);
     }
 
     function testSupportsInterfaceReturnsRequiredTrue() public {
