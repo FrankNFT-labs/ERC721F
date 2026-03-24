@@ -53,8 +53,9 @@ describe("ERC721FEnumerable", function () {
                     it("Reverts", async function () {
                         await expect(
                             token.tokenOfOwnerByIndex(ownerContract.address, 2)
-                        ).to.be.revertedWith(
-                            "Index out of bounds for owned tokens"
+                        ).to.be.revertedWithCustomError(
+                            token,
+                            "OwnerIndexOutOfBounds"
                         );
                     });
                 });
@@ -63,8 +64,9 @@ describe("ERC721FEnumerable", function () {
                     it("Reverts", async function () {
                         await expect(
                             token.tokenOfOwnerByIndex(otherAddress.address, 0)
-                        ).to.be.revertedWith(
-                            "Index out of bounds for owned tokens"
+                        ).to.be.revertedWithCustomError(
+                            token,
+                            "OwnerIndexOutOfBounds"
                         );
                     });
                 });
@@ -109,8 +111,9 @@ describe("ERC721FEnumerable", function () {
 
                         await expect(
                             token.tokenOfOwnerByIndex(ownerContract.address, 0)
-                        ).to.be.revertedWith(
-                            "Index out of bounds for owned tokens"
+                        ).to.be.revertedWithCustomError(
+                            token,
+                            "OwnerIndexOutOfBounds"
                         );
                     });
                 });
@@ -125,8 +128,11 @@ describe("ERC721FEnumerable", function () {
 
                 describe("When the given index is greater than or equal to the total tokens minted", function () {
                     it("Reverts", async function () {
-                        await expect(token.tokenByIndex(2)).to.be.revertedWith(
-                            "Index out of bounds for total minted tokens"
+                        await expect(
+                            token.tokenByIndex(2)
+                        ).to.be.revertedWithCustomError(
+                            token,
+                            "TotalIndexOutOfBounds"
                         );
                     });
                 });

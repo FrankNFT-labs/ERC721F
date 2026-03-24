@@ -18,6 +18,8 @@ contract FreeMint is ERC721F, ERC2981 {
 
     event ROYALTIESUPDATED(uint256 royalties);
 
+    error ContractsNotAllowed();
+
     constructor() ERC721F("FreeMint", "Free", msg.sender) {
         setBaseTokenURI(
             "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
@@ -50,7 +52,7 @@ contract FreeMint is ERC721F, ERC2981 {
      * Mint your tokens here.
      */
     function mint(uint256 numberOfTokens) external {
-        require(msg.sender == tx.origin, "No Contracts allowed.");
+        if (msg.sender.code.length != 0) revert ContractsNotAllowed();
         require(saleIsActive, "Sale NOT active yet");
         require(numberOfTokens > 0, "numberOfNfts cannot be 0");
         require(

@@ -40,6 +40,8 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
     // Event utilised in hardhat testing to retrieve requestId from ChainLink request
     event REQUESTEDRANDOMNESS(uint256 requestId);
 
+    error ContractsNotAllowed();
+
     constructor(
         uint64 _subscriptionId,
         address _vrfCoordinator
@@ -91,7 +93,7 @@ contract ChainLink is ERC721F, VRFConsumerBaseV2 {
      * @dev Uses randomely set startingIndex as first mint, subsequent mints will loop around until startingIndex - 1 has been reached
      */
     function mint(uint32 numberOfTokens) external {
-        require(msg.sender == tx.origin, "No Contracts allowed.");
+        if (msg.sender.code.length != 0) revert ContractsNotAllowed();
         require(saleIsActive, "Sale NOT active yet");
         require(numberOfTokens > 0, "numberOfTokens cannot be 0");
         require(

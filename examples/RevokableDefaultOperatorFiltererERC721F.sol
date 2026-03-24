@@ -21,6 +21,8 @@ contract RevokableDefaultOperatorFiltererERC721F is
     bool public preSaleIsActive;
     bool public saleIsActive;
 
+    error ContractsNotAllowed();
+
     modifier validMintRequest(uint256 numberOfTokens) {
         require(numberOfTokens > 0, "numberOfNfts cannot be 0");
         require(
@@ -71,7 +73,7 @@ contract RevokableDefaultOperatorFiltererERC721F is
     function mint(
         uint256 numberOfTokens
     ) external payable validMintRequest(numberOfTokens) {
-        require(msg.sender == tx.origin, "No contracts allowed");
+        if (msg.sender.code.length != 0) revert ContractsNotAllowed();
         require(saleIsActive, "Sale NOT active yet");
         uint256 supply = _totalMinted();
         require(

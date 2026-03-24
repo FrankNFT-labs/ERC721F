@@ -8,12 +8,14 @@ pragma solidity ^0.8.20 <0.9.0;
  * @author @FrankNFT.eth
  */
 abstract contract Payable {
+    error EtherWithdrawFailed();
+
     /**
      * Helper method to allow ETH withdraws.
      */
     function _withdraw(address _address, uint256 _amount) internal {
         (bool success, ) = _address.call{value: _amount}("");
-        require(success, "Failed to withdraw Ether");
+        if (!success) revert EtherWithdrawFailed();
     }
 
     // contract can recieve Ether

@@ -29,6 +29,8 @@ contract OnChain is ERC721FOnChain {
     uint256 public constant MAX_PURCHASE = 31;
     bool public saleIsActive;
 
+    error ContractsNotAllowed();
+
     constructor()
         ERC721FOnChain("OnChain", "OC", msg.sender, "Example OnChain Contract")
     {}
@@ -44,7 +46,7 @@ contract OnChain is ERC721FOnChain {
      * @notice Mints `numberOfTokens` tokens for `sender`
      */
     function mint(uint256 numberOfTokens) external {
-        require(msg.sender == tx.origin, "No Contracts allowed.");
+        if (msg.sender.code.length != 0) revert ContractsNotAllowed();
         require(saleIsActive, "Sale NOT active yet");
         require(numberOfTokens > 0, "numberOfNfts cannot be 0");
         require(

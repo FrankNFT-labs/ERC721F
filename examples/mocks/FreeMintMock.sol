@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20 <0.9.0;
 
-import "../FreeMint.sol";
+import "@franknft.eth/erc721-f/FreeMint.sol";
 
 /**
  * @title FreeMintMock
@@ -15,7 +15,7 @@ contract FreeMintMock is FreeMint {
     function mintRequireNumberOfTokensLargerThanZero(
         uint256 numberOfTokens
     ) external {
-        require(msg.sender == tx.origin, "No Contracts allowed.");
+        if (msg.sender.code.length != 0) revert ContractsNotAllowed();
         require(saleIsActive, "Sale NOT active yet");
         require(numberOfTokens > 0, "numberOfNfts must be larger than 0");
         require(
@@ -41,7 +41,7 @@ contract FreeMintMock is FreeMint {
     function mintRequireNumberOfTokensNotEqualsZero(
         uint256 numberOfTokens
     ) external {
-        require(msg.sender == tx.origin, "No Contracts allowed.");
+        if (msg.sender.code.length != 0) revert ContractsNotAllowed();
         require(saleIsActive, "Sale NOT active yet");
         require(numberOfTokens != 0, "numberOfNfts cannot be 0");
         require(

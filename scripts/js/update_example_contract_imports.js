@@ -2,16 +2,16 @@ const fs = require("fs");
 const path = require("path");
 
 const args = process.argv.slice(2);
-if (args.length < 1 || args.length > 2) {
-    console.error("Usage: node replacePaths.js <prod or dev> [file]");
+if (args.length < 1) {
+    console.error("Usage: node replacePaths.js <prod or dev> [file ...]");
     process.exit(1);
 }
 
 const mode = args[0];
-const targetFile = args[1];
+const targetFiles = args.slice(1);
 
 if (mode !== "prod" && mode !== "dev") {
-    console.error("Usage: node replacePaths.js <prod or dev> [file]");
+    console.error("Usage: node replacePaths.js <prod or dev> [file ...]");
     process.exit(1);
 }
 
@@ -32,27 +32,57 @@ function replacePaths(filePath, isProd) {
     fs.writeFileSync(filePath, newData);
 }
 
-// List all files in the directory
-fs.readdirSync(directoryPath).forEach((file) => {
-    const filePath = path.join(directoryPath, file);
+function isSolidityFile(filePath) {
+    return path.extname(filePath) === ".sol";
+}
 
-    if (fs.statSync(filePath).isFile()) {
-        if (targetFile) {
-            if (filePath.endsWith(targetFile)) {
-                replacePaths(filePath, mode === "prod");
-                console.log(`Paths in ${targetFile} have been updated`);
-                process.exit(0);
+function isInsideExamples(filePath) {
+    const relative = path.relative(directoryPath, filePath);
+    return relative && !relative.startsWith("..") && !path.isAbsolute(relative);
+}
+
+function collectSolidityFiles(rootDirectory) {
+    const stack = [rootDirectory];
+    const solidityFiles = [];
+
+    while (stack.length > 0) {
+        const currentDirectory = stack.pop();
+        const entries = fs.readdirSync(currentDirectory, {
+            withFileTypes: true,
+        });
+
+        for (const entry of entries) {
+            const entryPath = path.join(currentDirectory, entry.name);
+            if (entry.isDirectory()) {
+                stack.push(entryPath);
+            } else if (entry.isFile() && isSolidityFile(entryPath)) {
+                solidityFiles.push(entryPath);
             }
-        } else {
-            replacePaths(filePath, mode === "prod");
         }
     }
-});
 
-console.log(
-    `${
-        targetFile
-            ? `${targetFile} couldn't be found`
-            : `Paths in ${directoryPath} have been updated.`
-    }`
-);
+    return solidityFiles;
+}
+
+const isProd = mode === "prod";
+let filesToProcess;
+
+if (targetFiles.length > 0) {
+    filesToProcess = targetFiles
+        .map((file) => path.resolve(file))
+        .filter((filePath) => fs.existsSync(filePath))
+        .filter((filePath) => fs.statSync(filePath).isFile())
+        .filter((filePath) => isSolidityFile(filePath))
+        .filter((filePath) => isInsideExamples(filePath));
+} else {
+    filesToProcess = collectSolidityFiles(directoryPath);
+}
+
+if (filesToProcess.length === 0) {
+    console.log("No Solidity example files to update.");
+    process.exit(0);
+}
+
+filesToProcess.forEach((filePath) => replacePaths(filePath, isProd));
+
+console.log(`Paths updated in ${filesToProcess.length} file(s).`);

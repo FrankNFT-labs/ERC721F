@@ -12,6 +12,8 @@ import "../ERC721F.sol";
 abstract contract ERC721FOnChain is IERC4883, ERC721F {
     string private description;
 
+    error NonExistingToken();
+
     constructor(
         string memory name_,
         string memory symbol_,
@@ -34,7 +36,7 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
     function tokenURI(
         uint256 tokenId
     ) public view virtual override returns (string memory) {
-        require(_exists(tokenId), "Non-Existing token");
+        if (!_exists(tokenId)) revert NonExistingToken();
         string memory svgData = renderTokenById(tokenId);
         string memory traits = getTraits(tokenId);
         return

@@ -8,10 +8,12 @@ import {FreeMintStorage, WithStorage} from "./WithStorage.sol";
  * @dev Facet which adds external mint function
  */
 contract MintFacet is ERC721FUpgradeableInternal, WithStorage {
+    error ContractsNotAllowed();
+
     function mint(uint256 numberOfTokens) external {
         FreeMintStorage storage freeMintStorage = s();
 
-        require(msg.sender == tx.origin, "NO Contracts allowed");
+        if (msg.sender.code.length != 0) revert ContractsNotAllowed();
         require(freeMintStorage.saleIsActive, "Sale NOT active yet");
         require(numberOfTokens > 0, "numberOfNfts cannot be 0");
         require(

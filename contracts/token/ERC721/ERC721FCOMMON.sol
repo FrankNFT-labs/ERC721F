@@ -26,6 +26,9 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
 
     event ROYALTIESUPDATED(uint256 royalties);
 
+    error RoyaltiesTooHigh();
+    error RoyaltyInfoForNonexistentToken();
+
     constructor(
         string memory name_,
         string memory symbol_,
@@ -39,7 +42,7 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
      * @param _royalties is new percentage of royalties. It should be more than 0 and least 90
      */
     function setRoyalties(uint16 _royalties) public onlyOwner {
-        require(_royalties < 90, "royalties should be lower then 90");
+        if (_royalties >= 90) revert RoyaltiesTooHigh();
 
         royalties = (_royalties * 100);
 
@@ -85,10 +88,7 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
         override
         returns (address receiver, uint256 royaltyAmount)
     {
-        require(
-            _exists(_tokenId),
-            "ERC2981RoyaltyStandard: Royalty info for nonexistent token"
-        );
+        if (!_exists(_tokenId)) revert RoyaltyInfoForNonexistentToken();
         return (royaltyReceiver, (_salePrice * royalties) / 10000);
     }
 }

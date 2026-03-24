@@ -22,6 +22,8 @@ contract OnChainOptimized is IERC4883, ERC721F {
     //
     mapping(uint256 => uint256) private idToAlgorithmId;
 
+    error ContractsNotAllowed();
+
     constructor() ERC721F("BunniesSamplingOwnAlgorithm", "OC", msg.sender) {}
 
     /**
@@ -35,7 +37,7 @@ contract OnChainOptimized is IERC4883, ERC721F {
      * @notice Mints `numberOfTokens` tokens for `sender`
      */
     function mint(uint256 numberOfTokens) external {
-        require(msg.sender == tx.origin, "No Contracts allowed.");
+        if (msg.sender.code.length != 0) revert ContractsNotAllowed();
         require(saleIsActive, "Sale NOT active yet");
         require(numberOfTokens != 0, "numberOfNfts cannot be 0");
         require(

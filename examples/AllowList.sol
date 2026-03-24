@@ -15,6 +15,8 @@ contract AllowListExample is ERC721FCOMMON, AllowList {
     bool public preSaleIsActive;
     bool public saleIsActive;
 
+    error ContractsNotAllowed();
+
     modifier validMintRequest(uint256 numberOfTokens) {
         require(numberOfTokens > 0, "numberOfNfts cannot be 0");
         require(
@@ -59,7 +61,7 @@ contract AllowListExample is ERC721FCOMMON, AllowList {
     function mint(
         uint256 numberOfTokens
     ) external payable validMintRequest(numberOfTokens) {
-        require(msg.sender == tx.origin, "No contracts allowed");
+        if (msg.sender.code.length != 0) revert ContractsNotAllowed();
         require(saleIsActive, "Sale NOT active yet");
         uint256 supply = _totalMinted();
         require(

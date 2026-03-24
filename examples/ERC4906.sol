@@ -9,6 +9,8 @@ contract ERC4906 is ERC721F, ERC721URIStorage {
     uint256 public constant MAX_PURCHASE = 31; // Theoretical limit 1100
     bool public saleIsActive;
 
+    error ContractsNotAllowed();
+
     constructor()
         ERC721F("Example Metadata Update Extension", "EMUE", msg.sender)
     {}
@@ -24,7 +26,7 @@ contract ERC4906 is ERC721F, ERC721URIStorage {
      * Mint your tokens here.
      */
     function mint(uint256 numberOfTokens, string memory _tokenURI) external {
-        require(msg.sender == tx.origin, "No Contracts allowed.");
+        if (msg.sender.code.length != 0) revert ContractsNotAllowed();
         require(saleIsActive, "Sale NOT active yet");
         require(numberOfTokens > 0, "numberOfNfts cannot be 0");
         require(

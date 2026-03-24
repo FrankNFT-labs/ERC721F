@@ -30,15 +30,17 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
     mapping(uint256 => bool) private _unlockedTokens;
     bool private _tokenHolderIsAllowedToBurn;
 
+    error NotOwnerOrApproved();
+    error TokenNotTransferable();
+    error TokenOwnedByZeroAddress();
+    error TokenDoesNotExist();
+    error TokenNotMinted();
+
     /**
      * @dev Only a `spender` that is the owner of the contract or approved for `tokenId`/owner of `tokenId` passes
      */
     modifier onlyOwnerOrApproved(address spender, uint256 tokenId) {
-        address ownerToken = ERC721.ownerOf(tokenId);
-        require(
-            isOwnerOrApproved(spender, tokenId),
-            "Address is neither contractowner nor tokenapproved/tokenowner"
-        );
+        if (!isOwnerOrApproved(spender, tokenId)) revert NotOwnerOrApproved();
         _;
     }
 
@@ -50,10 +52,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         address from,
         address to
     ) {
-        require(
-            isTransferable(tokenId, from, to),
-            "Token can't be transferred"
-        );
+        if (!isTransferable(tokenId, from, to)) revert TokenNotTransferable();
         _;
     }
 
@@ -79,7 +78,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
      * @param tokenId The identifier for an SBT
      */
     function locked(uint256 tokenId) external view returns (bool) {
-        require(_exists(tokenId), "Token is owned by zero address");
+        if (!_exists(tokenId)) revert TokenOwnedByZeroAddress();
         return !_unlockedTokens[tokenId];
     }
 
@@ -174,7 +173,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         bool fromIsZeroAddress = from == address(0);
         bool toIsZeroAddress = to == address(0);
         if (!(fromIsZeroAddress && !toIsZeroAddress) && !_exists(tokenId)) {
-            revert("Token does not exist");
+            revert TokenDoesNotExist();
         }
         if (fromIsZeroAddress && !toIsZeroAddress) {
             return true;
@@ -265,10 +264,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         if (from == address(0)) {
             _checkOwner();
         }
-        require(
-            isTransferable(tokenId, from, to),
-            "Token can't be transferred"
-        );
+        if (!isTransferable(tokenId, from, to)) revert TokenNotTransferable();
         super._update(to, tokenId, auth);
         if (from == address(0)) {
             _unlockedStatus(tokenId, false);
@@ -280,7 +276,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
      * @dev Sets the unlockedState of `tokenId` to `_unlocked`, `tokenId` must exist
      */
     function _unlockedStatus(uint256 tokenId, bool _unlocked) internal {
-        require(_exists(tokenId), "Token has yet to be minted");
+        if (!_exists(tokenId)) revert TokenNotMinted();
         _unlockedTokens[tokenId] = _unlocked;
         if (_unlocked) {
             emit Unlocked(tokenId);

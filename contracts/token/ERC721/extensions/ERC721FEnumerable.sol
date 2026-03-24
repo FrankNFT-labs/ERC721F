@@ -17,6 +17,10 @@ import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
  */
 
 abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
+    error OwnerIndexOutOfBounds();
+    error TotalIndexOutOfBounds();
+    error UnexpectedEnumerationState();
+
     /**
      * @dev See {IERC721Enumerable-tokenOfOwnerByIndex}
      * Returns token ID owned by `owner` at a given `index` of its token list
@@ -27,10 +31,7 @@ abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
         address owner,
         uint256 index
     ) external view returns (uint256) {
-        require(
-            index < balanceOf(owner),
-            "Index out of bounds for owned tokens"
-        );
+        if (index >= balanceOf(owner)) revert OwnerIndexOutOfBounds();
         uint256 currentTokenIndex = _startTokenId();
         uint256 endTokenId = currentTokenIndex + _totalMinted();
         uint256 ownedTokenIndex = 0;
@@ -49,7 +50,7 @@ abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
         }
 
         // Execution should never reach this point.
-        revert("");
+        revert UnexpectedEnumerationState();
     }
 
     /**
@@ -60,10 +61,7 @@ abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
      */
     function tokenByIndex(uint256 index) external view returns (uint256) {
         uint256 totalMinted = ERC721FEnumerable.totalSupply();
-        require(
-            index < totalMinted,
-            "Index out of bounds for total minted tokens"
-        );
+        if (index >= totalMinted) revert TotalIndexOutOfBounds();
         uint256 currentTokenIndex;
 
         // Counter overflow is impossible as the loop breaks when
@@ -76,7 +74,7 @@ abstract contract ERC721FEnumerable is ERC721F, IERC721Enumerable {
                 currentTokenIndex++;
             }
         }
-        revert("");
+        revert UnexpectedEnumerationState();
     }
 
     /**

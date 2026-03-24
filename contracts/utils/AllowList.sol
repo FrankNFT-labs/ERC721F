@@ -25,8 +25,10 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 abstract contract AllowList is Ownable {
     mapping(address => bool) private allowList;
 
+    error AddressNotInAllowList();
+
     modifier onlyAllowList() {
-        require(isAllowList(msg.sender), "Address is not within allowList");
+        if (!isAllowList(msg.sender)) revert AddressNotInAllowList();
         _;
     }
 

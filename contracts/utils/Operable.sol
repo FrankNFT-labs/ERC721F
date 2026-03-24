@@ -19,14 +19,15 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 abstract contract Operable is Ownable {
     address private _operator;
 
+    error CallerNotOwnerOrOperator();
+
     /**
      * @dev Throws if called by any account other than the owner or operator.
      */
     modifier onlyOperator() {
-        require(
-            msg.sender == _operator || msg.sender == owner(),
-            "Operable: caller is not the owner or operator."
-        );
+        if (!(msg.sender == _operator || msg.sender == owner())) {
+            revert CallerNotOwnerOrOperator();
+        }
         _;
     }
 

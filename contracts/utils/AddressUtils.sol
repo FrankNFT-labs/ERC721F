@@ -7,6 +7,9 @@ pragma solidity ^0.8.20 <0.9.0;
  * @author FrankNFT.eth
  */
 library AddressUtils {
+    error InvalidHexCharacter();
+    error HexStringHasOddLength();
+
     /**
      * @notice Checks if the provided address is a contract.
      * !!!! It is unsafe to assume that an address for which this function returns
@@ -109,7 +112,7 @@ library AddressUtils {
         if (bytes1(c) >= bytes1("A") && bytes1(c) <= bytes1("F")) {
             return 10 + c - uint8(bytes1("A"));
         }
-        revert("Invalid hex character");
+        revert InvalidHexCharacter();
     }
 
     /**
@@ -121,7 +124,7 @@ library AddressUtils {
         string memory s
     ) internal pure returns (bytes memory) {
         bytes memory ss = bytes(s);
-        require(ss.length % 2 == 0, "Hex string has odd length");
+        if (ss.length % 2 != 0) revert HexStringHasOddLength();
         bytes memory r = new bytes(ss.length / 2);
         for (uint256 i = 0; i < ss.length / 2; ) {
             r[i] = bytes1(

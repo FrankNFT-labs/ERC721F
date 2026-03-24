@@ -18,6 +18,8 @@ contract MerkleRoot is ERC721F, Payable {
     bool public saleIsActive;
     bytes32 public root;
 
+    error ContractsNotAllowed();
+
     modifier validMintRequest(uint256 numberOfTokens) {
         require(numberOfTokens > 0, "numberOfNfts cannot be 0");
         require(
@@ -74,7 +76,7 @@ contract MerkleRoot is ERC721F, Payable {
     function mint(
         uint256 numberOfTokens
     ) external payable validMintRequest(numberOfTokens) {
-        require(msg.sender == tx.origin, "No Contracts allowed.");
+        if (msg.sender.code.length != 0) revert ContractsNotAllowed();
         require(saleIsActive, "Sale NOT active yet");
         uint256 supply = _totalMinted();
         require(

@@ -16,14 +16,15 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 abstract contract MultiOperable is Ownable {
     mapping(address => bool) private operators;
 
+    error CallerNotOwnerOrOperator();
+
     /**
      * @dev Throws if called by any account other than the owner or an operator.
      */
     modifier onlyOperators() {
-        require(
-            isOperator(msg.sender) || msg.sender == owner(),
-            "MultiOperable: caller is not the owner or operator"
-        );
+        if (!(isOperator(msg.sender) || msg.sender == owner())) {
+            revert CallerNotOwnerOrOperator();
+        }
         _;
     }
 
