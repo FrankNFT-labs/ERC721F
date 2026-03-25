@@ -47,11 +47,7 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
     /**
      * @dev Only a `tokenId` which is transferable passes
      */
-    modifier onlyTransferable(
-        uint256 tokenId,
-        address from,
-        address to
-    ) {
+    modifier onlyTransferable(uint256 tokenId, address from, address to) {
         if (!isTransferable(tokenId, from, to)) revert TokenNotTransferable();
         _;
     }

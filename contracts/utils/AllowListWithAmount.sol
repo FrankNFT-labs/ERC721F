@@ -14,9 +14,8 @@ abstract contract AllowListWithAmount is Ownable {
 
     error InsufficientAllowListTokens();
 
-    modifier onlyAllowListWithSufficientAvailableTokens(
-        uint256 numberOfTokens
-    ) {
+    modifier onlyAllowListWithSufficientAvailableTokens(uint256 numberOfTokens)
+    {
         if (numberOfTokens > allowList[msg.sender]) {
             revert InsufficientAllowListTokens();
         }
