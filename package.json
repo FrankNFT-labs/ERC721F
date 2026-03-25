@@ -37,7 +37,7 @@
     "author": "FrankNFT-labs",
     "license": "MIT",
     "devDependencies": {
-        "@chainlink/contracts": "^0.5.1",
+        "@chainlink/contracts": "^1.5.0",
         "@nomicfoundation/hardhat-toolbox": "^2.0.0",
         "dotenv": "^17.3.1",
         "hardhat": "^2.12.4",
