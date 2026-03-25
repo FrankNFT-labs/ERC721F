@@ -8,7 +8,7 @@
     "test": "hardhat test"
   },
   "dependencies": {
-    "hardhat-deploy": "^0.11.26"
+    "hardhat-deploy": "^1.0.4"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@^0.3.0-beta.13",
