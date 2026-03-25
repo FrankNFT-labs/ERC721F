@@ -2,8 +2,8 @@
 pragma solidity ^0.8.20 <0.9.0;
 
 import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721F.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
-import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+import "@chainlink/contracts/src/v0.8/vrf/interfaces/VRFCoordinatorV2Interface.sol";
+import "@chainlink/contracts/src/v0.8/vrf/VRFConsumerBaseV2.sol";
 
 /**
  * @title ChainLink

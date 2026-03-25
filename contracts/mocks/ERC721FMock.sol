@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20 <0.9.0;
 
 import "../token/ERC721/ERC721F.sol";
+import "@chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2Mock.sol";
 
 /**
  * @title ERC721FMock
