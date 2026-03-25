@@ -26,7 +26,7 @@ To report a vulnerability:
 
 We aim to respond to security reports within **48 hours**.
 
--   **High priority** (critical impact): Acknowledge within 48h, target fix in next release
+-   **High priority** (critical impact): Acknowledge within 48h, target fix within 1-2 weeks
 -   **Medium priority**: Acknowledge within 48h, target fix in 2-4 weeks
 -   **Low priority** (minor impact, theoretical): Acknowledge within 48h, fix in next release
 
