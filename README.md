@@ -23,6 +23,10 @@ The Author is not liable for any outcomes as a result of using ERC721F. **DYOR!*
 
 See the [open issues](https://github.com/FrankNFT-labs/ERC721F/issues) for a full list of proposed features (and known issues).
 
+## Security
+
+Please refer to [SECURITY.md](./SECURITY.md) for our security policy and how to responsibly report vulnerabilities.
+
 <!-- USAGE EXAMPLES -->
 
 ## Usage
