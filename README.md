@@ -1,12 +1,14 @@
 [![MIT License][license-shield]][license-url]
 [![NPM][npm-shield]][npm-url]
+[![Solidity][solidity-shield]][solidity-url]
+[![Build][build-shield]][build-url]
 
 # ERC721F
 
 The goal of ERC721F is to provide a simple extension of IERC721 with significant gas savings for minting multiple and single NFTs in a single transaction. This project and implementation will be updated regularly and will continue to stay up to date with best practices.
 Another key goal of ERC721F is to facilitate educational opportunities for new web3 developers, fostering a supportive learning environment and driving innovation within the community.
 
-ERC721F Extends ERC721 Non-Fungible Token Standard basic implementation. ERC721F eliminates the need for ERC721Enumerable, yet retains the functionality of totalSupply() and walletOfOwner(address \_owner).
+ERC721F extends ERC721 Non-Fungible Token Standard basic implementation. ERC721F eliminates the need for ERC721Enumerable, yet retains the functionality of totalSupply() and walletOfOwner(address \_owner).
 
 The Author is not liable for any outcomes as a result of using ERC721F. **DYOR!**
 
@@ -14,9 +16,10 @@ The Author is not liable for any outcomes as a result of using ERC721F. **DYOR!*
 
 ## Roadmap
 
-- [] Add more documentation on benefits of using ERC721F
-- [] Continue to try to reduce gas costs
-- [] Start automated testing
+-   [x] Add more documentation on benefits of using ERC721F
+-   [x] Continue to try to reduce gas costs
+-   [x] Start automated testing
+-   [x] Put package under Agentic AI control
 
 See the [open issues](https://github.com/FrankNFT-labs/ERC721F/issues) for a full list of proposed features (and known issues).
 
@@ -30,6 +33,12 @@ See the [open issues](https://github.com/FrankNFT-labs/ERC721F/issues) for a ful
 npm install '@franknft.eth/erc721-f'
 ```
 
+### Requirements
+
+-   **Solidity**: `0.8.24` or higher
+-   **Node.js**: `>=24`
+-   **OpenZeppelin**: `5.6.1`
+
 Just import the file from the package like this:
 
 ```solidity
@@ -40,18 +49,22 @@ import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721FCOMMON.sol";
 
 contract Example is ERC721F {
     constructor() ERC721F("Example", "Example", msg.sender) {
-        setBaseTokenURI("ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/");
+        setBaseTokenURI(
+            "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
+        );
     }
 
     /**
      * Mint your tokens here.
      */
     function mint(uint256 numberOfTokens) external {
-        require(msg.sender==tx.origin,"No Contracts allowed.");
+        require(msg.sender == tx.origin, "No Contracts allowed.");
         uint256 supply = totalSupply();
-        for(uint256 i; i < numberOfTokens;){
-            _mint( msg.sender, supply + i ); // no need to use safeMint as we don't allow contracts.
-            unchecked{ i++;}
+        for (uint256 i; i < numberOfTokens; ) {
+            _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
+            unchecked {
+                i++;
+            }
         }
     }
 }
@@ -108,9 +121,9 @@ Don't forget to give the project a star! Thanks again!
 
 ##### Testing gas consumption
 
-- Enable the creation of a gas report by setting `REPORT_GAS` to `true` in `.env`
-- Toggle the creation of a gas report file by (un)commenting `outputFile` in `hardhat.config.js`
-- Change the total runs and toggle the optimizer by changing the `solidity` `optimizer` values in `hardhat.config.js`
+-   Enable the creation of a gas report by setting `REPORT_GAS` to `true` in `.env`
+-   Toggle the creation of a gas report file by (un)commenting `outputFile` in `hardhat.config.js`
+-   Change the total runs and toggle the optimizer by changing the `solidity` `optimizer` values in `hardhat.config.js`
 
 #### Foundry
 
@@ -131,3 +144,7 @@ Don't forget to give the project a star! Thanks again!
 [license-url]: https://github.com/FrankNFT-labs/ERC721F/blob/main/LICENSE
 [npm-shield]: https://img.shields.io/npm/v/@franknft.eth/erc721-f.svg?style=for-the-badge
 [npm-url]: https://www.npmjs.com/package/@franknft.eth/erc721-f
+[solidity-shield]: https://img.shields.io/badge/Solidity-0.8.24-blue.svg?style=for-the-badge
+[solidity-url]: https://soliditylang.org
+[build-shield]: https://github.com/FrankNFT-labs/ERC721F/actions/workflows/main.yml/badge.svg
+[build-url]: https://github.com/FrankNFT-labs/ERC721F/actions/workflows/main.yml
