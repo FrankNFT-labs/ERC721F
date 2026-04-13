@@ -16,10 +16,10 @@ The Author is not liable for any outcomes as a result of using ERC721F. **DYOR!*
 
 ## Roadmap
 
--   [x] Add more documentation on benefits of using ERC721F
--   [x] Continue to try to reduce gas costs
--   [x] Start automated testing
--   [x] Put package under Agentic AI control
+- [x] Add more documentation on benefits of using ERC721F
+- [x] Continue to try to reduce gas costs
+- [x] Start automated testing
+- [x] Put package under Agentic AI control
 
 See the [open issues](https://github.com/FrankNFT-labs/ERC721F/issues) for a full list of proposed features (and known issues).
 
@@ -39,9 +39,9 @@ npm install '@franknft.eth/erc721-f'
 
 ### Requirements
 
--   **Solidity**: `0.8.24` or higher
--   **Node.js**: `>=24`
--   **OpenZeppelin**: `5.6.1`
+- **Solidity**: `0.8.24` or higher
+- **Node.js**: `>=24`
+- **OpenZeppelin**: `5.6.1`
 
 Just import the file from the package like this:
 
@@ -125,9 +125,9 @@ Don't forget to give the project a star! Thanks again!
 
 ##### Testing gas consumption
 
--   Enable the creation of a gas report by setting `REPORT_GAS` to `true` in `.env`
--   Toggle the creation of a gas report file by (un)commenting `outputFile` in `hardhat.config.js`
--   Change the total runs and toggle the optimizer by changing the `solidity` `optimizer` values in `hardhat.config.js`
+- Enable the creation of a gas report by setting `REPORT_GAS` to `true` in `.env`
+- Toggle the creation of a gas report file by (un)commenting `outputFile` in `hardhat.config.js`
+- Change the total runs and toggle the optimizer by changing the `solidity` `optimizer` values in `hardhat.config.js`
 
 #### Foundry
 
@@ -150,5 +150,5 @@ Don't forget to give the project a star! Thanks again!
 [npm-url]: https://www.npmjs.com/package/@franknft.eth/erc721-f
 [solidity-shield]: https://img.shields.io/badge/Solidity-0.8.24-blue.svg?style=for-the-badge
 [solidity-url]: https://soliditylang.org
-[build-shield]: https://github.com/FrankNFT-labs/ERC721F/actions/workflows/main.yml/badge.svg
-[build-url]: https://github.com/FrankNFT-labs/ERC721F/actions/workflows/main.yml
+[build-shield]: https://github.com/FrankNFT-labs/ERC721F/actions/workflows/ci.yml/badge.svg
+[build-url]: https://github.com/FrankNFT-labs/ERC721F/actions/workflows/ci.yml
