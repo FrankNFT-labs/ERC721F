@@ -43,6 +43,9 @@ jobs:
       - name: Install Node dependencies (required for remappings)
         run: npm ci
 
+      - name: Rewrite example imports for local dev
+        run: npm run update-example-imports:dev
+
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
 
