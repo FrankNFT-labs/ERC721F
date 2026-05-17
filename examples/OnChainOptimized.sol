@@ -7,19 +7,41 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 
 /**
- * @title OnChain
- * As an example collection a bunny with 3 different traits have been used:
- * 6 different backgrounds, 4 different purse, 4 different glasses, 2 bracelets
- * AlgorithmId corresponds with a sampled id, it is represented with bits
- * AlgorithmId can be represented with 5 bits: 2 bits for the purses, 2 for the glasses, 1 for bracelet.
- * @dev Example implementation of [ERC721FOnChain] with overridden functions for custom SVG and URI creation
+ * @title OnChainOptimized
+ * @notice Example NFT collection (bunnies) with all metadata generated fully on-chain.
+ *         Demonstrates how to pack multiple discrete traits into a single `uint256`
+ *         using bitfield encoding, avoiding per-trait storage slots.
+ *
+ * @dev Trait layout — the collection has four trait categories:
+ *
+ *  | Trait      | Options | Bits needed | Bit positions in algorithmId |
+ *  |------------|---------|-------------|------------------------------|
+ *  | Glasses    |    4    |      2      | bits 0, 2                    |
+ *  | Purse      |    4    |      2      | bits 1, 4                    |
+ *  | Bracelet   |    2    |      1      | bit  3                       |
+ *  | Background |    6    |     n/a     | not in bitfield (modulo)     |
+ *
+ *  Total bitfield combinations: 4 × 4 × 2 = 32 → fits in 5 bits (values 0–31).
+ *  Background is distributed separately via `id % 6` so all 6 colours appear
+ *  uniformly across the 32 algorithmId values without consuming extra bits.
+ *
+ *  The entire trait set for a token is stored as a single `uint256 algorithmId`
+ *  in `idToAlgorithmId[tokenId]`.  A single SSTORE per mint covers all traits.
+ *  The alternative — one mapping per trait — would cost 4 SSTOREs per mint.
+ *
+ * @author @FrankNFT.eth
  */
 contract OnChainOptimized is IERC4883, ERC721F {
     uint256 public constant MAX_TOKENS = 10;
     uint256 public constant MAX_PURCHASE = 10;
-    uint256 public lastSelected = 0; //t: total input records dealt with
+    uint256 public lastSelected = 0; // Accumulator: tracks the last algorithmId assigned; seeds next random draw.
     bool public saleIsActive;
-    //
+    /**
+     * @dev Maps each tokenId to its packed `algorithmId` (a 5-bit value, 0–31).
+     *      All four traits (glasses, purse, bracelet, background) are derived from
+     *      this single stored integer via bit extraction — no per-trait mappings needed.
+     *      One SSTORE per mint vs four if each trait were stored separately.
+     */
     mapping(uint256 => uint256) private idToAlgorithmId;
 
     error ContractsNotAllowed();
@@ -34,7 +56,20 @@ contract OnChainOptimized is IERC4883, ERC721F {
     }
 
     /**
-     * @notice Mints `numberOfTokens` tokens for `sender`
+     * @notice Mints `numberOfTokens` tokens for `sender`.
+     *
+     * @dev Trait assignment uses a **running accumulator + random offset** pattern:
+     *
+     *      `algorithmId = lastSelected + createRandomNumber(tokenId)`
+     *
+     *      Adding the previous token's algorithmId as an offset prevents two tokens
+     *      minted in the same block from receiving identical traits even when
+     *      `block.timestamp` and `block.prevrandao` are identical (same block).
+     *      `lastSelected` is then updated to the new algorithmId, so each mint
+     *      cascades into the next.
+     *
+     *      The result is stored in `idToAlgorithmId[tokenId]` — a single SSTORE that
+     *      encodes all three bitfield traits (glasses, purse, bracelet) at once.
      */
     function mint(uint256 numberOfTokens) external {
         if (msg.sender.code.length != 0) revert ContractsNotAllowed();
@@ -44,7 +79,7 @@ contract OnChainOptimized is IERC4883, ERC721F {
             numberOfTokens < MAX_PURCHASE,
             "Can only mint 9 tokens at a time"
         );
-        uint256 supply = totalSupply(); //m: number of items selected so far
+        uint256 supply = totalSupply(); // number of tokens minted so far (used to derive next tokenId)
         require(
             supply + numberOfTokens <= MAX_TOKENS,
             "Purchase would exceed max supply of Tokens"
@@ -95,10 +130,21 @@ contract OnChainOptimized is IERC4883, ERC721F {
     }
 
     /**
-     * Creates a random number between 1 and the number of combonations
-     * number of combinations = 4 purses * 4 glasses * 2 bracelets = 32
-     * prevrandao is used to calculate random number: check which version
-     * of compiler to use block.difficulty or block.prevrando
+     * @notice Generates a pseudo-random number in [0, 31] used as the trait seed.
+     *
+     * @dev The modulus 32 (= 2^5) matches the 5-bit bitfield:
+     *      4 purses × 4 glasses × 2 bracelets = 32 possible trait combinations.
+     *      `% 32` therefore maps evenly onto every valid algorithmId without waste.
+     *
+     *      Entropy sources mixed via keccak256:
+     *      - `block.timestamp`  — changes each block, varies between transactions
+     *      - `block.prevrandao` — RANDAO beacon value from the previous block (EVM Cancun)
+     *      - `tokenId`          — unique per token, prevents collisions within a batch
+     *      - `msg.sender`       — caller address, differs between wallets
+     *
+     * @dev WARNING: This is not cryptographically secure randomness.  A validator
+     *      can influence `prevrandao` at some cost.  For a production collection
+     *      with high-value traits, use Chainlink VRF (see `examples/ChainLink.sol`).
      */
     function createRandomNumber(uint256 tokenId) public view returns (uint256) {
         unchecked {
@@ -198,8 +244,18 @@ contract OnChainOptimized is IERC4883, ERC721F {
     }
 
     /**
-     * We distribute the background evenly,
-     * so this is not extracted out of the bitfield encoding of the id
+     * @notice Returns the background colour index for a given `algorithmId`.
+     *
+     * @dev Background is NOT encoded in the bitfield.  The 5 bitfield bits are fully
+     *      consumed by glasses (2 bits), purse (2 bits), and bracelet (1 bit).
+     *      Adding a 6th background option would require a 3-bit slot (8 values) but
+     *      there are only 6 backgrounds — wasteful.
+     *
+     *      Instead, background is derived with `id % 6`, which distributes evenly
+     *      across all 32 bitfield values (32 = 5 × 6 + 2, so IDs 0 and 1 appear once
+     *      more than the rest — a tiny bias that is acceptable for an example).
+     *
+     *      This keeps the per-trait bit positions clean and avoids gaps.
      */
     function getBackgroundId(
         uint256 id
@@ -208,8 +264,16 @@ contract OnChainOptimized is IERC4883, ERC721F {
     }
 
     /**
-     * 4 different purses are provided, these are represented with 2 bits
-     * Bit 2 and bit 5 represent the purse
+     * @notice Extracts the purse variant (0–3) from the packed `algorithmId`.
+     *
+     * @dev Purse uses bits 1 and 4 of the algorithmId (0-indexed from LSB):
+     *
+     *      bit1 = (id >> 1) & 1  →  bit at position 1
+     *      bit2 = (id >> 4) & 1  →  bit at position 4
+     *      purseId = (bit2 << 1) | bit1  →  recombined as a 2-bit value [0, 3]
+     *
+     *      The two bits are non-adjacent so they do not overlap with glasses (bits 0, 2)
+     *      or bracelet (bit 3).  Every bit in positions 0–4 is used by exactly one trait.
      */
     function getPurseId(uint256 id) public pure returns (uint256 purseId) {
         uint256 bit1 = (id >> 1) & 1;
@@ -218,8 +282,13 @@ contract OnChainOptimized is IERC4883, ERC721F {
     }
 
     /**
-     * 2 different bracelets are provided, these are represented with 1 bit
-     * Bit 4 represents this
+     * @notice Extracts the bracelet variant (0 or 1) from the packed `algorithmId`.
+     *
+     * @dev Bracelet occupies bit 3 only — a single-bit extract:
+     *
+     *      braceletId = (id >> 3) & 1  →  0 or 1
+     *
+     *      Two bracelet colours map to these values in `getBracelet()`.
      */
     function getBraceletId(
         uint256 id
@@ -229,8 +298,16 @@ contract OnChainOptimized is IERC4883, ERC721F {
     }
 
     /**
-     * 4 different glasses are provided, these are represented with 2 bits
-     * Bit 1 and bit 3 represent the glasses
+     * @notice Extracts the glasses variant (0–3) from the packed `algorithmId`.
+     *
+     * @dev Glasses uses bits 0 and 2 of the algorithmId:
+     *
+     *      bit1 = id & 1          →  bit at position 0 (LSB)
+     *      bit2 = (id >> 2) & 1   →  bit at position 2
+     *      glassesId = (bit2 << 1) | bit1  →  recombined as a 2-bit value [0, 3]
+     *
+     *      Bit 1 is skipped here because it belongs to purse, so glasses bits
+     *      are positions 0 and 2 (non-contiguous).
      */
     function getGlassesId(uint256 id) public pure returns (uint256 glassesId) {
         uint256 bit1 = id & 1;
