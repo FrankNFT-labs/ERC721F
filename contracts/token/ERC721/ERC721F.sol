@@ -140,10 +140,12 @@ contract ERC721F is Ownable, ERC721 {
         address auth
     ) internal virtual override returns (address) {
         address from = super._update(to, tokenId, auth);
-        if (from == address(0)) {
-            _tokenSupply++;
-        } else if (to == address(0)) {
-            _burnCounter++;
+        unchecked {
+            if (from == address(0)) {
+                _tokenSupply++;
+            } else if (to == address(0)) {
+                _burnCounter++;
+            }
         }
         return from;
     }
