@@ -100,7 +100,7 @@ contract AllowListExample is ERC721FCOMMON, AllowList {
         }
     }
 
-    function withdraw() external override onlyOwner {
+    function withdraw() external onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0, "Insufficient balance");
         _withdraw(owner(), balance);
