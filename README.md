@@ -12,6 +12,27 @@ ERC721F extends ERC721 Non-Fungible Token Standard basic implementation. ERC721F
 
 The Author is not liable for any outcomes as a result of using ERC721F. **DYOR!**
 
+<!-- LEARNING PATH -->
+
+## Learning Path
+
+ERC721F ships a set of progressively more advanced example contracts designed to onboard new Solidity developers step by step.
+Each example builds on the previous one and introduces exactly one new concept.
+
+| Step | Contract                                                                               | Concepts introduced                                             |
+| ---- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| 1    | [`examples/FreeMint.sol`](./examples/FreeMint.sol)                                     | Basic ERC721F usage, ERC-2981 royalties, EOA-only guard         |
+| 2    | [`examples/AllowList.sol`](./examples/AllowList.sol)                                   | Utility mixin pattern, multiple inheritance, allowlist modifier |
+| 3    | [`examples/AllowListWithAmount.sol`](./examples/AllowListWithAmount.sol)               | Per-address mint quota, internal state decrement                |
+| 4    | [`examples/MerkleRoot.sol`](./examples/MerkleRoot.sol)                                 | Merkle-proof whitelisting, pre-sale / public-sale state machine |
+| 5    | [`contracts/token/soulbound/Soulbound.sol`](./contracts/token/soulbound/Soulbound.sol) | Non-transferable tokens, EIP-5192, EIP-6454                     |
+| 6    | [`examples/OnChain.sol`](./examples/OnChain.sol)                                       | On-chain SVG metadata, EIP-4883, string assembly                |
+| 7    | [`examples/OnChainOptimized.sol`](./examples/OnChainOptimized.sol)                     | Bitfield trait packing — advanced storage optimization          |
+| 8    | [`examples/ChainLink.sol`](./examples/ChainLink.sol)                                   | External oracle integration, Chainlink VRF callback pattern     |
+| 9    | [`examples/EIP-2535/`](./examples/EIP-2535/)                                           | Diamond proxy (EIP-2535), upgradeability, facets                |
+
+> Gas benchmarks comparing ERC721F against OpenZeppelin ERC721Enumerable are in [`BENCHMARK.md`](./BENCHMARK.md).
+
 <!-- ROADMAP -->
 
 ## Roadmap

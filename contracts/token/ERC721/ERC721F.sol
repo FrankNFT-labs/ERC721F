@@ -26,10 +26,26 @@ contract ERC721F is Ownable, ERC721 {
     ) ERC721(name_, symbol_) Ownable(initialOwner) {}
 
     /**
-     * @dev walletofOwner
-     * @return tokens id owned by the given address
-     * This read function is O(totalSupply). If calling from a separate contract, be sure to test gas first.
-     * It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case.
+     * @notice Returns all token IDs currently owned by `_owner`.
+     *
+     * @dev OFF-CHAIN / VIEW USE ONLY.
+     * This function is O(totalMinted) — it performs a full linear scan over every token ID
+     * that has ever been minted, regardless of how many are still owned by `_owner`.
+     *
+     * Safe usage:
+     *  - Frontend / dapp queries via `eth_call` (no gas cost to the caller).
+     *  - Off-chain indexers or scripts.
+     *
+     * Unsafe usage — do NOT call from another contract on-chain:
+     *  - At 10 000 tokens the scan costs roughly 20 000 000 gas, which exceeds the block gas
+     *    limit and will revert.
+     *  - Even at smaller supply sizes an on-chain call wastes significant gas with no benefit,
+     *    since the result is not verifiable by the calling contract anyway.
+     *
+     * If you need on-chain enumeration, inherit ERC721FEnumerable instead, or track token IDs
+     * in your own minting logic.
+     *
+     * @return tokens Array of token IDs owned by `_owner` at the time of the call.
      */
     function walletOfOwner(
         address _owner

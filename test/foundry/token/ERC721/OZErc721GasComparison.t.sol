@@ -1,0 +1,127 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20 <0.9.0;
+
+import "../../../../contracts/mocks/OZErc721EnumerableGasReporterMock.sol";
+import "../../../../lib/forge-std/src/Test.sol";
+
+/**
+ * @title OZErc721GasComparisonTest
+ * @dev Gas benchmark for OZ ERC721 + ERC721Enumerable.
+ * Run alongside ERC721FGasReporterMock.t.sol to compare.
+ *
+ * Commands:
+ *   forge test --gas-report --match-path "test/foundry/token/ERC721/OZErc721GasComparison.t.sol"
+ *   forge test --gas-report --match-contract "OZErc721GasComparisonTest" --mt "testMint"
+ *   forge test --gas-report --match-contract "OZErc721GasComparisonTest" --mt "testTransfer"
+ */
+contract OZErc721GasComparisonTest is Test {
+    OZErc721EnumerableGasReporterMock private t;
+    address private owner = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
+    address private other = 0x70997970C51812dc3A010C7d01b50e0d17dc79C8;
+
+    function setUp() public {
+        t = new OZErc721EnumerableGasReporterMock(
+            "OZ Gas Stress Test",
+            "OZGAS"
+        );
+    }
+
+    // -------------------------------------------------------------------------
+    // Mint benchmarks (mirrors ERC721FGasReporterMockTest)
+    // -------------------------------------------------------------------------
+
+    function testMintOne() public {
+        t.mintOne(owner);
+        t.mintOne(owner);
+    }
+
+    function testMintTen() public {
+        t.mintTen(owner);
+        t.mintTen(owner);
+    }
+
+    function testMintHundred() public {
+        t.mintHundred(owner);
+        t.mintHundred(owner);
+    }
+
+    // -------------------------------------------------------------------------
+    // Transfer benchmarks — wallet size 1
+    // -------------------------------------------------------------------------
+
+    function testTransferMintOneAscOne() public {
+        t.mintOne(owner);
+        vm.prank(owner);
+        t.transferOneAsc(other);
+        vm.prank(other);
+        t.transferOneAsc(owner);
+    }
+
+    function testTransferMintOneDescOne() public {
+        t.mintOne(owner);
+        vm.prank(owner);
+        t.transferOneDesc(other);
+        vm.prank(other);
+        t.transferOneDesc(owner);
+    }
+
+    // -------------------------------------------------------------------------
+    // Transfer benchmarks — wallet size 10
+    // -------------------------------------------------------------------------
+
+    function testTransferMintTenAscOne() public {
+        t.mintTen(owner);
+        vm.prank(owner);
+        t.transferOneAsc(other);
+    }
+
+    function testTransferMintTenDescOne() public {
+        t.mintTen(owner);
+        vm.prank(owner);
+        t.transferOneDesc(other);
+    }
+
+    function testTransferMintTenAscTen() public {
+        t.mintTen(owner);
+        vm.prank(owner);
+        t.transferTenAsc(other);
+        vm.prank(other);
+        t.transferTenAsc(owner);
+    }
+
+    function testTransferMintTenDescTen() public {
+        t.mintTen(owner);
+        vm.prank(owner);
+        t.transferTenDesc(other);
+        vm.prank(other);
+        t.transferTenDesc(owner);
+    }
+
+    // -------------------------------------------------------------------------
+    // Transfer benchmarks — wallet size 100
+    // -------------------------------------------------------------------------
+
+    function testTransferMintHundredAscTen() public {
+        t.mintHundred(owner);
+        vm.prank(owner);
+        t.transferTenAsc(other);
+    }
+
+    function testTransferMintHundredDescTen() public {
+        t.mintHundred(owner);
+        vm.prank(owner);
+        t.transferTenDesc(other);
+    }
+
+    function testTransferMintHundredAscFifty() public {
+        t.mintHundred(owner);
+        vm.prank(owner);
+        t.transferFiftyAsc(other);
+    }
+
+    function testTransferMintHundredDescFifty() public {
+        t.mintHundred(owner);
+        vm.prank(owner);
+        t.transferFiftyDesc(other);
+    }
+}
