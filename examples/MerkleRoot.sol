@@ -17,8 +17,10 @@ contract MerkleRoot is ERC721F, Payable {
     bool public preSaleIsActive;
     bool public saleIsActive;
     bytes32 public root;
+    mapping(address => bool) private _preSaleMinted;
 
     error ContractsNotAllowed();
+    error PreSaleAlreadyMinted();
 
     modifier validMintRequest(uint256 numberOfTokens) {
         require(numberOfTokens > 0, "numberOfNfts cannot be 0");
@@ -103,12 +105,14 @@ contract MerkleRoot is ERC721F, Payable {
         bytes32[] calldata merkleProof
     ) external payable validMintRequest(numberOfTokens) {
         require(preSaleIsActive, "PreSale is not active yet");
+        if (_preSaleMinted[msg.sender]) revert PreSaleAlreadyMinted();
         uint256 supply = _totalMinted();
         require(
             supply + numberOfTokens <= MAX_TOKENS,
             "Purchase would exceed max supply of Tokens"
         );
         require(checkValidity(merkleProof), "Invalid Merkle Proof");
+        _preSaleMinted[msg.sender] = true;
 
         unchecked {
             for (uint256 i; i < numberOfTokens; ) {

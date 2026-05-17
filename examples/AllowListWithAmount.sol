@@ -97,16 +97,16 @@ contract AllowListWithAmountExample is ERC721FCOMMON, AllowListWithAmount {
             "Purchase would exceed max supply of tokens"
         );
 
+        decreaseAddressAvailableTokens(msg.sender, numberOfTokens);
         unchecked {
             for (uint256 i; i < numberOfTokens; ) {
                 _safeMint(msg.sender, supply + i);
-                decreaseAddressAvailableTokens(msg.sender, 1);
                 i++;
             }
         }
     }
 
-    function withdraw() external onlyOwner {
+    function withdraw() external override onlyOwner {
         uint256 balance = address(this).balance;
         require(balance > 0, "Insufficient balance");
         _withdraw(owner(), balance);

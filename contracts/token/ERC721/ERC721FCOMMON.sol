@@ -16,9 +16,11 @@ import "@openzeppelin/contracts/token/common/ERC2981.sol";
  *  - **ERC2981** stores royalty configuration and satisfies marketplace queries via
  *    `royaltyInfo()`.  It is a thin, well-audited OZ module; reimplementing it would
  *    only introduce risk.
- *  - **Payable** provides `withdraw()` so the owner can retrieve ETH collected during
- *    paid mints.  Kept separate so projects that do not accept payment can use ERC721F
- *    directly without the extra surface area.
+ *  - **Payable** provides `_withdraw()` (internal helper) and a `receive()` fallback so
+ *    the contract can accept ETH.  `ERC721FCOMMON` exposes the public `withdraw()`
+ *    function so the owner can retrieve ETH collected during paid mints.  Kept separate
+ *    so projects that do not accept payment can use ERC721F directly without the extra
+ *    surface area.
  *
  *  Child contracts typically only need to add a `mint()` function on top of this base.
  *
@@ -129,5 +131,19 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
     {
         if (!_exists(_tokenId)) revert RoyaltyInfoForNonexistentToken();
         return (royaltyReceiver, (_salePrice * royalties) / 10000);
+    }
+
+    /**
+     * @notice Transfers the full ETH balance of this contract to the owner.
+     *
+     * @dev Delegates to `Payable._withdraw()` which uses a low-level `call` (not
+     *      `transfer`/`send`) so it works with smart-contract owners that consume
+     *      more than the 2 300-gas stipend.  The zero-balance guard is an explicit
+     *      early-revert so callers get a readable error rather than a silent no-op.
+     */
+    function withdraw() external virtual onlyOwner {
+        uint256 balance = address(this).balance;
+        require(balance > 0, "Insufficient balance");
+        _withdraw(owner(), balance);
     }
 }

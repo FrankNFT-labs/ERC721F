@@ -17,9 +17,9 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
     constructor(
         string memory name_,
         string memory symbol_,
-        address intialOwner,
+        address initialOwner,
         string memory description_
-    ) ERC721F(name_, symbol_, intialOwner) {
+    ) ERC721F(name_, symbol_, initialOwner) {
         description = description_;
     }
 
