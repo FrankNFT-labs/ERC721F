@@ -10,14 +10,24 @@ describe("ERC721FCOMMON", function () {
         return { token, owner, addr1 };
     }
 
+    describe("supportsInterface", function () {
+        it("supports ERC2981 royalties", async function () {
+            const ERC2981InterfaceId = 0x2a55205a;
+            const { token } = await loadFixture(deployFixture);
+
+            expect(await token.supportsInterface(ERC2981InterfaceId)).to.be
+                .true;
+        });
+    });
+
     describe("setRoyaltyReceiver", function () {
         it("reverts when called with the zero address", async function () {
             const { token } = await loadFixture(deployFixture);
             await expect(
-                token.setRoyaltyReceiver(ethers.constants.AddressZero)
+                token.setRoyaltyReceiver(ethers.constants.AddressZero),
             ).to.be.revertedWithCustomError(
                 token,
-                "RoyaltyReceiverIsZeroAddress"
+                "RoyaltyReceiverIsZeroAddress",
             );
         });
 
@@ -57,11 +67,11 @@ describe("ERC721FCOMMON", function () {
             const { token } = await loadFixture(deployFixture);
             await expect(token.setRoyalties(90)).to.be.revertedWithCustomError(
                 token,
-                "RoyaltiesTooHigh"
+                "RoyaltiesTooHigh",
             );
             await expect(token.setRoyalties(100)).to.be.revertedWithCustomError(
                 token,
-                "RoyaltiesTooHigh"
+                "RoyaltiesTooHigh",
             );
         });
 
@@ -83,8 +93,8 @@ describe("ERC721FCOMMON", function () {
             await expect(
                 token.withdraw(
                     ethers.constants.AddressZero,
-                    ethers.utils.parseEther("1")
-                )
+                    ethers.utils.parseEther("1"),
+                ),
             ).to.be.revertedWithCustomError(token, "WithdrawToZeroAddress");
         });
 
@@ -107,10 +117,10 @@ describe("ERC721FCOMMON", function () {
         it("reverts for non-existent token", async function () {
             const { token } = await loadFixture(deployFixture);
             await expect(
-                token.royaltyInfo(999, 10000)
+                token.royaltyInfo(999, 10000),
             ).to.be.revertedWithCustomError(
                 token,
-                "RoyaltyInfoForNonexistentToken"
+                "RoyaltyInfoForNonexistentToken",
             );
         });
 

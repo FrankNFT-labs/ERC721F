@@ -3,7 +3,7 @@ pragma solidity ^0.8.20 <0.9.0;
 
 import "./ERC721F.sol";
 import "../../utils/Payable.sol";
-import "@openzeppelin/contracts/token/common/ERC2981.sol";
+import "@openzeppelin/contracts/interfaces/IERC2981.sol";
 
 /**
  * @title ERC721FCOMMON
@@ -13,9 +13,8 @@ import "@openzeppelin/contracts/token/common/ERC2981.sol";
  * @dev Composition rationale — why three parents instead of one:
  *
  *  - **ERC721F** handles the token ledger and supply accounting.
- *  - **ERC2981** stores royalty configuration and satisfies marketplace queries via
- *    `royaltyInfo()`.  It is a thin, well-audited OZ module; reimplementing it would
- *    only introduce risk.
+ *  - **IERC2981** advertises royalty support while this contract stores the single
+ *    collection-wide royalty configuration directly.
  *  - **Payable** provides `_withdraw()` (internal helper) and a `receive()` fallback so
  *    the contract can accept ETH.  Child contracts are expected to expose their own
  *    `withdraw()` function with the signature appropriate for their use case, calling
@@ -27,7 +26,7 @@ import "@openzeppelin/contracts/token/common/ERC2981.sol";
  * @author @FrankNFT.eth
  */
 
-contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
+contract ERC721FCOMMON is ERC721F, Payable, IERC2981 {
     /**
      * @dev Royalty percentage stored as basis points (1 % = 100 bp).
      *      Basis points are the standard unit used by ERC-2981's `royaltyInfo()`
@@ -86,17 +85,17 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
     /**
      * @notice Returns true if this contract implements the interface identified by `_interfaceId`.
      *
-     * @dev EIP-165 multi-inheritance resolution.  Both ERC721 and ERC2981 implement
-     *      `supportsInterface`, so Solidity requires an explicit override to resolve the
-     *      ambiguity.  The check for `IERC2981` is added manually before delegating to
-     *      `super`, which walks the C3-linearised MRO (ERC721F → ERC721 → ERC2981).
+     * @dev EIP-165 multi-inheritance resolution.  ERC721 implements `supportsInterface`
+     *      and IERC2981 inherits IERC165, so Solidity requires an explicit override to
+     *      resolve the ambiguity.  The check for `IERC2981` is added manually before
+     *      delegating to `super`, which resolves ERC721 interfaces.
      *      This ensures marketplaces querying for `0x2a55205a` (ERC-2981) get `true`.
      *
      * @return `true` if the contract implements `_interfaceId`, `false` otherwise.
      */
     function supportsInterface(
         bytes4 _interfaceId
-    ) public view virtual override(ERC721, ERC2981) returns (bool) {
+    ) public view virtual override(ERC721, IERC165) returns (bool) {
         return
             _interfaceId == type(IERC2981).interfaceId ||
             super.supportsInterface(_interfaceId);
@@ -126,7 +125,7 @@ contract ERC721FCOMMON is ERC721F, Payable, ERC2981 {
         public
         view
         virtual
-        override
+        override(IERC2981)
         returns (address receiver, uint256 royaltyAmount)
     {
         if (!_exists(_tokenId)) revert RoyaltyInfoForNonexistentToken();
