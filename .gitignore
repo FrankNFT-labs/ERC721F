@@ -15,3 +15,6 @@ coverage
 out/
 forge-cache
 forge-snapshots
+
+# macOS
+.DS_Store
