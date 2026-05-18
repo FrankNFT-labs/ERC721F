@@ -18,3 +18,10 @@ forge-snapshots
 
 # macOS
 .DS_Store
+
+# Local OpenCode / agent workspace files
+.opencode
+.opencode/
+.opencode.*
+.sisyphus/
+.claude/
