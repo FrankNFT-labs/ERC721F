@@ -16,7 +16,7 @@ All figures are Foundry measurements at identical conditions. Hardhat numbers ar
 | Optimizer      | enabled, 1 000 runs        |
 | Foundry        | forge (see `foundry.toml`) |
 | Hardhat        | see `hardhat.config.js`    |
-| Benchmark date | 2026-05-17                 |
+| Benchmark date | 2026-05-18                 |
 
 ---
 
@@ -24,10 +24,10 @@ All figures are Foundry measurements at identical conditions. Hardhat numbers ar
 
 | Operation                | OZ ERC721Enumerable (avg) | ERC721F (avg) | Gas saved | % saved |
 | ------------------------ | ------------------------: | ------------: | --------: | ------: |
-| Deploy                   |                 1,358,592 |     1,499,543 |  -140,951 |    −10% |
-| Mint 1                   |                   129,760 |        82,606 |    47,154 | **36%** |
-| Mint 10 (total)          |                 1,157,600 |       313,270 |   844,330 | **73%** |
-| Mint 100 (total)         |                11,459,768 |     2,592,115 | 8,867,653 | **77%** |
+| Deploy                   |                 1,358,592 |     1,489,592 |  -131,000 |    −10% |
+| Mint 1                   |                   129,760 |        82,537 |    47,223 | **36%** |
+| Mint 10 (total)          |                 1,157,600 |       312,580 |   845,020 | **73%** |
+| Mint 100 (total)         |                11,459,768 |     2,585,215 | 8,874,553 | **77%** |
 | Transfer 1 (wallet 1)    |                    71,538 |        58,719 |    12,819 | **18%** |
 | Transfer 10 (wallet 10)  |                   436,725 |       177,868 |   258,857 | **59%** |
 | Transfer 50 (wallet 100) |                 2,086,404 |     1,062,229 | 1,024,175 | **49%** |
@@ -41,17 +41,17 @@ All figures are Foundry measurements at identical conditions. Hardhat numbers ar
 
 | Operation     |     OZ min |     OZ avg |     OZ max | ERC721F min | ERC721F avg | ERC721F max |
 | ------------- | ---------: | ---------: | ---------: | ----------: | ----------: | ----------: |
-| `mintOne`     |    122,685 |    129,760 |    150,985 |      56,956 |      82,606 |      91,156 |
-| `mintTen`     |  1,152,884 |  1,157,600 |  1,181,184 |     284,770 |     313,270 |     318,970 |
-| `mintHundred` | 11,455,052 | 11,459,768 | 11,483,352 |   2,563,615 |   2,592,115 |   2,597,815 |
+| `mintOne`     |    122,685 |    129,760 |    150,985 |      56,887 |      82,537 |      91,087 |
+| `mintTen`     |  1,152,884 |  1,157,600 |  1,181,184 |     284,080 |     312,580 |     318,280 |
+| `mintHundred` | 11,455,052 | 11,459,768 | 11,483,352 |   2,556,715 |   2,585,215 |   2,590,915 |
 
 **Per-token cost (avg):**
 
 | Batch size | OZ per token | ERC721F per token | Savings per token |
 | ---------: | -----------: | ----------------: | ----------------: |
-|          1 |      129,760 |            82,606 |            47,154 |
-|         10 |      115,760 |            31,327 |            84,433 |
-|        100 |      114,598 |            25,921 |            88,677 |
+|          1 |      129,760 |            82,537 |            47,223 |
+|         10 |      115,760 |            31,258 |            84,502 |
+|        100 |      114,598 |            25,852 |            88,746 |
 
 The per-token cost of ERC721F **decreases** toward ~25 k gas as batch size grows because the storage slot
 warm-up is amortized. OZ ERC721Enumerable stays flat at ~115 k per token due to the three mapping writes
@@ -97,8 +97,8 @@ mappings on every transfer whereas ERC721F's transfer touches only the base ERC7
 
 | Operation                        | ERC721F total gas |
 | -------------------------------- | ----------------: |
-| Mint 100 + transfer all 100 asc  |         5,574,668 |
-| Mint 100 + transfer all 100 desc |         5,459,230 |
+| Mint 100 + transfer all 100 asc  |         5,567,768 |
+| Mint 100 + transfer all 100 desc |         5,452,330 |
 
 Transferring in **descending order (highest token ID first)** is consistently ~2% cheaper because
 `retrieveLastToken()` exits earlier in the scan once high-range tokens are transferred away.
@@ -110,7 +110,7 @@ Transferring in **descending order (highest token ID first)** is consistently ~2
 | Contract                          | Deploy gas | Bytecode size |
 | --------------------------------- | ---------: | ------------: |
 | OZErc721EnumerableGasReporterMock |  1,358,592 |         6,719 |
-| ERC721FGasReporterMock            |  1,499,543 |         7,389 |
+| ERC721FGasReporterMock            |  1,489,592 |         7,343 |
 
 ERC721F is ~10% heavier to deploy. This is a fixed, one-time cost per collection launch. At any
 meaningful mint volume the per-mint savings recoup the extra deploy gas within the first ~2 mints.
