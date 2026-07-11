@@ -5,7 +5,8 @@ pragma solidity ^0.8.20 <0.9.0;
 /// @dev See https://eips.ethereum.org/EIPS/eip-6454
 /// @dev Note: the ERC-165 identifier for this interface is 0x91a6262f.
 
-/* is IERC165 */ interface IERC6454 {
+/* is IERC165 */
+interface IERC6454 {
     /**
      * @notice Used to check whether the given token is transferable or not.
      * @dev If this function returns `false`, the transfer of the token MUST revert execution.
