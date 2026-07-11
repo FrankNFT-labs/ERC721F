@@ -470,16 +470,20 @@ describe("Soulbound", function () {
         });
 
         context("Token is locked", function () {
-            it("Shouldn't allow transfers done by anyone", async function () {
-                await token.approve(addressToBeApproved.address, 0);
-
+            it("Should allow transfers done by the contract owner", async function () {
                 await expect(
                     token.transferFrom(
                         otherAddress.address,
                         ownerAdress.address,
                         0,
                     ),
-                ).to.be.revertedWithCustomError(token, "TokenNotTransferable");
+                ).to.not.be.reverted;
+                expect(await token.locked(0)).to.be.true;
+            });
+
+            it("Shouldn't allow transfers by anyone else", async function () {
+                await token.approve(addressToBeApproved.address, 0);
+
                 // The unapproved holder fails authorization before the
                 // transferability of the token is consulted.
                 await expect(
@@ -687,19 +691,20 @@ describe("Soulbound", function () {
 
         context("Without data parameter", function () {
             context("Token is locked", function () {
-                it("Shouldn't allow transfers by anyone", async function () {
-                    await token.approve(addressToBeApproved.address, 0);
-
+                it("Should allow transfers done by the contract owner", async function () {
                     await expect(
                         token.safeTransferFromHelperNonData(
                             otherAddress.address,
                             ownerAdress.address,
                             0,
                         ),
-                    ).to.be.revertedWithCustomError(
-                        token,
-                        "TokenNotTransferable",
-                    );
+                    ).to.not.be.reverted;
+                    expect(await token.locked(0)).to.be.true;
+                });
+
+                it("Shouldn't allow transfers by anyone else", async function () {
+                    await token.approve(addressToBeApproved.address, 0);
+
                     // The unapproved holder fails authorization before the
                     // transferability of the token is consulted.
                     await expect(
@@ -916,9 +921,7 @@ describe("Soulbound", function () {
 
         context("With data parameter", function () {
             context("Token is locked", function () {
-                it("Shouldn't allow transfers by anyone", async function () {
-                    await token.approve(addressToBeApproved.address, 0);
-
+                it("Should allow transfers done by the contract owner", async function () {
                     await expect(
                         token.safeTransferFromHelperWithData(
                             otherAddress.address,
@@ -926,10 +929,13 @@ describe("Soulbound", function () {
                             0,
                             0x00,
                         ),
-                    ).to.be.revertedWithCustomError(
-                        token,
-                        "TokenNotTransferable",
-                    );
+                    ).to.not.be.reverted;
+                    expect(await token.locked(0)).to.be.true;
+                });
+
+                it("Shouldn't allow transfers by anyone else", async function () {
+                    await token.approve(addressToBeApproved.address, 0);
+
                     // The unapproved holder fails authorization before the
                     // transferability of the token is consulted.
                     await expect(
@@ -1172,13 +1178,13 @@ describe("Soulbound", function () {
         });
 
         context("Token is locked", async function () {
-            it("Shouldn't allow burns by anyone", async function () {
+            it("Should allow burns done by the contract owner", async function () {
+                await expect(token.burn(0)).to.not.be.reverted;
+            });
+
+            it("Shouldn't allow burns by anyone else", async function () {
                 await token.approve(addressToBeApproved.address, 0);
 
-                await expect(token.burn(0)).to.be.revertedWithCustomError(
-                    token,
-                    "TokenNotTransferable",
-                );
                 await expect(
                     token.connect(otherAddress).burn(0),
                 ).to.be.revertedWithCustomError(token, "TokenNotTransferable");

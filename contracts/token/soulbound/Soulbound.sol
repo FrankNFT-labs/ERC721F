@@ -14,6 +14,8 @@ import "../../interfaces/IERC6454.sol";
  * Key features:
  * - Tokens are non-transferable by default (locked)
  * - Owner can set individual tokens to be unlocked
+ * - Owner can transfer or burn locked tokens directly (equivalent to
+ *   unlocking first, but in a single transaction)
  * - Implements ERC5192 for querying locked status
  * - Implements ERC6454 for transfer validation
  * - Optionally allows token holders to burn their own tokens
@@ -119,7 +121,8 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
 
     /**
      * @notice Transfers `tokenId` from `from` to `to` and locks `tokenId`
-     * @dev Only executable on unlocked tokens by owner or approved addresses
+     * @dev Unlocked tokens: executable by the contract owner or approved
+     * addresses. Locked tokens: only executable by the contract owner
      * @dev Transferability is enforced (and the token relocked) in {_update}
      */
     function transferFrom(
@@ -132,7 +135,8 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
 
     /**
      * @dev See {IERC721-safeTransferFrom} and locks `tokenId`
-     * @dev Only executable on unlocked tokens by owner or approved addresses
+     * @dev Unlocked tokens: executable by the contract owner or approved
+     * addresses. Locked tokens: only executable by the contract owner
      * @dev Transferability is enforced (and the token relocked) in {_update}
      */
     function safeTransferFrom(
@@ -148,6 +152,8 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
      * @notice Returns whether a token is transferable
      * @dev See {IERC6454-isTransferable}
      * @dev Will revert if `tokenId` does not exist
+     * @dev The result depends on the caller: a locked token is only
+     * transferable when queried by the contract owner
      */
     function isTransferable(
         uint256 tokenId,
@@ -179,14 +185,20 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         bool toIsZeroAddress = to == address(0);
         if (fromIsZeroAddress && !toIsZeroAddress) {
             return true;
-        } else if (!fromIsZeroAddress && toIsZeroAddress) {
-            return
-                _unlockedTokens[tokenId] &&
-                ((msg.sender == from && _tokenHolderIsAllowedToBurn) ||
-                    _isOwnerOrApproved(msg.sender, tokenId, from));
-        } else {
-            return _unlockedTokens[tokenId];
         }
+        if (!_unlockedTokens[tokenId]) {
+            // The contract owner can already move or burn a locked token by
+            // unlocking it first (unlockedStatus is onlyOwner), so letting
+            // the owner act directly adds no power — it only removes the
+            // extra transaction.
+            return msg.sender == owner();
+        }
+        if (!fromIsZeroAddress && toIsZeroAddress) {
+            return
+                (msg.sender == from && _tokenHolderIsAllowedToBurn) ||
+                _isOwnerOrApproved(msg.sender, tokenId, from);
+        }
+        return true;
     }
 
     /**

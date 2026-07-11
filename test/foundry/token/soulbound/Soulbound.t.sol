@@ -103,6 +103,24 @@ contract SoulboundTest is Test {
         assertEq(token.totalSupply(), 0);
     }
 
+    // ─── contract owner manages locked tokens directly ──────────────────────
+
+    function test_transferFrom_lockedToken_byContractOwner_succeeds() public {
+        token.transferFrom(holder, bob, 0);
+        assertEq(token.ownerOf(0), bob);
+        assertTrue(token.locked(0), "token must remain locked");
+    }
+
+    function test_burn_lockedToken_byContractOwner_succeeds() public {
+        token.burn(0);
+        assertEq(token.totalSupply(), 0);
+        assertEq(token.totalBurned(), 1);
+    }
+
+    function test_isTransferable_lockedToken_trueForContractOwner() public {
+        assertTrue(token.isTransferable(0, holder, bob));
+    }
+
     // ─── unlock state lifecycle ──────────────────────────────────────────────
 
     function test_remintedId_startsLocked() public {
