@@ -9,6 +9,8 @@ pragma solidity ^0.8.20 <0.9.0;
 library AddressUtils {
     error InvalidHexCharacter();
     error HexStringHasOddLength();
+    error InvalidPublicKeyLength();
+    error InvalidPublicKeyPrefix();
 
     /**
      * @notice Checks if the provided address is a contract.
@@ -79,7 +81,10 @@ library AddressUtils {
 
     /**
      * @notice Calculates an Ethereum address from a given public key.
-     * @param publicKey The public key as a hex string.
+     * @param publicKey The public key as a hex string (no "0x" prefix), either
+     * 64 bytes of raw X||Y coordinates or the 65-byte uncompressed
+     * serialization starting with 0x04. Any other input reverts, since hashing
+     * it would silently produce an address nobody holds the key for.
      * @return addr The calculated Ethereum address.
      */
     function calculateAddress(
@@ -87,9 +92,23 @@ library AddressUtils {
     ) internal pure returns (address addr) {
         // Convert the hex string to bytes
         bytes memory publicKeyBytes = hexStringToBytes(publicKey);
+        uint256 length = publicKeyBytes.length;
 
-        // Compute the hash of the public key
-        bytes32 publicKeyHash = keccak256(publicKeyBytes);
+        // Compute the hash of the 64-byte X||Y payload
+        bytes32 publicKeyHash;
+        if (length == 64) {
+            publicKeyHash = keccak256(publicKeyBytes);
+        } else if (length == 65) {
+            if (publicKeyBytes[0] != 0x04) revert InvalidPublicKeyPrefix();
+            // Hash the 64 bytes after the 0x04 prefix (data starts at 0x20,
+            // +1 to skip the prefix byte)
+            // solhint-disable-next-line no-inline-assembly
+            assembly {
+                publicKeyHash := keccak256(add(publicKeyBytes, 0x21), 64)
+            }
+        } else {
+            revert InvalidPublicKeyLength();
+        }
 
         // Take the last 40 characters (20 bytes) of the public key hash and convert to an address
         addr = address(uint160(uint256(publicKeyHash)));
