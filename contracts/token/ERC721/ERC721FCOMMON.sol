@@ -48,7 +48,11 @@ contract ERC721FCOMMON is ERC721F, Payable, IERC2981 {
         string memory symbol_,
         address initialOwner
     ) ERC721F(name_, symbol_, initialOwner) {
-        setRoyaltyReceiver(initialOwner);
+        // Direct assignment instead of setRoyaltyReceiver(): the setter is
+        // onlyOwner and would revert when the deployer is not `initialOwner`
+        // (e.g. deploying on behalf of a multisig). The zero-address check is
+        // already enforced by Ownable(initialOwner) in the ERC721F base.
+        royaltyReceiver = initialOwner;
     }
 
     /**
