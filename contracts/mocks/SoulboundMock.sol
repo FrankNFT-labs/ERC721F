@@ -23,6 +23,14 @@ contract SoulboundMock is Soulbound {
     }
 
     /**
+     * @notice Mints `tokenId` to `to`, allows re-minting a burned id
+     * @dev Function utilised in testing, don't use in production due to lack of restrictions
+     */
+    function mintId(address to, uint256 tokenId) public {
+        _mint(to, tokenId);
+    }
+
+    /**
      * @notice Burns `tokenId`
      */
     function burn(uint256 tokenId) public {

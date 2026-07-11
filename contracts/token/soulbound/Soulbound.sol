@@ -120,40 +120,28 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
     /**
      * @notice Transfers `tokenId` from `from` to `to` and locks `tokenId`
      * @dev Only executable on unlocked tokens by owner or approved addresses
+     * @dev Transferability is enforced (and the token relocked) in {_update}
      */
     function transferFrom(
         address from,
         address to,
         uint256 tokenId
-    )
-        public
-        virtual
-        override
-        onlyTransferable(tokenId, from, to)
-        onlyOwnerOrApproved(msg.sender, tokenId)
-    {
+    ) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
         _transfer(from, to, tokenId);
-        _unlockedStatus(tokenId, false);
     }
 
     /**
      * @dev See {IERC721-safeTransferFrom} and locks `tokenId`
      * @dev Only executable on unlocked tokens by owner or approved addresses
+     * @dev Transferability is enforced (and the token relocked) in {_update}
      */
     function safeTransferFrom(
         address from,
         address to,
         uint256 tokenId,
         bytes memory data
-    )
-        public
-        virtual
-        override
-        onlyTransferable(tokenId, from, to)
-        onlyOwnerOrApproved(msg.sender, tokenId)
-    {
+    ) public virtual override onlyOwnerOrApproved(msg.sender, tokenId) {
         _safeTransfer(from, to, tokenId, data);
-        _unlockedStatus(tokenId, false);
     }
 
     /**
@@ -166,19 +154,36 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         address from,
         address to
     ) public view virtual returns (bool) {
-        bool fromIsZeroAddress = from == address(0);
-        bool toIsZeroAddress = to == address(0);
-        if (!(fromIsZeroAddress && !toIsZeroAddress) && !_exists(tokenId)) {
+        if (!(from == address(0) && to != address(0)) && !_exists(tokenId)) {
             revert TokenDoesNotExist();
         }
+        if (from != address(0) && to == address(0)) {
+            // The burn permission check is based on the actual holder of the
+            // token, regardless of the `from` supplied by the caller.
+            from = ownerOf(tokenId);
+        }
+        return _isTransferable(tokenId, from, to);
+    }
+
+    /**
+     * @dev Transferability check used by {_update}; `from` must be the actual
+     * owner of `tokenId` (as it is inside `_update`), so no existence checks
+     * or owner reads are repeated here.
+     */
+    function _isTransferable(
+        uint256 tokenId,
+        address from,
+        address to
+    ) internal view virtual returns (bool) {
+        bool fromIsZeroAddress = from == address(0);
+        bool toIsZeroAddress = to == address(0);
         if (fromIsZeroAddress && !toIsZeroAddress) {
             return true;
         } else if (!fromIsZeroAddress && toIsZeroAddress) {
             return
                 _unlockedTokens[tokenId] &&
-                ((msg.sender == ownerOf(tokenId) &&
-                    _tokenHolderIsAllowedToBurn) ||
-                    isOwnerOrApproved(msg.sender, tokenId));
+                ((msg.sender == from && _tokenHolderIsAllowedToBurn) ||
+                    _isOwnerOrApproved(msg.sender, tokenId, from));
         } else {
             return _unlockedTokens[tokenId];
         }
@@ -191,10 +196,21 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         address spender,
         uint256 tokenId
     ) public view returns (bool) {
-        address ownerToken = ERC721.ownerOf(tokenId);
+        return _isOwnerOrApproved(spender, tokenId, ERC721.ownerOf(tokenId));
+    }
+
+    /**
+     * @dev Approval check with the token owner supplied by the caller, so hot
+     * paths that already loaded it avoid a repeated ownerOf read.
+     */
+    function _isOwnerOrApproved(
+        address spender,
+        uint256 tokenId,
+        address tokenOwner
+    ) internal view returns (bool) {
         return
             spender == owner() ||
-            isApprovedForAll(ownerToken, spender) ||
+            isApprovedForAll(tokenOwner, spender) ||
             getApproved(tokenId) == spender;
     }
 
@@ -249,7 +265,8 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
 
     /**
      * @dev Minting: Can only be executed by owner contract, locks `tokenId`
-     * @dev Requires that the token can be transferred
+     * @dev Burning: Clears the unlock flag so a re-minted `tokenId` starts locked
+     * @dev Transferring: Requires an unlocked token, which relocks on arrival
      */
     function _update(
         address to,
@@ -260,10 +277,17 @@ contract Soulbound is IERC5192, IERC6454, ERC721F {
         if (from == address(0)) {
             _checkOwner();
         }
-        if (!isTransferable(tokenId, from, to)) revert TokenNotTransferable();
+        if (!_isTransferable(tokenId, from, to)) revert TokenNotTransferable();
         super._update(to, tokenId, auth);
-        if (from == address(0)) {
-            _unlockedStatus(tokenId, false);
+        if (to == address(0)) {
+            delete _unlockedTokens[tokenId];
+        } else if (from == address(0)) {
+            // The flag is already false for a fresh mint and cleared on burn
+            // for a re-mint, so emitting the ERC-5192 signal suffices.
+            emit Locked(tokenId);
+        } else if (_unlockedTokens[tokenId]) {
+            _unlockedTokens[tokenId] = false;
+            emit Locked(tokenId);
         }
         return from;
     }
