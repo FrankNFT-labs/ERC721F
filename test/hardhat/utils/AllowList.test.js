@@ -1,13 +1,11 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
-
+import { expect } from "chai";
+import { ethers, loadFixture } from "../helpers/connection.js";
 describe("AllowList", function () {
     async function deployFixture() {
         const [owner, alice, bob, carol] = await ethers.getSigners();
         const Mock = await ethers.getContractFactory("AllowListMock");
         const mock = await Mock.deploy();
-        await mock.deployed();
+        await mock.waitForDeployment();
         return { mock, owner, alice, bob, carol };
     }
 
@@ -22,13 +20,13 @@ describe("AllowList", function () {
             const { mock, alice } = await loadFixture(deployFixture);
             await expect(
                 mock.connect(alice).allowAddress(alice.address)
-            ).to.be.reverted;
+            ).to.revert(ethers);
         });
 
         it("adding an already-allowed address does not revert", async function () {
             const { mock, alice } = await loadFixture(deployFixture);
             await mock.allowAddress(alice.address);
-            await expect(mock.allowAddress(alice.address)).to.not.be.reverted;
+            await expect(mock.allowAddress(alice.address)).to.not.revert(ethers);
             expect(await mock.isAllowList(alice.address)).to.be.true;
         });
     });
@@ -45,7 +43,7 @@ describe("AllowList", function () {
             const { mock, alice, bob } = await loadFixture(deployFixture);
             await expect(
                 mock.connect(alice).allowAddresses([bob.address])
-            ).to.be.reverted;
+            ).to.revert(ethers);
         });
     });
 
@@ -62,13 +60,12 @@ describe("AllowList", function () {
             await mock.allowAddress(alice.address);
             await expect(
                 mock.connect(bob).disallowAddress(alice.address)
-            ).to.be.reverted;
+            ).to.revert(ethers);
         });
 
         it("disallowing an address not on the list does not revert", async function () {
             const { mock, alice } = await loadFixture(deployFixture);
-            await expect(mock.disallowAddress(alice.address)).to.not.be
-                .reverted;
+            await expect(mock.disallowAddress(alice.address)).to.not.revert(ethers);
         });
     });
 
@@ -93,8 +90,7 @@ describe("AllowList", function () {
 
         it("can be called by anyone", async function () {
             const { mock, alice, bob } = await loadFixture(deployFixture);
-            await expect(mock.connect(bob).isAllowList(alice.address)).to.not.be
-                .reverted;
+            await expect(mock.connect(bob).isAllowList(alice.address)).to.not.revert(ethers);
         });
     });
 
@@ -103,7 +99,7 @@ describe("AllowList", function () {
             const { mock, alice } = await loadFixture(deployFixture);
             await expect(
                 mock.connect(alice).allowAddress(alice.address)
-            ).to.be.reverted;
+            ).to.revert(ethers);
         });
     });
 });

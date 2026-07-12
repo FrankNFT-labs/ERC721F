@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from "fs";
 
 const wordCombination = 'Test result:';
 const inputFilename = process.argv[2];

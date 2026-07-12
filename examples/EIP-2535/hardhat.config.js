@@ -1,47 +1,55 @@
-require("dotenv").config();
-require("@nomicfoundation/hardhat-toolbox");
-require("hardhat-gas-reporter");
-require("hardhat-deploy");
-require("@nomiclabs/hardhat-ethers");
+import "dotenv/config";
+import hardhatToolboxMochaEthers from "@nomicfoundation/hardhat-toolbox-mocha-ethers";
+import hardhatDeploy from "hardhat-deploy";
+import { defineConfig } from "hardhat/config";
 
 // If not set, it uses ours Alchemy's default API key.
 // You can get your own at https://dashboard.alchemyapi.io
 const providerApiKey =
     process.env.ALCHEMY_API_KEY || "oKxs-03sij-U_N0iOlrSsZFr29-IqbuF";
-// If not set, it uses the hardhat account 0 private key.
-const deployerPrivateKey =
-    process.env.DEPLOYER_PRIVATE_KEY ??
-    "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 // If not set, it uses ours Etherscan default API key.
 const etherscanApiKey =
     process.env.ETHERSCAN_API_KEY || "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW";
 
-/** @type import('hardhat/config').HardhatUserConfig */
-module.exports = {
+export default defineConfig({
+    plugins: [hardhatToolboxMochaEthers, hardhatDeploy],
     solidity: {
-        version: "0.8.24",
-        settings: {
-            evmVersion: "cancun",
-            optimizer: {
-                enabled: true,
-                runs: 1000,
+        profiles: {
+            default: {
+                version: "0.8.24",
+                settings: {
+                    evmVersion: "cancun",
+                    optimizer: {
+                        enabled: true,
+                        runs: 1000,
+                    },
+                },
             },
-        },
-    },
-    namedAccounts: {
-        deployer: {
-            // By default, it will take the first Hardhat account as the deployer
-            default: 0,
+            production: {
+                version: "0.8.24",
+                settings: {
+                    evmVersion: "cancun",
+                    optimizer: {
+                        enabled: true,
+                        runs: 1000,
+                    },
+                },
+            },
         },
     },
     paths: {
         sources: "./contracts",
-        tests: "./test",
+        tests: {
+            mocha: "./test",
+            solidity: "./test",
+        },
         cache: "./cache",
         artifacts: "./artifacts",
     },
     networks: {
         hardhat: {
+            type: "edr-simulated",
+            chainType: "l1",
             forking: {
                 url: `https://eth-mainnet.alchemyapi.io/v2/${providerApiKey}`,
                 enabled: process.env.MAINNET_FORKING_ENABLED === "true",
@@ -53,4 +61,4 @@ module.exports = {
             apiKey: `${etherscanApiKey}`,
         },
     },
-};
+});

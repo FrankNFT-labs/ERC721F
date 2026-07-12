@@ -1,7 +1,5 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
-
+import { expect } from "chai";
+import { ethers, loadFixture } from "../../helpers/connection.js";
 describe("ERC721F Gas Usage", function () {
     async function deployTokenFixture() {
         const Token = await ethers.getContractFactory("ERC721FGasReporterMock");
@@ -9,7 +7,7 @@ describe("ERC721F Gas Usage", function () {
 
         const hardhatToken = await Token.deploy("GAS Stress Test", "GAS");
 
-        await hardhatToken.deployed();
+        await hardhatToken.waitForDeployment();
 
         return { Token, hardhatToken, owner, addr1 };
     }

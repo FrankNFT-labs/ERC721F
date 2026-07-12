@@ -1,3 +1,1 @@
-module.exports = {
-  shouldBehaveLikeERC721F: require("./ERC721F.behaviours"),
-};
+export { default as shouldBehaveLikeERC721F } from "./ERC721F.behaviours.js";

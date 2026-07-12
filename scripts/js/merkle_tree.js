@@ -1,5 +1,5 @@
-const { MerkleTree } = require("merkletreejs");
-const keccak256 = require("keccak256");
+import { MerkleTree } from "merkletreejs";
+import keccak256 from "keccak256";
 
 let presaleWhitelistAddresses = [
     "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",

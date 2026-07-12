@@ -1,7 +1,5 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
-
+import { expect } from "chai";
+import { ethers, loadFixture } from "../helpers/connection.js";
 const URI_PREFIX = "data:application/json;base64,";
 const IMAGE_PREFIX = "data:image/svg+xml;base64,";
 
@@ -12,7 +10,7 @@ describe("OnChainOptimized", function () {
 
         const hardhatToken = await Token.deploy();
 
-        await hardhatToken.deployed();
+        await hardhatToken.waitForDeployment();
 
         return { Token, hardhatToken, owner, addr1 };
     }

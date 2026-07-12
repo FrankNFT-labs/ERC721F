@@ -41,9 +41,10 @@ test/
 
 ## CONVENTIONS
 
-- Hardhat selection: `WHITELIST_CONTRACT=<Name> npx hardhat test`.
+- Hardhat selection: `npx hardhat test test/hardhat/<path>.test.js`.
 - Foundry selection: `forge test --match-path "test/foundry/..."`.
-- Gas reporting paths are framework-specific (`REPORT_GAS=true` vs `forge --gas-report`).
+- Gas reporting: `forge test --gas-report` (hardhat-gas-reporter has no Hardhat 3 release yet).
+- Hardhat tests are ESM and share one network connection via `test/hardhat/helpers/connection.js`.
 
 ## ANTI-PATTERNS
 

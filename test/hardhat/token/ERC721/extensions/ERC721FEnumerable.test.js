@@ -1,7 +1,5 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
-
+import { expect } from "chai";
+import { ethers, loadFixture } from "../../../helpers/connection.js";
 describe("ERC721FEnumerable", function () {
     async function deployTokenFixture() {
         const Token = await ethers.getContractFactory("ERC721FEnumerableMock");
@@ -100,7 +98,7 @@ describe("ERC721FEnumerable", function () {
                         );
 
                         expect(
-                            tokensListed.map((t) => t.toNumber())
+                            tokensListed.map((t) => Number(t))
                         ).to.have.members([0, 1]);
                     });
 
@@ -142,7 +140,7 @@ describe("ERC721FEnumerable", function () {
                         [0, 1].map((i) => token.tokenByIndex(i))
                     );
                     expect(
-                        tokensListed.map((t) => t.toNumber())
+                        tokensListed.map((t) => Number(t))
                     ).to.have.members([0, 1]);
                 });
             });

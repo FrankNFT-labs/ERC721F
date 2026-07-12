@@ -1,85 +1,43 @@
-require("dotenv").config();
-require("@nomicfoundation/hardhat-toolbox");
-require("hardhat-gas-reporter");
+import "dotenv/config";
+import hardhatToolboxMochaEthers from "@nomicfoundation/hardhat-toolbox-mocha-ethers";
+import { defineConfig } from "hardhat/config";
 
-const {
-    TASK_COMPILE_SOLIDITY_GET_SOURCE_PATHS,
-    TASK_TEST_GET_TEST_FILES,
-} = require("hardhat/builtin-tasks/task-names");
-const { subtask } = require("hardhat/config");
-const path = require("path");
-
-subtask(
-    TASK_COMPILE_SOLIDITY_GET_SOURCE_PATHS,
-    async (_, { config }, runSuper) => {
-        const paths = await runSuper();
-
-        return paths.filter((solidityFilePath) => {
-            const relativePath = path.relative(
-                config.paths.sources,
-                solidityFilePath
-            );
-
-            if (
-                relativePath.includes("node_modules") ||
-                relativePath.startsWith("lib") ||
-                relativePath.startsWith(".deps") ||
-                relativePath.startsWith("test/foundry")
-            ) {
-                return false;
-            } else if (process.env.WHITELIST_PATH) {
-                const paths = process.env.WHITELIST_PATH.split(" ");
-                return (
-                    paths.includes(relativePath) ||
-                    paths.includes(solidityFilePath)
-                );
-            } else {
-                return true;
-            }
-        });
-    }
-);
-
-subtask(TASK_TEST_GET_TEST_FILES, async (_, { config }, runSuper) => {
-    const paths = await runSuper();
-
-    return paths.filter((testFilePath) => {
-        const relativePath = path.relative(config.paths.sources, testFilePath);
-
-        if (process.env.WHITELIST_CONTRACT) {
-            return relativePath.endsWith(
-                `/${process.env.WHITELIST_CONTRACT}.test.js`
-            );
-        } else {
-            return true;
-        }
-    });
-});
-
-/** @type import('hardhat/config').HardhatUserConfig */
-module.exports = {
+// Compilation scope: explicit source directories replace the Hardhat 2
+// TASK_COMPILE_SOLIDITY_GET_SOURCE_PATHS filter (node_modules, lib, .deps and
+// test/foundry are no longer reachable because sources are opt-in).
+// Focused runs use Hardhat 3 built-ins instead of WHITELIST_* env vars:
+//   npx hardhat compile contracts/token/ERC721/ERC721F.sol
+//   npx hardhat test test/hardhat/token/ERC721/ERC721F.test.js
+export default defineConfig({
+    plugins: [hardhatToolboxMochaEthers],
     solidity: {
-        version: "0.8.24",
-        settings: {
-            evmVersion: "cancun",
-            optimizer: {
-                enabled: true,
-                runs: 1000,
+        profiles: {
+            default: {
+                version: "0.8.24",
+                settings: {
+                    evmVersion: "cancun",
+                    optimizer: {
+                        enabled: true,
+                        runs: 1000,
+                    },
+                },
             },
         },
+        // Dependency contracts that tests instantiate by name; replaces the
+        // Hardhat 2 shim imports in contracts/mocks and examples/mocks.
+        npmFilesToBuild: [
+            "@chainlink/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2Mock.sol",
+        ],
     },
     paths: {
-        sources: "./",
-        tests: "./test",
+        sources: ["contracts", "examples"],
+        tests: {
+            mocha: "./test/hardhat",
+            // Foundry (forge) remains the runner for test/foundry; keep
+            // Hardhat's built-in solidity test runner away from those files.
+            solidity: "./test/hardhat",
+        },
         cache: "./cache",
         artifacts: "./artifacts",
     },
-    gasReporter: {
-        enabled: process.env.REPORT_GAS === "true" ? true : false,
-        //outputFile: "gas-report.txt",
-        noColors: true,
-        currency: "USD",
-        //coinmarketcap: process.env.COINMARKET_API_KEY,
-        //gasPrice: 50,
-    },
-};
+});

@@ -1,4 +1,4 @@
-const fs = require('fs')
+import fs from "fs";
 
 // get the new values from the command line arguments
 const optimizerValue = process.argv[2]

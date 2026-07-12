@@ -47,9 +47,10 @@ High-centrality modules:
 ## CONVENTIONS
 
 - Solidity compiler pinned to `0.8.24` with optimizer runs `1000` (Hardhat + Foundry).
-- Hardhat uses custom path filters in `hardhat.config.js`:
-    - `WHITELIST_PATH` filters compiled Solidity files.
-    - `WHITELIST_CONTRACT` filters selected Hardhat test files.
+- Hardhat 3 stack: ESM project (`"type": "module"`), mocha tests share one
+  network connection via `test/hardhat/helpers/connection.js`.
+- Focused runs use Hardhat 3 built-in file arguments (the former
+  `WHITELIST_PATH`/`WHITELIST_CONTRACT` env filters were removed).
 - Tests are intentionally split by framework (`test/hardhat` vs `test/foundry`).
 - Pre-commit flow applies formatting/lint and example import rewriting.
 
@@ -73,17 +74,16 @@ High-centrality modules:
 npm install
 npx hardhat compile
 npx hardhat test
-npx hardhat coverage
+npx hardhat test --coverage
 forge build
 forge test
 
 # Focused execution
-WHITELIST_PATH="contracts/token/ERC721/ERC721F.sol" npx hardhat compile
-WHITELIST_CONTRACT=ERC721F npx hardhat test
+npx hardhat compile contracts/token/ERC721/ERC721F.sol
+npx hardhat test test/hardhat/token/ERC721/ERC721F.test.js
 forge test --match-path "test/foundry/token/ERC721/ERC721FGasReporterMock.t.sol"
 
-# Gas reporting
-REPORT_GAS=true npx hardhat test
+# Gas reporting (hardhat-gas-reporter has no Hardhat 3 release yet)
 forge test --gas-report
 
 # Example import helpers

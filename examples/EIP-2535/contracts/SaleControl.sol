@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20 <0.9.0;
 
 import {FreeMintStorage, WithStorage} from "./WithStorage.sol";
-import {UsingDiamondOwner} from "hardhat-deploy/solc_0.8/diamond/UsingDiamondOwner.sol";
+import {UsingDiamondOwner} from "@rocketh/diamond/solc_0_8/UsingDiamondOwner.sol";
 
 /**
  * @dev Facet which adds control of storage saleIsActive variable through external function

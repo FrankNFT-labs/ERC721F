@@ -1,7 +1,5 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
-
+import { expect } from "chai";
+import { ethers, loadFixture } from "../helpers/connection.js";
 describe("ERC721FVerifyImplementation", function () {
   async function deployTokenFixture() {
     const DelegationRegistry = await ethers.getContractFactory(
@@ -18,9 +16,9 @@ describe("ERC721FVerifyImplementation", function () {
     const hotWalletProxy = await HotWalletProxy.deploy();
     const freeMint = await FreeMint.deploy();
     const token = await Token.deploy(
-      hotWalletProxy.address,
-      delegationRegistry.address,
-      freeMint.address
+      hotWalletProxy.target,
+      delegationRegistry.target,
+      freeMint.target
     );
 
     await freeMint.flipSaleState();
@@ -29,7 +27,7 @@ describe("ERC721FVerifyImplementation", function () {
     await hotWalletProxy.setHotWallet(addr1.address, 9999999999, false);
     await delegationRegistry.delegateForToken(
       addr2.address,
-      freeMint.address,
+      freeMint.target,
       0,
       true
     );

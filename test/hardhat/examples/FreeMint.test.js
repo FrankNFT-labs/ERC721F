@@ -1,7 +1,5 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
-
+import { expect } from "chai";
+import { ethers, loadFixture } from "../helpers/connection.js";
 describe("FreeMint", function () {
   async function deployTokenFixture() {
     const Token = await ethers.getContractFactory("FreeMint");
@@ -9,14 +7,14 @@ describe("FreeMint", function () {
 
     const hardhatToken = await Token.deploy();
 
-    await hardhatToken.deployed();
+    await hardhatToken.waitForDeployment();
 
     return { Token, hardhatToken, owner };
   }
 
   describe("Deployment", function () {
     it("Supports ERC721 standards", async function () {
-      const ERC721InterfaceId = 0x80ac58cd;
+      const ERC721InterfaceId = "0x80ac58cd";
       const { hardhatToken } = await loadFixture(deployTokenFixture);
 
       expect(await hardhatToken.supportsInterface(ERC721InterfaceId)).to.be
@@ -24,7 +22,7 @@ describe("FreeMint", function () {
     });
 
     it("Supports ERC2981 standards", async function () {
-      const ERC2981InterfaceId = 0x2a55205a;
+      const ERC2981InterfaceId = "0x2a55205a";
       const { hardhatToken } = await loadFixture(deployTokenFixture);
 
       expect(await hardhatToken.supportsInterface(ERC2981InterfaceId)).to.be
@@ -64,7 +62,7 @@ describe("FreeMint", function () {
     it("Should eventually fail indicating the total tokens minted", async function () {
       const { hardhatToken } = await loadFixture(deployTokenFixture);
       await hardhatToken.flipSaleState();
-      await expect(hardhatToken.mint(totalMint)).to.be.reverted;
+      await expect(hardhatToken.mint(totalMint)).to.revert(ethers);
       console.log(totalMint);
     });
   });

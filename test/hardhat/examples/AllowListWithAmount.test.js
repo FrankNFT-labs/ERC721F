@@ -1,8 +1,6 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
-
-const transferAmount = ethers.utils.parseEther("1");
+import { expect } from "chai";
+import { ethers, loadFixture } from "../helpers/connection.js";
+const transferAmount = ethers.parseEther("1");
 
 describe("AllowListWithAmount", function () {
     async function deployTokenFixture() {
@@ -22,7 +20,7 @@ describe("AllowListWithAmount", function () {
 
         const hardhatToken = await Token.deploy();
 
-        await hardhatToken.deployed();
+        await hardhatToken.waitForDeployment();
 
         await hardhatToken.allowAddresses(presaleWhiteListAddresses, 5);
 
@@ -166,13 +164,13 @@ describe("AllowListWithAmount", function () {
                     token.connect(whitelistedAddress).mintPreSale(1, {
                         value: transferAmount,
                     })
-                ).to.not.be.reverted;
+                ).to.not.revert(ethers);
             });
 
             it("shouldn't allow minting when requesting more than their remaining available tokens", async function () {
                 await expect(
                     token.connect(whitelistedAddress).mintPreSale(6, {
-                        value: ethers.utils.parseEther("6"),
+                        value: ethers.parseEther("6"),
                     })
                 ).to.be.revertedWithCustomError(
                     token,
@@ -183,13 +181,13 @@ describe("AllowListWithAmount", function () {
             it("shouldn't allow minting when a whitelisted address used up all their available tokens", async function () {
                 await expect(
                     token.connect(whitelistedAddress).mintPreSale(5, {
-                        value: ethers.utils.parseEther("5"),
+                        value: ethers.parseEther("5"),
                     })
-                ).to.not.be.reverted;
+                ).to.not.revert(ethers);
 
                 await expect(
                     token.connect(whitelistedAddress).mintPreSale(5, {
-                        value: ethers.utils.parseEther("5"),
+                        value: ethers.parseEther("5"),
                     })
                 ).to.be.revertedWithCustomError(
                     token,
@@ -210,23 +208,23 @@ describe("AllowListWithAmount", function () {
                     token.connect(whitelistedAddress).mintPreSale(1, {
                         value: transferAmount,
                     })
-                ).to.changeEtherBalance(token.address, transferAmount);
+                ).to.changeEtherBalance(ethers, token.target, transferAmount);
             });
 
             it("shouldn't revert when accounts overpays transfer costs", async function () {
                 await expect(
                     token.connect(whitelistedAddress).mintPreSale(1, {
-                        value: ethers.utils.parseEther("5"),
+                        value: ethers.parseEther("5"),
                     })
-                ).to.not.be.reverted;
+                ).to.not.revert(ethers);
             });
 
             it("should increase the token wallet of the account minting", async function () {
                 await expect(
                     token.connect(whitelistedAddress).mintPreSale(5, {
-                        value: ethers.utils.parseEther("5"),
+                        value: ethers.parseEther("5"),
                     })
-                ).to.changeTokenBalance(token, whitelistedAddress, 5);
+                ).to.changeTokenBalance(ethers, token, whitelistedAddress, 5);
             });
 
             it("should decrease the total avaiable funds for an account post mint", async function () {
@@ -294,12 +292,12 @@ describe("AllowListWithAmount", function () {
                     token.connect(whitelistedAddress).mint(1, {
                         value: transferAmount,
                     })
-                ).to.not.be.reverted;
+                ).to.not.revert(ethers);
                 await expect(
                     token.connect(nonWhitelistedAddress).mint(1, {
                         value: transferAmount,
                     })
-                ).to.not.be.reverted;
+                ).to.not.revert(ethers);
             });
 
             it("should increase the total cost when requesting more tokens to be minted", async function () {
@@ -315,15 +313,15 @@ describe("AllowListWithAmount", function () {
                     token.mint(1, {
                         value: transferAmount,
                     })
-                ).to.changeEtherBalance(token, transferAmount);
+                ).to.changeEtherBalance(ethers, token, transferAmount);
             });
 
             it("shouldn't revert when the accounts overpays transfer costs", async function () {
                 await expect(
                     token.mint(1, {
-                        value: ethers.utils.parseEther("5"),
+                        value: ethers.parseEther("5"),
                     })
-                ).to.not.be.reverted;
+                ).to.not.revert(ethers);
             });
 
             it("should increase the token wallet of the account minting", async function () {
@@ -331,7 +329,7 @@ describe("AllowListWithAmount", function () {
                     token.connect(nonWhitelistedAddress).mint(1, {
                         value: transferAmount,
                     })
-                ).to.changeTokenBalance(token, nonWhitelistedAddress, 1);
+                ).to.changeTokenBalance(ethers, token, nonWhitelistedAddress, 1);
             });
         });
     });
@@ -356,12 +354,12 @@ describe("AllowListWithAmount", function () {
             it("should only be executable by the owner", async function () {
                 await expect(
                     token.allowAddress(nonWhitelistedAddress.address, 1)
-                ).to.not.be.reverted;
+                ).to.not.revert(ethers);
                 await expect(
                     token
                         .connect(nonWhitelistedAddress)
                         .allowAddress(nonWhitelistedAddress.address, 1)
-                ).to.be.reverted;
+                ).to.revert(ethers);
             });
 
             it("should set the available tokens to the address in the allowList", async function () {
@@ -383,7 +381,7 @@ describe("AllowListWithAmount", function () {
 
                 await expect(
                     token.allowAddress(whitelistedAddress.address, 2)
-                ).to.not.be.reverted;
+                ).to.not.revert(ethers);
             });
 
             it("should overwrite the available tokens of an address with available tokens", async function () {
@@ -403,12 +401,12 @@ describe("AllowListWithAmount", function () {
             it("should only be executable by the owner", async function () {
                 await expect(
                     token.allowAddresses([nonWhitelistedAddress.address], 1)
-                ).to.not.be.reverted;
+                ).to.not.revert(ethers);
                 await expect(
                     token
                         .connect(nonWhitelistedAddress)
                         .allowAddresses([nonWhitelistedAddress.address], 1)
-                ).to.be.reverted;
+                ).to.revert(ethers);
             });
 
             it("should set the available tokens to the addresses in the allowList", async function () {
@@ -455,7 +453,7 @@ describe("AllowListWithAmount", function () {
                         ],
                         1
                     )
-                ).to.not.be.reverted;
+                ).to.not.revert(ethers);
             });
 
             it("should overwrite the available tokens of an address with already available tokens", async function () {
@@ -475,12 +473,12 @@ describe("AllowListWithAmount", function () {
             it("should only be executable by owner", async function () {
                 await expect(
                     token.disallowAddress(nonWhitelistedAddress.address)
-                ).to.not.be.reverted;
+                ).to.not.revert(ethers);
                 await expect(
                     token
                         .connect(nonWhitelistedAddress)
                         .disallowAddress(nonWhitelistedAddress.address)
-                ).to.be.reverted;
+                ).to.revert(ethers);
             });
 
             it("should remove all available tokens from the address", async function () {
@@ -500,12 +498,12 @@ describe("AllowListWithAmount", function () {
             it("should be executable by anyone", async function () {
                 await expect(
                     token.getAllowListFunds(whitelistedAddress.address)
-                ).to.not.be.reverted;
+                ).to.not.revert(ethers);
                 await expect(
                     token
-                        .connect(nonWhitelistedAddress.address)
+                        .connect(nonWhitelistedAddress)
                         .getAllowListFunds(whitelistedAddress.address)
-                ).to.not.be.reverted;
+                ).to.not.revert(ethers);
             });
 
             it("should return the amount of available tokens a whitelisted address has", async function () {

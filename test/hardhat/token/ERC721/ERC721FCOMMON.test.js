@@ -1,7 +1,5 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
-
+import { expect } from "chai";
+import { ethers, loadFixture } from "../../helpers/connection.js";
 describe("ERC721FCOMMON", function () {
     async function deployFixture() {
         const Token = await ethers.getContractFactory("ERC721FCOMMONMock");
@@ -12,7 +10,7 @@ describe("ERC721FCOMMON", function () {
 
     describe("supportsInterface", function () {
         it("supports ERC2981 royalties", async function () {
-            const ERC2981InterfaceId = 0x2a55205a;
+            const ERC2981InterfaceId = "0x2a55205a";
             const { token } = await loadFixture(deployFixture);
 
             expect(await token.supportsInterface(ERC2981InterfaceId)).to.be
@@ -24,7 +22,7 @@ describe("ERC721FCOMMON", function () {
         it("reverts when called with the zero address", async function () {
             const { token } = await loadFixture(deployFixture);
             await expect(
-                token.setRoyaltyReceiver(ethers.constants.AddressZero),
+                token.setRoyaltyReceiver(ethers.ZeroAddress),
             ).to.be.revertedWithCustomError(
                 token,
                 "RoyaltyReceiverIsZeroAddress",
@@ -33,8 +31,7 @@ describe("ERC721FCOMMON", function () {
 
         it("accepts a valid non-zero receiver", async function () {
             const { token, addr1 } = await loadFixture(deployFixture);
-            await expect(token.setRoyaltyReceiver(addr1.address)).to.not.be
-                .reverted;
+            await expect(token.setRoyaltyReceiver(addr1.address)).to.not.revert(ethers);
         });
 
         it("royaltyInfo returns the updated receiver", async function () {
@@ -50,7 +47,7 @@ describe("ERC721FCOMMON", function () {
         it("owner can set royalties to 0 (royalties disabled)", async function () {
             const { token } = await loadFixture(deployFixture);
             await token.mint(1);
-            await expect(token.setRoyalties(0)).to.not.be.reverted;
+            await expect(token.setRoyalties(0)).to.not.revert(ethers);
             const [, amount] = await token.royaltyInfo(0, 10000);
             expect(amount).to.equal(0);
         });
@@ -87,13 +84,13 @@ describe("ERC721FCOMMON", function () {
         it("reverts when withdrawing to the zero address", async function () {
             const { token, owner } = await loadFixture(deployFixture);
             await owner.sendTransaction({
-                to: token.address,
-                value: ethers.utils.parseEther("1"),
+                to: token.target,
+                value: ethers.parseEther("1"),
             });
             await expect(
                 token.withdraw(
-                    ethers.constants.AddressZero,
-                    ethers.utils.parseEther("1"),
+                    ethers.ZeroAddress,
+                    ethers.parseEther("1"),
                 ),
             ).to.be.revertedWithCustomError(token, "WithdrawToZeroAddress");
         });
@@ -103,13 +100,13 @@ describe("ERC721FCOMMON", function () {
             await (
                 await ethers.getSigners()
             )[0].sendTransaction({
-                to: token.address,
-                value: ethers.utils.parseEther("1"),
+                to: token.target,
+                value: ethers.parseEther("1"),
             });
             const before = await ethers.provider.getBalance(addr1.address);
-            await token.withdraw(addr1.address, ethers.utils.parseEther("1"));
+            await token.withdraw(addr1.address, ethers.parseEther("1"));
             const after = await ethers.provider.getBalance(addr1.address);
-            expect(after.sub(before)).to.equal(ethers.utils.parseEther("1"));
+            expect(after - before).to.equal(ethers.parseEther("1"));
         });
     });
 

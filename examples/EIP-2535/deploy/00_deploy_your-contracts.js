@@ -3,21 +3,29 @@
  * The init function of InitFacet gets executed during the deployment/upgrade
  */
 
-module.exports = async ({ getNamedAccounts, deployments }) => {
-  const { diamond } = deployments;
-  const { deployer } = await getNamedAccounts();
+import { deployScript, artifacts } from "../rocketh/deploy.js";
 
-  await diamond.deploy("EIP-2535", {
-    from: deployer,
-    facets: ["InitFacet", "MintFacet", "SaleControl", "ERC721FUpgradeable"],
-    log: true,
-    waitConfirmations: 1,
-    autoMine: true,
-    execute: {
-      contract: "InitFacet",
-      methodName: "init",
-      args: [],
+export default deployScript(
+    async (env) => {
+        const { deployer } = env.namedAccounts;
+
+        await env.diamond(
+            "EIP-2535",
+            { account: deployer },
+            {
+                facets: [
+                    { artifact: artifacts.InitFacet },
+                    { artifact: artifacts.MintFacet },
+                    { artifact: artifacts.SaleControl },
+                    { artifact: artifacts.ERC721FUpgradeable },
+                ],
+                execute: {
+                    type: "facet",
+                    functionName: "init",
+                    args: [],
+                },
+            },
+        );
     },
-  });
-};
-module.exports.tags = ["EIP-2535"];
+    { tags: ["EIP-2535"] },
+);

@@ -1,4 +1,4 @@
-const { execSync } = require("child_process");
+import { execSync } from "child_process";
 
 describe("Prettier tooling", () => {
     it("should run prettier check on a solidity file with plugin loaded", () => {

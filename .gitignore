@@ -10,6 +10,8 @@ artifacts
 gas-report.txt
 coverage.json
 coverage
+types
+.hardhat-deploy-v2-notice
 
 #Foundry
 out/

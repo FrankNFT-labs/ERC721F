@@ -1,4 +1,4 @@
-const fs = require('fs')
+import fs from "fs";
 
 // get the new value from the command line arguments
 const newValue = process.argv[2]

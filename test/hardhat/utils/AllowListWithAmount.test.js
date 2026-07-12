@@ -1,13 +1,11 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
-
+import { expect } from "chai";
+import { ethers, loadFixture } from "../helpers/connection.js";
 describe("AllowListWithAmount", function () {
     async function deployFixture() {
         const [owner, alice, bob] = await ethers.getSigners();
         const Mock = await ethers.getContractFactory("AllowListWithAmountMock");
         const mock = await Mock.deploy();
-        await mock.deployed();
+        await mock.waitForDeployment();
         return { mock, owner, alice, bob };
     }
 
@@ -22,7 +20,7 @@ describe("AllowListWithAmount", function () {
             const { mock, alice } = await loadFixture(deployFixture);
             await expect(
                 mock.connect(alice).allowAddress(alice.address, 5)
-            ).to.be.reverted;
+            ).to.revert(ethers);
         });
 
         it("overwrites the quota when called again", async function () {
@@ -45,7 +43,7 @@ describe("AllowListWithAmount", function () {
             const { mock, alice, bob } = await loadFixture(deployFixture);
             await expect(
                 mock.connect(alice).allowAddresses([bob.address], 3)
-            ).to.be.reverted;
+            ).to.revert(ethers);
         });
     });
 
@@ -62,7 +60,7 @@ describe("AllowListWithAmount", function () {
             await mock.allowAddress(alice.address, 5);
             await expect(
                 mock.connect(bob).disallowAddress(alice.address)
-            ).to.be.reverted;
+            ).to.revert(ethers);
         });
     });
 

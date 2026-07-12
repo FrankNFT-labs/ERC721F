@@ -1,7 +1,6 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
-const { shouldBehaveLikeERC721F } = require("../../behaviours");
+import { expect } from "chai";
+import { shouldBehaveLikeERC721F } from "../../behaviours/index.js";
+import { ethers, loadFixture } from "../../helpers/connection.js";
 
 const deployTokenFixture = async () => {
   const Token = await ethers.getContractFactory("ERC721FMock");
@@ -9,7 +8,7 @@ const deployTokenFixture = async () => {
 
   const hardhatToken = await Token.deploy("ERC721F", "ERC721F");
 
-  await hardhatToken.deployed();
+  await hardhatToken.waitForDeployment();
 
   return { Token, hardhatToken, owner, addr1 };
 };

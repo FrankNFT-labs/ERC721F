@@ -1,7 +1,5 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
-
+import { expect } from "chai";
+import { ethers, loadFixture } from "../../../helpers/connection.js";
 describe("ERC721FWalletOfOwnerStorage", function () {
     async function deployTokenFixture() {
         const Token = await ethers.getContractFactory("ERC721FWalletOfOwnerStorageMock");
@@ -29,14 +27,14 @@ describe("ERC721FWalletOfOwnerStorage", function () {
             it("Should assign the minted tokens to the wallet of the minter", async function () {
                 const walletOfOwner = await token.walletOfOwner(ownerAddress.address);
 
-                expect(walletOfOwner.map(t => t.toNumber())).to.have.members([0, 1]);
+                expect(walletOfOwner.map(t => Number(t))).to.have.members([0, 1]);
             });
 
             it("Should assign the minted tokens to the minter address", async function () {
                 await token.connect(otherAddress).mint(5);
                 const walletOfOwner = await token.walletOfOwner(otherAddress.address);
 
-                expect(walletOfOwner.map(t => t.toNumber())).to.have.members([2, 3, 4, 5, 6]);
+                expect(walletOfOwner.map(t => Number(t))).to.have.members([2, 3, 4, 5, 6]);
             });
         });
 
@@ -58,19 +56,19 @@ describe("ERC721FWalletOfOwnerStorage", function () {
             it("Should add transferred token to the wallet of the receiver", async function () {
                 const walletOfOwner = await token.walletOfOwner(ownerAddress.address);
 
-                expect(walletOfOwner.map(t => t.toNumber())).to.have.members([0, 2]);
+                expect(walletOfOwner.map(t => Number(t))).to.have.members([0, 2]);
             });
 
             it("Should remove the transferred token from the wallet of the transferee", async function () {
                 const walletOfOwner = await token.walletOfOwner(otherAddress.address);
 
-                expect(walletOfOwner.map(t => t.toNumber())).to.not.have.members([1, 2]);
+                expect(walletOfOwner.map(t => Number(t))).to.not.have.members([1, 2]);
             });
 
             it("Shouldn't remove non-transferred tokens from the wallet of the transferee", async function () {
                 const walletOfOwner = await token.walletOfOwner(otherAddress.address);
 
-                expect(walletOfOwner.map(t => t.toNumber())).to.have.members([1]);
+                expect(walletOfOwner.map(t => Number(t))).to.have.members([1]);
             });
         });
 
@@ -89,7 +87,7 @@ describe("ERC721FWalletOfOwnerStorage", function () {
             it("Should remove the burned token from the wallet", async function () {
                 const walletOfOwner = await token.walletOfOwner(ownerAddress.address);
 
-                expect(walletOfOwner.map(t => t.toNumber())).to.not.have.members([0, 1, 2, 3, 4]);
+                expect(walletOfOwner.map(t => Number(t))).to.not.have.members([0, 1, 2, 3, 4]);
             })
 
             it("Should remove burned token from owner wallet when burned by operator", async function () {
@@ -98,13 +96,13 @@ describe("ERC721FWalletOfOwnerStorage", function () {
                 // Operator burns token 2 (owned by ownerAddress)
                 await token.connect(ownerAddress).burn(2);
                 const wallet = await token.walletOfOwner(ownerAddress.address);
-                expect(wallet.map(t => t.toNumber())).to.have.members([0, 1, 4]);
+                expect(wallet.map(t => Number(t))).to.have.members([0, 1, 4]);
             });
 
             it("Shouldn't remove the non-burned tokens from the wallet", async function () {
                 const walletOfOwner = await token.walletOfOwner(ownerAddress.address);
 
-                expect(walletOfOwner.map(t => t.toNumber())).to.have.members([0, 1, 2, 4]);
+                expect(walletOfOwner.map(t => Number(t))).to.have.members([0, 1, 2, 4]);
             });
         });
     });

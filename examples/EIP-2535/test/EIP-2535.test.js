@@ -1,19 +1,23 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-const { expect, should } = require("chai");
-const { ethers, deployments } = require("hardhat");
-const { shouldBehaveLikeERC721F } = require("../../../test/hardhat/behaviours");
+import { ethers, provider } from "../../../test/hardhat/helpers/connection.js";
+import { loadAndExecuteDeploymentsFromFiles } from "../rocketh/environment.js";
+import { shouldBehaveLikeERC721F } from "../../../test/hardhat/behaviours/index.js";
 
 const deployTokenFixture = async () => {
-  await deployments.fixture();
-  const [owner, addr1] = await ethers.getSigners();
+    const env = await loadAndExecuteDeploymentsFromFiles({ provider });
+    const [owner, addr1] = await ethers.getSigners();
 
-  const hardhatToken = await ethers.getContract("EIP-2535", owner);
-  await hardhatToken.flipSaleState();
-  return { hardhatToken, owner, addr1 };
+    const eip2535 = env.get("EIP-2535");
+    const hardhatToken = new ethers.Contract(
+        eip2535.address,
+        eip2535.abi,
+        owner,
+    );
+    await hardhatToken.flipSaleState();
+    return { hardhatToken, owner, addr1 };
 };
 
 describe("EIP-2535", function () {
-  describe("Should behave like ERC72F", function () {
-    shouldBehaveLikeERC721F(deployTokenFixture);
-  });
+    describe("Should behave like ERC72F", function () {
+        shouldBehaveLikeERC721F(deployTokenFixture);
+    });
 });

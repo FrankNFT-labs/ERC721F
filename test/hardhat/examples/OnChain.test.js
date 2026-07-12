@@ -1,7 +1,5 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
-
+import { expect } from "chai";
+import { ethers, loadFixture } from "../helpers/connection.js";
 const URI_PREFIX = "data:application/json;utf-8,";
 const IMAGE_PREFIX = "data:image/svg+xml;base64,";
 
@@ -12,7 +10,7 @@ describe("OnChain", function () {
 
         const hardhatToken = await Token.deploy();
 
-        await hardhatToken.deployed();
+        await hardhatToken.waitForDeployment();
 
         return { Token, hardhatToken, owner, addr1 };
     }
@@ -26,7 +24,7 @@ describe("OnChain", function () {
 
     describe("Deployment", function () {
         it("Supports ERC721 standards", async function () {
-            const ERC721InterfaceId = 0x80ac58cd;
+            const ERC721InterfaceId = "0x80ac58cd";
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
             expect(await hardhatToken.supportsInterface(ERC721InterfaceId)).to

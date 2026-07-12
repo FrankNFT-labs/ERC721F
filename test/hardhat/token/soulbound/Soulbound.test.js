@@ -1,7 +1,5 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
-
+import { expect } from "chai";
+import { ethers, loadFixture } from "../../helpers/connection.js";
 describe("Soulbound", function () {
     async function deployTokenFixture() {
         const Token = await ethers.getContractFactory("SoulboundMock");
@@ -9,7 +7,7 @@ describe("Soulbound", function () {
 
         const hardhatToken = await Token.deploy("Soulbound", "Soulbound");
 
-        await hardhatToken.deployed();
+        await hardhatToken.waitForDeployment();
 
         return { Token, hardhatToken, owner, addr1, addr2 };
     }
@@ -18,7 +16,8 @@ describe("Soulbound", function () {
         it("Should return true with interfaceId=0xb45a3c0e", async function () {
             const { hardhatToken } = await loadFixture(deployTokenFixture);
 
-            expect(await hardhatToken.supportsInterface(0xb45a3c0e)).to.be.true;
+            expect(await hardhatToken.supportsInterface("0xb45a3c0e")).to.be
+                .true;
         });
     });
 
@@ -29,8 +28,9 @@ describe("Soulbound", function () {
 
             await hardhatToken.mint(addr1.address);
 
-            await expect(hardhatToken.approve(addr1.address, 0)).to.not.be
-                .reverted;
+            await expect(hardhatToken.approve(addr1.address, 0)).to.not.revert(
+                ethers,
+            );
             await expect(
                 hardhatToken.connect(addr1).approve(addr1.address, 0),
             ).to.be.revertedWithCustomError(
@@ -57,8 +57,9 @@ describe("Soulbound", function () {
 
             await hardhatToken.mint(addr1.address);
 
-            await expect(hardhatToken.approve(addr1.address, 0)).to.not.be
-                .reverted;
+            await expect(hardhatToken.approve(addr1.address, 0)).to.not.revert(
+                ethers,
+            );
             expect(await hardhatToken.getApproved(0)).to.be.equal(
                 addr1.address,
             );
@@ -87,8 +88,9 @@ describe("Soulbound", function () {
             const { hardhatToken, addr1 } =
                 await loadFixture(deployTokenFixture);
 
-            await expect(hardhatToken.setApprovalForAll(addr1.address, true)).to
-                .not.be.reverted;
+            await expect(
+                hardhatToken.setApprovalForAll(addr1.address, true),
+            ).to.not.revert(ethers);
             await expect(
                 hardhatToken
                     .connect(addr1)
@@ -155,7 +157,7 @@ describe("Soulbound", function () {
                     addr1.address,
                     true,
                 ),
-            ).to.not.be.reverted;
+            ).to.not.revert(ethers);
             await expect(
                 hardhatToken
                     .connect(addr1)
@@ -176,7 +178,7 @@ describe("Soulbound", function () {
                     addr1.address,
                     true,
                 ),
-            ).to.not.be.reverted;
+            ).to.not.revert(ethers);
             expect(
                 await hardhatToken.isApprovedForAll(
                     addr1.address,
@@ -249,7 +251,7 @@ describe("Soulbound", function () {
 
             await hardhatToken.mint(addr2.address);
 
-            await expect(hardhatToken.allowBurn(true)).to.not.be.reverted;
+            await expect(hardhatToken.allowBurn(true)).to.not.revert(ethers);
             await expect(
                 hardhatToken.connect(addr2).allowBurn(true),
             ).to.be.revertedWithCustomError(
@@ -281,7 +283,9 @@ describe("Soulbound", function () {
             const { hardhatToken, addr1 } =
                 await loadFixture(deployTokenFixture);
 
-            await expect(hardhatToken.mint(addr1.address)).to.not.be.reverted;
+            await expect(hardhatToken.mint(addr1.address)).to.not.revert(
+                ethers,
+            );
             await expect(
                 hardhatToken.connect(addr1).mint(addr1.address),
             ).to.be.revertedWithCustomError(
@@ -296,7 +300,7 @@ describe("Soulbound", function () {
 
             await expect(
                 hardhatToken.mint(addr1.address),
-            ).to.changeTokenBalance(hardhatToken, addr1.address, 1);
+            ).to.changeTokenBalance(ethers, hardhatToken, addr1.address, 1);
         });
 
         it("Should set token to locked by default", async function () {
@@ -334,7 +338,7 @@ describe("Soulbound", function () {
         });
 
         it("Should only be executable by the owner of the conract", async function () {
-            await expect(token.unlockedStatus(0, true)).to.not.be.reverted;
+            await expect(token.unlockedStatus(0, true)).to.not.revert(ethers);
         });
 
         it("Shouldn't be executable by approved addresses", async function () {
@@ -346,7 +350,7 @@ describe("Soulbound", function () {
                 "OwnableUnauthorizedAccount",
             );
 
-            await token.approve(ethers.constants.AddressZero, 0);
+            await token.approve(ethers.ZeroAddress, 0);
             await token.setApprovalForAllOwner(
                 otherAddress.address,
                 addressToBeApproved.address,
@@ -427,11 +431,13 @@ describe("Soulbound", function () {
         it("Should be executable by anyone", async function () {
             await token.approve(addressToBeApproved.address, 0);
 
-            await expect(token.locked(0)).to.not.be.reverted;
-            await expect(token.connect(addressToBeApproved).locked(0)).to.not.be
-                .reverted;
-            await expect(token.connect(otherAddress).locked(0)).to.not.be
-                .reverted;
+            await expect(token.locked(0)).to.not.revert(ethers);
+            await expect(
+                token.connect(addressToBeApproved).locked(0),
+            ).to.not.revert(ethers);
+            await expect(token.connect(otherAddress).locked(0)).to.not.revert(
+                ethers,
+            );
         });
 
         it("Should revert when requesting a token owned by the zero address", async function () {
@@ -442,7 +448,7 @@ describe("Soulbound", function () {
 
             await token.unlockedStatus(0, true);
 
-            await expect(token.locked(0)).to.not.be.reverted;
+            await expect(token.locked(0)).to.not.revert(ethers);
 
             await token.burn(0);
 
@@ -477,7 +483,7 @@ describe("Soulbound", function () {
                         ownerAdress.address,
                         0,
                     ),
-                ).to.not.be.reverted;
+                ).to.not.revert(ethers);
                 expect(await token.locked(0)).to.be.true;
             });
 
@@ -534,7 +540,7 @@ describe("Soulbound", function () {
                         ownerAdress.address,
                         0,
                     ),
-                ).to.not.be.reverted;
+                ).to.not.revert(ethers);
             });
 
             it("Shouldn't allow transfers by unapproved addresses", async function () {
@@ -560,7 +566,7 @@ describe("Soulbound", function () {
                             ownerAdress.address,
                             0,
                         ),
-                ).to.not.be.reverted;
+                ).to.not.revert(ethers);
             });
 
             it("Should allow transfers by approved-all addresses", async function () {
@@ -578,7 +584,7 @@ describe("Soulbound", function () {
                             ownerAdress.address,
                             0,
                         ),
-                ).to.not.be.reverted;
+                ).to.not.revert(ethers);
             });
 
             it("Should transfer the token between addresses", async function () {
@@ -589,6 +595,7 @@ describe("Soulbound", function () {
                         0,
                     ),
                 ).to.changeTokenBalances(
+                    ethers,
                     token,
                     [otherAddress.address, ownerAdress.address],
                     [-1, 1],
@@ -609,9 +616,7 @@ describe("Soulbound", function () {
                 expect(await token.getApproved(0)).to.not.equal(
                     addressToBeApproved.address,
                 );
-                expect(await token.getApproved(0)).to.equal(
-                    ethers.constants.AddressZero,
-                );
+                expect(await token.getApproved(0)).to.equal(ethers.ZeroAddress);
             });
 
             it("Shouldn't remove approval status of an approved-all address post transfer", async function () {
@@ -652,12 +657,14 @@ describe("Soulbound", function () {
                     false,
                 );
 
-                expect(
-                    await token.transferFrom(
-                        otherAddress.address,
-                        ownerAdress.address,
-                        0,
-                    ),
+                await expect(
+                    token
+                        .connect(addressToBeApproved)
+                        .transferFrom(
+                            otherAddress.address,
+                            ownerAdress.address,
+                            0,
+                        ),
                 ).to.be.revertedWithCustomError(token, "NotOwnerOrApproved");
             });
 
@@ -698,7 +705,7 @@ describe("Soulbound", function () {
                             ownerAdress.address,
                             0,
                         ),
-                    ).to.not.be.reverted;
+                    ).to.not.revert(ethers);
                     expect(await token.locked(0)).to.be.true;
                 });
 
@@ -764,7 +771,7 @@ describe("Soulbound", function () {
                             ownerAdress.address,
                             0,
                         ),
-                    ).to.not.be.reverted;
+                    ).to.not.revert(ethers);
                 });
 
                 it("Shouldn't allow transfers by unapproved addresses", async function () {
@@ -793,7 +800,7 @@ describe("Soulbound", function () {
                                 ownerAdress.address,
                                 0,
                             ),
-                    ).to.not.be.reverted;
+                    ).to.not.revert(ethers);
                 });
 
                 it("Should allow transfers by approved-all addresses", async function () {
@@ -811,7 +818,7 @@ describe("Soulbound", function () {
                                 ownerAdress.address,
                                 0,
                             ),
-                    ).to.not.be.reverted;
+                    ).to.not.revert(ethers);
                 });
 
                 it("Should transfer the token between addresses", async function () {
@@ -822,6 +829,7 @@ describe("Soulbound", function () {
                             0,
                         ),
                     ).to.changeTokenBalances(
+                        ethers,
                         token,
                         [otherAddress.address, ownerAdress.address],
                         [-1, 1],
@@ -849,7 +857,7 @@ describe("Soulbound", function () {
                         addressToBeApproved.address,
                     );
                     expect(await token.getApproved(0)).to.equal(
-                        ethers.constants.AddressZero,
+                        ethers.ZeroAddress,
                     );
                 });
 
@@ -895,12 +903,14 @@ describe("Soulbound", function () {
                         false,
                     );
 
-                    expect(
-                        await token.safeTransferFromHelperNonData(
-                            otherAddress.address,
-                            ownerAdress.address,
-                            0,
-                        ),
+                    await expect(
+                        token
+                            .connect(addressToBeApproved)
+                            .safeTransferFromHelperNonData(
+                                otherAddress.address,
+                                ownerAdress.address,
+                                0,
+                            ),
                     ).to.be.revertedWithCustomError(
                         token,
                         "NotOwnerOrApproved",
@@ -927,9 +937,9 @@ describe("Soulbound", function () {
                             otherAddress.address,
                             ownerAdress.address,
                             0,
-                            0x00,
+                            "0x00",
                         ),
-                    ).to.not.be.reverted;
+                    ).to.not.revert(ethers);
                     expect(await token.locked(0)).to.be.true;
                 });
 
@@ -945,7 +955,7 @@ describe("Soulbound", function () {
                                 otherAddress.address,
                                 ownerAdress.address,
                                 0,
-                                0x00,
+                                "0x00",
                             ),
                     ).to.be.revertedWithCustomError(
                         token,
@@ -958,7 +968,7 @@ describe("Soulbound", function () {
                                 otherAddress.address,
                                 ownerAdress.address,
                                 0,
-                                0x00,
+                                "0x00",
                             ),
                     ).to.be.revertedWithCustomError(
                         token,
@@ -977,7 +987,7 @@ describe("Soulbound", function () {
                                 otherAddress.address,
                                 ownerAdress.address,
                                 0,
-                                0x00,
+                                "0x00",
                             ),
                     ).to.be.revertedWithCustomError(
                         token,
@@ -997,9 +1007,9 @@ describe("Soulbound", function () {
                             otherAddress.address,
                             ownerAdress.address,
                             0,
-                            0x00,
+                            "0x00",
                         ),
-                    ).to.not.be.reverted;
+                    ).to.not.revert(ethers);
                 });
 
                 it("Shouldn't allow transfers by unapproved addresses", async function () {
@@ -1010,7 +1020,7 @@ describe("Soulbound", function () {
                                 otherAddress.address,
                                 ownerAdress.address,
                                 0,
-                                0x00,
+                                "0x00",
                             ),
                     ).to.be.revertedWithCustomError(
                         token,
@@ -1028,9 +1038,9 @@ describe("Soulbound", function () {
                                 otherAddress.address,
                                 ownerAdress.address,
                                 0,
-                                0x00,
+                                "0x00",
                             ),
-                    ).to.not.be.reverted;
+                    ).to.not.revert(ethers);
                 });
 
                 it("Should allow transfers by approved-all addresses", async function () {
@@ -1047,9 +1057,9 @@ describe("Soulbound", function () {
                                 otherAddress.address,
                                 ownerAdress.address,
                                 0,
-                                0x00,
+                                "0x00",
                             ),
-                    ).to.not.be.reverted;
+                    ).to.not.revert(ethers);
                 });
 
                 it("Should transfer the token between addresses", async function () {
@@ -1058,9 +1068,10 @@ describe("Soulbound", function () {
                             otherAddress.address,
                             ownerAdress.address,
                             0,
-                            0x00,
+                            "0x00",
                         ),
                     ).to.changeTokenBalances(
+                        ethers,
                         token,
                         [otherAddress.address, ownerAdress.address],
                         [-1, 1],
@@ -1082,14 +1093,14 @@ describe("Soulbound", function () {
                             otherAddress.address,
                             ownerAdress.address,
                             0,
-                            0x00,
+                            "0x00",
                         );
 
                     expect(await token.getApproved(0)).to.not.equal(
                         addressToBeApproved.address,
                     );
                     expect(await token.getApproved(0)).to.equal(
-                        ethers.constants.AddressZero,
+                        ethers.ZeroAddress,
                     );
                 });
 
@@ -1106,7 +1117,7 @@ describe("Soulbound", function () {
                             otherAddress.address,
                             ownerAdress.address,
                             0,
-                            0x00,
+                            "0x00",
                         );
 
                     expect(
@@ -1136,13 +1147,15 @@ describe("Soulbound", function () {
                         false,
                     );
 
-                    expect(
-                        await token.safeTransferFromHelperWithData(
-                            otherAddress.address,
-                            ownerAdress.address,
-                            0,
-                            0x00,
-                        ),
+                    await expect(
+                        token
+                            .connect(addressToBeApproved)
+                            .safeTransferFromHelperWithData(
+                                otherAddress.address,
+                                ownerAdress.address,
+                                0,
+                                "0x00",
+                            ),
                     ).to.be.revertedWithCustomError(
                         token,
                         "NotOwnerOrApproved",
@@ -1154,7 +1167,7 @@ describe("Soulbound", function () {
                         otherAddress.address,
                         ownerAdress.address,
                         0,
-                        0x00,
+                        "0x00",
                     );
 
                     expect(await token.locked(0)).to.be.true;
@@ -1179,7 +1192,7 @@ describe("Soulbound", function () {
 
         context("Token is locked", async function () {
             it("Should allow burns done by the contract owner", async function () {
-                await expect(token.burn(0)).to.not.be.reverted;
+                await expect(token.burn(0)).to.not.revert(ethers);
             });
 
             it("Shouldn't allow burns by anyone else", async function () {
@@ -1209,7 +1222,7 @@ describe("Soulbound", function () {
             });
 
             it("Should allow burns done by owner", async function () {
-                await expect(token.burn(0)).to.not.be.reverted;
+                await expect(token.burn(0)).to.not.revert(ethers);
             });
 
             it("Shouldn't allow burns by unapproved addresses and non-allowed owners", async function () {
@@ -1221,8 +1234,9 @@ describe("Soulbound", function () {
             it("Should allow burns by approved addresses", async function () {
                 await token.approve(addressToBeApproved.address, 0);
 
-                await expect(token.connect(addressToBeApproved).burn(0)).to.not
-                    .be.reverted;
+                await expect(
+                    token.connect(addressToBeApproved).burn(0),
+                ).to.not.revert(ethers);
             });
 
             it("Should allow burns by approved-all addresses", async function () {
@@ -1232,15 +1246,17 @@ describe("Soulbound", function () {
                     true,
                 );
 
-                await expect(token.connect(addressToBeApproved).burn(0)).to.not
-                    .be.reverted;
+                await expect(
+                    token.connect(addressToBeApproved).burn(0),
+                ).to.not.revert(ethers);
             });
 
             it("Should allow burns by allowed token holder", async function () {
                 await token.allowBurn(true);
 
-                await expect(token.connect(otherAddress).burn(0)).to.not.be
-                    .reverted;
+                await expect(token.connect(otherAddress).burn(0)).to.not.revert(
+                    ethers,
+                );
             });
 
             it("Shouldn't remove approval status of approved-all address post burn", async function () {
@@ -1288,10 +1304,9 @@ describe("Soulbound", function () {
                     false,
                 );
 
-                expect(await token.burn(0)).to.be.revertedWithCustomError(
-                    token,
-                    "NotOwnerOrApproved",
-                );
+                await expect(
+                    token.connect(addressToBeApproved).burn(0),
+                ).to.be.revertedWithCustomError(token, "TokenNotTransferable");
             });
         });
     });
