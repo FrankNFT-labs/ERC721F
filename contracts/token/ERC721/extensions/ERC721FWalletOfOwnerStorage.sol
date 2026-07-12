@@ -55,11 +55,14 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
      * @dev Copies last token from wallet of `owner` to the index where `tokenId` is at and pops last element. Removes `tokenId` from wallet
      */
     function _removeTokenFromWallet(uint256 tokenId, address owner) private {
-        uint256 length = _walletOfOwner[owner].length;
+        // Cache the storage pointer so the mapping slot is hashed once
+        // instead of on every element access.
+        uint256[] storage wallet = _walletOfOwner[owner];
+        uint256 length = wallet.length;
         for (uint256 i; i < length; ) {
-            if (_walletOfOwner[owner][i] == tokenId) {
-                _walletOfOwner[owner][i] = _walletOfOwner[owner][length - 1];
-                _walletOfOwner[owner].pop();
+            if (wallet[i] == tokenId) {
+                wallet[i] = wallet[length - 1];
+                wallet.pop();
                 break;
             }
             unchecked {

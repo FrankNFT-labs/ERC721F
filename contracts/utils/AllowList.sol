@@ -38,7 +38,9 @@ abstract contract AllowList is Ownable {
     function allowAddresses(address[] calldata _addresses) external onlyOwner {
         uint256 length = _addresses.length;
         for (uint256 i; i < length; ) {
-            allowAddress(_addresses[i]);
+            // The internal variant skips the redundant onlyOwner check that
+            // the public allowAddress would re-run on every iteration.
+            _allowAddress(_addresses[i]);
             unchecked {
                 i++;
             }
@@ -56,7 +58,7 @@ abstract contract AllowList is Ownable {
      * @notice Adds an address to the allowList
      */
     function allowAddress(address _address) public onlyOwner {
-        allowList[_address] = true;
+        _allowAddress(_address);
     }
 
     /**
@@ -64,6 +66,13 @@ abstract contract AllowList is Ownable {
      */
     function isAllowList(address _address) public view returns (bool) {
         return allowList[_address];
+    }
+
+    /**
+     * @dev Sets `_address` to `true` in allowList
+     */
+    function _allowAddress(address _address) internal {
+        allowList[_address] = true;
     }
 
     /**

@@ -31,7 +31,9 @@ abstract contract AllowListWithAmount is Ownable {
     ) external onlyOwner {
         uint256 length = _addresses.length;
         for (uint256 i; i < length; ) {
-            allowAddress(_addresses[i], totalTokens);
+            // The internal variant skips the redundant onlyOwner check that
+            // the public allowAddress would re-run on every iteration.
+            _allowAddress(_addresses[i], totalTokens);
             unchecked {
                 i++;
             }
@@ -52,7 +54,7 @@ abstract contract AllowListWithAmount is Ownable {
         address _address,
         uint256 totalTokens
     ) public onlyOwner {
-        allowList[_address] = totalTokens;
+        _allowAddress(_address, totalTokens);
     }
 
     /**
@@ -60,6 +62,13 @@ abstract contract AllowListWithAmount is Ownable {
      */
     function getAllowListFunds(address _address) public view returns (uint256) {
         return allowList[_address];
+    }
+
+    /**
+     * @dev Sets `totalTokens` as the token amount of `_address` in the allowList
+     */
+    function _allowAddress(address _address, uint256 totalTokens) internal {
+        allowList[_address] = totalTokens;
     }
 
     /**
@@ -76,10 +85,15 @@ abstract contract AllowListWithAmount is Ownable {
         address _address,
         uint256 totalDecrease
     ) internal {
-        if (totalDecrease >= allowList[_address]) {
+        // Cache the current amount so the slot is read once instead of twice.
+        uint256 availableTokens = allowList[_address];
+        if (totalDecrease >= availableTokens) {
             allowList[_address] = 0;
         } else {
-            allowList[_address] = allowList[_address] - totalDecrease;
+            unchecked {
+                // Cannot underflow: totalDecrease < availableTokens.
+                allowList[_address] = availableTokens - totalDecrease;
+            }
         }
     }
 }
