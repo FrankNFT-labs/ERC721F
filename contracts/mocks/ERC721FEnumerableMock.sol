@@ -26,4 +26,11 @@ contract ERC721FEnumerableMock is ERC721FEnumerable {
             }
         }
     }
+
+    /**
+     * @notice Burns `tokenId`
+     */
+    function burn(uint256 tokenId) public {
+        _burn(tokenId);
+    }
 }
