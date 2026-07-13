@@ -186,11 +186,11 @@ forge test --gas-report \
 ### Hardhat — ERC721F gas report
 
 ```bash
-# Enable gas reporting (set in .env or inline)
-REPORT_GAS=true npx hardhat test ./test/hardhat/token/ERC721/GasUsage.test.js
+# Hardhat 3 built-in gas statistics (replaces hardhat-gas-reporter)
+npx hardhat test --gas-stats ./test/hardhat/token/ERC721/GasUsage.test.js
 ```
 
-To write the report to a file, uncomment `outputFile` in `hardhat.config.js` under `gasReporter`.
+To write the report to a file, use `--gas-stats-json <path>` instead of `--gas-stats`.
 
 ### Changing the optimizer runs
 

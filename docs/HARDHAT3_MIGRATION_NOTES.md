@@ -5,14 +5,14 @@ Baseline/rollback point: commit `1918d9f` (Hardhat 2, 314 passing + 1 pending, f
 
 ## Dependency set
 
-| Package                                                     | Before             | After                                                                                                                               |
-| ----------------------------------------------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `hardhat`                                                   | ^2.12.4            | ^3.9.1                                                                                                                              |
-| `@nomicfoundation/hardhat-toolbox`                          | ^2.0.0 (ethers v5) | replaced by `@nomicfoundation/hardhat-toolbox-mocha-ethers` ^3.0.7 (ethers v6, mocha 11, chai 6)                                    |
-| `hardhat-gas-reporter`                                      | via toolbox        | **removed** — no Hardhat 3 release exists (peer `hardhat ^2.16.0`); use `forge test --gas-report`                                   |
-| `solidity-coverage`                                         | via toolbox        | replaced by Hardhat 3 built-in `hardhat test --coverage`                                                                            |
-| `hardhat-deploy` (EIP-2535 workspace)                       | ^1.0.4             | ^2.0.8 (rocketh-based rewrite) + `rocketh`, `@rocketh/deploy`, `@rocketh/diamond`, `@rocketh/node`, `@rocketh/read-execute`, `viem` |
-| `@nomiclabs/hardhat-ethers` (alias `hardhat-deploy-ethers`) | ^0.3.0-beta.13     | removed (superseded by toolbox `hardhat-ethers` v4)                                                                                 |
+| Package                                                     | Before             | After                                                                                                                                         |
+| ----------------------------------------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `hardhat`                                                   | ^2.12.4            | ^3.9.1                                                                                                                                        |
+| `@nomicfoundation/hardhat-toolbox`                          | ^2.0.0 (ethers v5) | replaced by `@nomicfoundation/hardhat-toolbox-mocha-ethers` ^3.0.7 (ethers v6, mocha 11, chai 6)                                              |
+| `hardhat-gas-reporter`                                      | via toolbox        | **removed** — no Hardhat 3 release (peer `hardhat ^2.16.0`); replaced by Hardhat 3's built-in `hardhat test --gas-stats` / `--gas-stats-json` |
+| `solidity-coverage`                                         | via toolbox        | replaced by Hardhat 3 built-in `hardhat test --coverage`                                                                                      |
+| `hardhat-deploy` (EIP-2535 workspace)                       | ^1.0.4             | ^2.0.8 (rocketh-based rewrite) + `rocketh`, `@rocketh/deploy`, `@rocketh/diamond`, `@rocketh/node`, `@rocketh/read-execute`, `viem`           |
+| `@nomiclabs/hardhat-ethers` (alias `hardhat-deploy-ethers`) | ^0.3.0-beta.13     | removed (superseded by toolbox `hardhat-ethers` v4)                                                                                           |
 
 Both `package.json` files are now ESM (`"type": "module"`).
 
@@ -81,8 +81,9 @@ the root suite (infinite loop). See `test/hardhat/examples/EIP-2535.test.js`.
 
 ## Not migrated / follow-ups
 
-- `REPORT_GAS=true npx hardhat test` no longer reports gas — track
-  hardhat-gas-reporter Hardhat 3 support and re-add when released.
+- `REPORT_GAS=true npx hardhat test` no longer applies; gas reporting is now
+  native via `npx hardhat test --gas-stats` (console table) or
+  `--gas-stats-json <path>` (machine-readable). No plugin follow-up needed.
 - `docs/HARDHAT3_MIGRATION_PLAN.md` retained for historical context.
 
 ## Verification (12-07-2026)

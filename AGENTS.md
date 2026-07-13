@@ -83,8 +83,9 @@ npx hardhat compile contracts/token/ERC721/ERC721F.sol
 npx hardhat test test/hardhat/token/ERC721/ERC721F.test.js
 forge test --match-path "test/foundry/token/ERC721/ERC721FGasReporterMock.t.sol"
 
-# Gas reporting (hardhat-gas-reporter has no Hardhat 3 release yet)
-forge test --gas-report
+# Gas reporting
+npx hardhat test --gas-stats          # Hardhat 3 built-in (replaces hardhat-gas-reporter)
+forge test --gas-report               # Foundry-native
 
 # Example import helpers
 npm run update-example-imports:dev

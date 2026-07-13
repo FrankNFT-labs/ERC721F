@@ -43,7 +43,7 @@ test/
 
 - Hardhat selection: `npx hardhat test test/hardhat/<path>.test.js`.
 - Foundry selection: `forge test --match-path "test/foundry/..."`.
-- Gas reporting: `forge test --gas-report` (hardhat-gas-reporter has no Hardhat 3 release yet).
+- Gas reporting: `npx hardhat test --gas-stats` (Hardhat 3 built-in) or `forge test --gas-report` (Foundry-native).
 - Hardhat tests are ESM and share one network connection via `test/hardhat/helpers/connection.js`.
 
 ## ANTI-PATTERNS

@@ -34,12 +34,12 @@ Don't forget to give the project a star! Thanks again!
 
 #### Running a single test
 
-`npx hardhat test ./test/token/ERC721/GasUsage.test.js`
+`npx hardhat test ./test/hardhat/token/ERC721/GasUsage.test.js`
 
 #### Testing gas consumption
 
-- Enable the creation of a gas report by setting `REPORT_GAS` to `true` in `.env`
-- Toggle the creation of a gas report file by (un)commenting `outputFile` in `hardhat.config.js`
+- Generate a gas report with Hardhat 3's built-in flag: `npx hardhat test --gas-stats`
+- Write the report to a JSON file with `npx hardhat test --gas-stats-json <path>`
 - Change the total runs and toggle the optimizer by changing the `solidity` `optimizer` values in `hardhat.config.js`
 
 ### Foundry
