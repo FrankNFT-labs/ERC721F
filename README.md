@@ -11,6 +11,8 @@ Another key goal of ERC721F is to facilitate educational opportunities for new w
 ERC721F extends ERC721 Non-Fungible Token Standard basic implementation. ERC721F eliminates the need for ERC721Enumerable, yet retains the functionality of totalSupply() and walletOfOwner(address \_owner).
 
 The Author is not liable for any outcomes as a result of using ERC721F. **DYOR!**
+ERC721F is created and maintained by [Frank Poncelet](https://frankponcelet.com)
+(FrankNFT.eth)
 
 <!-- LEARNING PATH -->
 
