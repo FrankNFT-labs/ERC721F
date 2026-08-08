@@ -9,7 +9,7 @@
         "test": "hardhat test"
     },
     "dependencies": {
-        "@rocketh/deploy": "^0.19.9",
+        "@rocketh/deploy": "^0.19.10",
         "@rocketh/diamond": "^0.19.11",
         "@rocketh/node": "^0.19.8",
         "@rocketh/read-execute": "^0.19.4",
