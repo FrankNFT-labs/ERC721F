@@ -4,19 +4,32 @@
 version: 2
 
 updates:
-  # Enable version updates for npm
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 10
-    commit-message:
-      prefix: "deps"
+    # Enable version updates for npm
+    - package-ecosystem: "npm"
+      directory: "/"
+      schedule:
+          interval: "weekly"
+      open-pull-requests-limit: 10
+      commit-message:
+          prefix: "deps"
+      # Supply-chain gate: only propose releases at least 7 days old.
+      # Also prevents rebases from retargeting to fresh releases.
+      cooldown:
+          default-days: 7
+      # The rocketh monorepo family releases in lockstep; one grouped PR
+      # instead of five lockfile-conflicting ones.
+      groups:
+          rocketh:
+              patterns:
+                  - "rocketh"
+                  - "@rocketh/*"
 
-  # Enable version updates for GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    commit-message:
-      prefix: "ci"
+    # Enable version updates for GitHub Actions
+    - package-ecosystem: "github-actions"
+      directory: "/"
+      schedule:
+          interval: "weekly"
+      commit-message:
+          prefix: "ci"
+      cooldown:
+          default-days: 7
