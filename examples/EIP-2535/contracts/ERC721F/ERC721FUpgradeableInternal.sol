@@ -155,6 +155,8 @@ contract ERC721FUpgradeableInternal is IERC721Upgradeable {
      * Emits a {Transfer} event.
      */
     function _burn(uint256 tokenId) internal virtual {
+        _requireMinted(tokenId);
+
         address owner = _ownerOf(tokenId);
 
         _beforeTokenTransfer(owner, address(0), tokenId, 1);

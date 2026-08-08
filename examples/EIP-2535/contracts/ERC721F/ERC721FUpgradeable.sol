@@ -204,8 +204,19 @@ contract ERC721FUpgradeable is ERC721FUpgradeableInternal, UsingDiamondOwner {
 
     /**
      * @notice Burns `tokenId`
+     *
+     * Requirements:
+     *
+     * - `tokenId` must exist.
+     * - The caller must own the token or be approved to move it by either
+     *   {approve} or {setApprovalForAll}.
      */
-    function burn(uint256 tokenId) public {
+    function burn(uint256 tokenId) public virtual {
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId),
+            "ERC721: caller is not token owner or approved"
+        );
+
         _burn(tokenId);
     }
 
