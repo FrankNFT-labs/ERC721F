@@ -118,5 +118,5 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 [npm-url]: https://www.npmjs.com/package/@franknft.eth/erc721-f
 [solidity-shield]: https://img.shields.io/badge/Solidity-0.8.24-blue.svg?style=for-the-badge
 [solidity-url]: https://soliditylang.org
-[build-shield]: https://github.com/FrankNFT-labs/ERC721F/actions/workflows/ci.yml/badge.svg
+[build-shield]: https://img.shields.io/github/actions/workflow/status/FrankNFT-labs/ERC721F/ci.yml?branch=main&style=for-the-badge
 [build-url]: https://github.com/FrankNFT-labs/ERC721F/actions/workflows/ci.yml
