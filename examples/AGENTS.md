@@ -30,12 +30,12 @@ examples/
 
 ## CONVENTIONS
 
--   Examples are pedagogical; they may prioritize clarity over production hardening.
--   Example imports may need local-path switching for local compile/test.
--   Treat `EIP-2535/` as separate workspace semantics, not root defaults.
+- Examples are pedagogical; they may prioritize clarity over production hardening.
+- Example imports may need local-path switching for local compile/test.
+- Treat `EIP-2535/` as separate workspace semantics, not root defaults.
 
 ## ANTI-PATTERNS
 
--   Assuming examples are production-hardened out of the box.
--   Running root hardhat flows against examples without adjusting import paths/source scope.
--   Mixing EIP-2535 artifact expectations with root artifact expectations.
+- Assuming examples are production-hardened out of the box.
+- Running root hardhat flows against examples without adjusting import paths/source scope.
+- Mixing EIP-2535 artifact expectations with root artifact expectations.
