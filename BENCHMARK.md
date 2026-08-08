@@ -13,7 +13,7 @@ All figures are Foundry measurements at identical conditions. Hardhat numbers ar
 | Property       | Value                      |
 | -------------- | -------------------------- |
 | Solidity       | 0.8.24                     |
-| OpenZeppelin   | 5.6.1                      |
+| OpenZeppelin   | 5.7.0                      |
 | EVM target     | Cancun                     |
 | Optimizer      | enabled, 1 000 runs        |
 | Foundry        | forge (see `foundry.toml`) |

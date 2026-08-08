@@ -64,7 +64,7 @@ npm install @franknft.eth/erc721-f
 
 - **Solidity**: `^0.8.20 <0.9.0` (the toolchain compiles with `0.8.24`)
 - **Node.js**: `>=24`
-- **OpenZeppelin**: `5.6.1`
+- **OpenZeppelin**: `5.7.0`
 
 Just import the file from the package like this:
 
@@ -103,7 +103,7 @@ Or just import the file directly from GitHub like this:
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20 <0.9.0;
 
-import "https://github.com/FrankNFT-labs/ERC721F/blob/v5.6.1/contracts/token/ERC721/ERC721FCOMMON.sol";
+import "https://github.com/FrankNFT-labs/ERC721F/blob/v5.7.0/contracts/token/ERC721/ERC721FCOMMON.sol";
 ```
 
 <!-- CONTRIBUTING -->

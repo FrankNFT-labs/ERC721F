@@ -6,7 +6,7 @@
 
 ## OVERVIEW
 
-ERC721F is a gas-optimized ERC721 implementation (Solidity 0.8.24, OpenZeppelin 5.6.1, EVM Cancun) with dual tooling: Hardhat + Foundry. Repo also contains production contracts, tests, and isolated examples (including an EIP-2535 workspace).
+ERC721F is a gas-optimized ERC721 implementation (Solidity 0.8.24, OpenZeppelin 5.7.0, EVM Cancun) with dual tooling: Hardhat + Foundry. Repo also contains production contracts, tests, and isolated examples (including an EIP-2535 workspace).
 
 ## STRUCTURE
 
