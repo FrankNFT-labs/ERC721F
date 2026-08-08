@@ -1,7 +1,7 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-03-24 08:45:09 CET
-**Commit:** f394aab
+**Reviewed:** 2026-08-08
+**Commit:** d8b69f0
 **Branch:** main
 
 ## OVERVIEW
@@ -17,7 +17,7 @@ ERC721F is a gas-optimized ERC721 implementation (Solidity 0.8.24, OpenZeppelin 
 ├── examples/         # reference/example implementations
 │   └── EIP-2535/     # isolated npm workspace
 ├── scripts/          # helper scripts (env/import/snapshot tooling)
-├── docs/             # reference data/presentations (non-build assets)
+├── docs/             # migration notes (md) + reference data/presentations
 └── lib/              # vendored dependencies (exclude from ownership scans)
 ```
 
@@ -71,12 +71,17 @@ High-centrality modules:
 
 ```bash
 # Root toolchain
-npm install
+npm ci                                # CI parity (npm install also works)
 npx hardhat compile
 npx hardhat test
 npx hardhat test --coverage
 forge build
 forge test
+
+# Lint / format
+npm run lint                          # solhint over all .sol files
+npm run lint:foundry                  # solhint with the foundry-test config
+npm run prettier:solidity             # prettier + solidity plugin, writes in place
 
 # Focused execution
 npx hardhat compile contracts/token/ERC721/ERC721F.sol
@@ -94,6 +99,7 @@ npm run update-example-imports:prod
 
 ## NOTES
 
-- If Hardhat example compilation fails on `@franknft.eth/erc721-f` imports, switch examples to local relative imports for local testing.
-- `examples/EIP-2535` has independent config and should be run as its own workspace (`npm run <script> --workspace=eip-2535` or from that folder directly).
-- `docs/` is reference material (xlsx/pdf/png), not part of compile/test pipeline.
+- If Hardhat example compilation fails on `@franknft.eth/erc721-f` imports, run `npm run update-example-imports:dev` to rewrite them to local paths (`:prod` restores the published form). CI runs `:dev` in both jobs before compiling.
+- `examples/EIP-2535` has independent config; run it via `npm run <script> --workspace=eip-2535` or from that folder. Note the root `npm test` also exercises it: `test/hardhat/examples/EIP-2535.test.js` shells out to the workspace suite.
+- CI is `.github/workflows/ci.yml`: two jobs ("Hardhat Tests", "Foundry Tests"), both `npm ci` + `update-example-imports:dev` first; triggers are push and pull_request on main only.
+- `docs/` is reference material (md/xlsx/pdf/png), not part of compile/test pipeline.

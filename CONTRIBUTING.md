@@ -22,13 +22,9 @@ Don't forget to give the project a star! Thanks again!
 4. `npx hardhat compile`
 5. `npx hardhat test`
 
-> **Warning**
-> When running any test of a contract located in /examples, you'll receive a compilation error due to the @franknft.eth/erc721-f library not being installed.
-> To prevent this error you must change all imports where @franknft.eth/erc721-f to the location of the local file. For example "../contracts/utils/AllowList.sol" in the AllowList example.
-
-> **Warning**
-> Since hardhat only compiles a single path at once, you'll probably fail every single test that's executed on solutions located in /examples. This is because those artifacts haven't been created yet.
-> These can be created by changing the the sources path in hardhat.config.js to "./examples" and executing step 3 again.
+> **Note**
+> Contracts in /examples import the published `@franknft.eth/erc721-f` package. Before compiling or testing them locally, run `npm run update-example-imports:dev` to rewrite those imports to local paths (CI does the same in both jobs); `npm run update-example-imports:prod` restores the published form. The pre-commit hook keeps committed files in the published form.
+> The root Hardhat config compiles `contracts/` and `examples/` together in one run, so no config changes are needed.
 
 **Note:** `npx hardhat clean` removes the created artifacts
 
@@ -40,7 +36,7 @@ Don't forget to give the project a star! Thanks again!
 
 - Generate a gas report with Hardhat 3's built-in flag: `npx hardhat test --gas-stats`
 - Write the report to a JSON file with `npx hardhat test --gas-stats-json <path>`
-- Change the total runs and toggle the optimizer by changing the `solidity` `optimizer` values in `hardhat.config.js`
+- Change the total runs and toggle the optimizer by changing the `optimizer` values under `solidity.profiles.default.settings` in `hardhat.config.js`
 
 ### Foundry
 
@@ -51,7 +47,7 @@ Don't forget to give the project a star! Thanks again!
 
 #### Running a single test
 
-`forge test --match-path test\foundry\token\ERC721\ERC721FGasReporterMock.t.sol`
+`forge test --match-path test/foundry/token/ERC721/ERC721FGasReporterMock.t.sol`
 
 #### Testing gas consumption
 

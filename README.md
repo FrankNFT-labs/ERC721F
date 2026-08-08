@@ -57,12 +57,12 @@ Please refer to [SECURITY.md](./SECURITY.md) for our security policy and how to 
 ### Installation
 
 ```
-npm install '@franknft.eth/erc721-f'
+npm install @franknft.eth/erc721-f
 ```
 
 ### Requirements
 
-- **Solidity**: `0.8.24` or higher
+- **Solidity**: `^0.8.20 <0.9.0` (the toolchain compiles with `0.8.24`)
 - **Node.js**: `>=24`
 - **OpenZeppelin**: `5.6.1`
 
@@ -74,8 +74,8 @@ pragma solidity ^0.8.20 <0.9.0;
 
 import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721FCOMMON.sol";
 
-contract Example is ERC721F {
-    constructor() ERC721F("Example", "Example", msg.sender) {
+contract Example is ERC721FCOMMON {
+    constructor() ERC721FCOMMON("Example", "Example", msg.sender) {
         setBaseTokenURI(
             "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/"
         );
@@ -97,7 +97,7 @@ contract Example is ERC721F {
 }
 ```
 
-Or just import the file directly from Gitlab like this:
+Or just import the file directly from GitHub like this:
 
 ```solidity
 // SPDX-License-Identifier: MIT

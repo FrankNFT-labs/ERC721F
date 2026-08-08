@@ -4,6 +4,8 @@ Measured gas consumption of **ERC721F** compared to **OpenZeppelin ERC721 + ERC7
 
 All figures are Foundry measurements at identical conditions. Hardhat numbers are cross-validated and match.
 
+> Benchmark figures date from 2026-05-18. The Foundry toolchain and solc settings are unchanged since, so the numbers remain representative; the Hardhat cross-validation predates the Hardhat 3 migration and has not been re-run.
+
 ---
 
 ## Environment
@@ -139,7 +141,7 @@ meaningful mint volume the per-mint savings recoup the extra deploy gas within t
 ### Prerequisites
 
 ```bash
-# Node.js >= 18
+# Node.js >= 24 (see .nvmrc)
 npm install
 
 # Foundry
@@ -175,12 +177,11 @@ forge test --gas-report --match-path "test/foundry/token/ERC721/OZErc721GasCompa
 ### Foundry — both side by side
 
 ```bash
-forge test --gas-report \
-  --match-path "test/foundry/token/ERC721/ERC721FGasReporterMock.t.sol" \
-  --match-path "test/foundry/token/ERC721/OZErc721GasComparison.t.sol"
+forge test --gas-report --match-path "test/foundry/token/ERC721/ERC721FGasReporterMock.t.sol"
+forge test --gas-report --match-path "test/foundry/token/ERC721/OZErc721GasComparison.t.sol"
 ```
 
-> Note: `--match-path` only accepts one path at a time in Foundry. Run both commands separately and
+> Note: `--match-path` only accepts one path at a time in Foundry, so run the two commands separately and
 > compare the two `╭─…─╮` tables.
 
 ### Hardhat — ERC721F gas report
@@ -198,9 +199,15 @@ Edit `hardhat.config.js`:
 
 ```js
 solidity: {
-  optimizer: {
-    enabled: true,
-    runs: 1000   // ← change this; higher = cheaper runtime, more expensive deploy
+  profiles: {
+    default: {
+      settings: {
+        optimizer: {
+          enabled: true,
+          runs: 1000 // ← change this; higher = cheaper runtime, more expensive deploy
+        }
+      }
+    }
   }
 }
 ```

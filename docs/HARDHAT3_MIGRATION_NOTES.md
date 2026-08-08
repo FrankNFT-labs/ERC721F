@@ -5,7 +5,7 @@ Baseline/rollback point: commit `1918d9f` (Hardhat 2, 314 passing + 1 pending, f
 
 ## Dependency set
 
-| Package                                                     | Before             | After                                                                                                                                         |
+| Package                                                     | Before             | After (as of 12-07-2026; later bumps tracked by dependabot)                                                                                   |
 | ----------------------------------------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `hardhat`                                                   | ^2.12.4            | ^3.9.1                                                                                                                                        |
 | `@nomicfoundation/hardhat-toolbox`                          | ^2.0.0 (ethers v5) | replaced by `@nomicfoundation/hardhat-toolbox-mocha-ethers` ^3.0.7 (ethers v6, mocha 11, chai 6)                                              |
