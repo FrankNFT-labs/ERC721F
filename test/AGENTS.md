@@ -13,6 +13,7 @@ test/
 ├── hardhat/
 │   ├── behaviours/
 │   ├── examples/
+│   ├── helpers/
 │   ├── tooling/
 │   ├── utils/
 │   └── token/
@@ -21,6 +22,8 @@ test/
 │       └── soulbound/
 └── foundry/
     ├── examples/
+    │   ├── gas-optimisations/
+    │   └── mocks/
     ├── utils/
     └── token/
         ├── ERC721/
@@ -38,6 +41,8 @@ test/
 | Utility contract coverage       | `hardhat/utils/`, `foundry/utils/`                     | allowlists, payable, address utils    |
 | Gas/break-even solidity tests   | `foundry/token/ERC721/*.t.sol`                         | forge-native metrics                  |
 | Example-contract foundry checks | `foundry/examples/`                                    | example integration validation        |
+| Example-contract hardhat checks | `hardhat/examples/`                                    | incl. EIP-2535 workspace delegator    |
+| Tooling guard tests             | `hardhat/tooling/`                                     | husky/prettier configuration checks   |
 
 ## CONVENTIONS
 

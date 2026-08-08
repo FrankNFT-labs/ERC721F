@@ -20,7 +20,8 @@ examples/EIP-2535/
 │   ├── MintFacet.sol
 │   ├── SaleControl.sol
 │   └── WithStorage.sol
-├── deploy/
+├── deploy/           # deploy scripts (rocketh deployScript entry points)
+├── rocketh/          # rocketh config/deploy/environment — config layer for deploy/
 ├── test/
 ├── hardhat.config.js
 └── package.json
@@ -28,13 +29,13 @@ examples/EIP-2535/
 
 ## WHERE TO LOOK
 
-| Task                           | Location                                             | Notes                            |
-| ------------------------------ | ---------------------------------------------------- | -------------------------------- |
-| Diamond storage shape          | `contracts/ERC721F/ERC721FStorage.sol`               | storage compatibility anchor     |
-| Upgradeable ERC721 behavior    | `contracts/ERC721F/ERC721FUpgradeable*.sol`          | workspace-specific variant       |
-| Facet initialization/mint flow | `contracts/InitFacet.sol`, `contracts/MintFacet.sol` | facet split responsibilities     |
-| Sale controls                  | `contracts/SaleControl.sol`                          | sale toggles/limits              |
-| Deployment orchestration       | `deploy/`                                            | workspace hardhat-deploy scripts |
+| Task                           | Location                                             | Notes                                                                                                |
+| ------------------------------ | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Diamond storage shape          | `contracts/ERC721F/ERC721FStorage.sol`               | storage compatibility anchor                                                                         |
+| Upgradeable ERC721 behavior    | `contracts/ERC721F/ERC721FUpgradeable*.sol`          | workspace-specific variant                                                                           |
+| Facet initialization/mint flow | `contracts/InitFacet.sol`, `contracts/MintFacet.sol` | facet split responsibilities                                                                         |
+| Sale controls                  | `contracts/SaleControl.sol`                          | sale toggles/limits                                                                                  |
+| Deployment orchestration       | `deploy/` + `rocketh/`                               | rocketh-based (`deployScript` from `rocketh/deploy.js`); hardhat-deploy v2 is only the loaded plugin |
 
 ## CONVENTIONS
 
@@ -47,3 +48,4 @@ examples/EIP-2535/
 - Referencing root artifacts/tests from inside this workspace.
 - Treating this workspace as interchangeable with root ERC721F contracts.
 - Editing facet/storage layout casually without migration/compatibility reasoning.
+- Weakening burn authorization in `ERC721FUpgradeable`: burn must stay gated by `_isApprovedOrOwner` (an any-caller-can-burn bug was fixed in c9f1f34).

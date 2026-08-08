@@ -1,5 +1,7 @@
 # Hardhat 3 Migration Plan (ERC721F)
 
+> **Status: COMPLETED (12-07-2026).** The migration shipped in commit `5a30b09` and issue #115 is closed. Statements below (e.g. "currently on a Hardhat 2 toolchain") describe the pre-migration state; this document is retained as the historical plan. See [HARDHAT3_MIGRATION_NOTES.md](./HARDHAT3_MIGRATION_NOTES.md) for what was actually done.
+
 ## Executive Summary
 
 This repository is currently on a Hardhat 2 toolchain and has validated compatibility with current test suites.

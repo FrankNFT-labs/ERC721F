@@ -26,16 +26,18 @@ examples/
 | Merkle whitelist          | `MerkleRoot.sol`                           | proof verification sale path     |
 | VRF-based randomization   | `ChainLink.sol`                            | external coordinator assumptions |
 | On-chain metadata         | `OnChain.sol`, `OnChainOptimized.sol`      | tokenURI generation strategies   |
+| Metadata refresh events   | `ERC4906.sol`                              | EIP-4906 metadata-update signals |
+| Cross-collection gating   | `ERC721FVerifyImplementation.sol`          | mint gated on FreeMint ownership |
 | Non-core proxy/delegation | `proxy/*.sol`                              | standalone integration patterns  |
 
 ## CONVENTIONS
 
 - Examples are pedagogical; they may prioritize clarity over production hardening.
-- Example imports may need local-path switching for local compile/test.
+- Example imports use the published package name; `npm run update-example-imports:dev` (root) rewrites them to local paths, `:prod` restores.
 - Treat `EIP-2535/` as separate workspace semantics, not root defaults.
 
 ## ANTI-PATTERNS
 
 - Assuming examples are production-hardened out of the box.
-- Running root hardhat flows against examples without adjusting import paths/source scope.
+- Running example compiles/tests without first running `npm run update-example-imports:dev`.
 - Mixing EIP-2535 artifact expectations with root artifact expectations.
