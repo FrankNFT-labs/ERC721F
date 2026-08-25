@@ -123,7 +123,7 @@ contract HotWalletProxy is
 
         bool needsResize = false;
         uint256 index = 0;
-        for (uint256 i = 0; i < length; ) {
+        for (uint256 i = 0; i < length;) {
             WalletLink memory walletLink = walletLinks[i];
             if (walletLink.expirationTimestamp >= timestamp) {
                 addresses[index] = walletLink.walletAddress;
@@ -146,7 +146,7 @@ contract HotWalletProxy is
         if (needsResize) {
             address[] memory resizedAddresses = new address[](index);
 
-            for (uint256 i = 0; i < index; ) {
+            for (uint256 i = 0; i < index;) {
                 resizedAddresses[i] = addresses[i];
 
                 unchecked {
@@ -171,7 +171,7 @@ contract HotWalletProxy is
         uint256 timestamp = block.timestamp;
 
         if (length > 0) {
-            for (uint256 i = length; i > 0; ) {
+            for (uint256 i = length; i > 0;) {
                 uint256 index = i - 1;
                 if (coldWalletLinks[index].expirationTimestamp < timestamp) {
                     /**
@@ -182,9 +182,8 @@ contract HotWalletProxy is
                         hotWalletToColdWallets[hotWalletAddress].pop();
                     } else {
                         WalletLink memory toSwap = coldWalletLinks[length - 1];
-                        hotWalletToColdWallets[hotWalletAddress][
-                            index
-                        ] = toSwap;
+                        hotWalletToColdWallets[hotWalletAddress][index] =
+                            toSwap;
 
                         hotWalletToColdWallets[hotWalletAddress].pop();
                     }
@@ -213,7 +212,7 @@ contract HotWalletProxy is
         );
 
         uint256 length = coldWallets.length;
-        for (uint256 i = 0; i < length; ) {
+        for (uint256 i = 0; i < length;) {
             if (coldWallets[i] == coldWalletAddress) {
                 return i;
             }
@@ -356,7 +355,7 @@ contract HotWalletProxy is
         );
 
         uint256 length = coldWallets.length;
-        for (uint256 i = 0; i < length; ) {
+        for (uint256 i = 0; i < length;) {
             address coldWallet = coldWallets[i];
 
             _setColdWalletToHotWallet(coldWallet, address(0), 0);
@@ -409,15 +408,15 @@ contract HotWalletProxy is
             .walletAddress;
 
         if (hotWalletAddress != address(0)) {
-            coldWalletToHotWallet[coldWalletAddress]
-                .expirationTimestamp = expirationTimestamp;
+            coldWalletToHotWallet[coldWalletAddress].expirationTimestamp =
+                expirationTimestamp;
 
             WalletLink[] memory coldWalletLinks = hotWalletToColdWallets[
                 hotWalletAddress
             ];
             uint256 length = coldWalletLinks.length;
 
-            for (uint256 i = 0; i < length; ) {
+            for (uint256 i = 0; i < length;) {
                 if (coldWalletLinks[i].walletAddress == coldWalletAddress) {
                     hotWalletToColdWallets[hotWalletAddress][i]
                         .expirationTimestamp = expirationTimestamp;
@@ -443,7 +442,7 @@ contract HotWalletProxy is
 
         uint256 total = 0;
         uint256 length = coldWallets.length;
-        for (uint256 i = 0; i < length; ) {
+        for (uint256 i = 0; i < length;) {
             address coldWallet = coldWallets[i];
 
             total += erc721Contract.balanceOf(coldWallet);
@@ -489,7 +488,7 @@ contract HotWalletProxy is
 
         uint256[] memory totals = new uint256[](ownersLength);
 
-        for (uint256 i = 0; i < ownersLength; ) {
+        for (uint256 i = 0; i < ownersLength;) {
             address owner = owners[i];
             uint256 id = ids[i];
 
@@ -515,7 +514,7 @@ contract HotWalletProxy is
             allWallets[allWalletsLength] = owner;
             batchIds[allWalletsLength] = id;
 
-            for (uint256 j = 0; j < coldWalletsLength; ) {
+            for (uint256 j = 0; j < coldWalletsLength;) {
                 address coldWallet = coldWallets[j];
 
                 allWallets[j] = coldWallet;
@@ -533,7 +532,7 @@ contract HotWalletProxy is
 
             uint256 total = 0;
             uint256 balancesLength = balances.length;
-            for (uint256 j = 0; j < balancesLength; ) {
+            for (uint256 j = 0; j < balancesLength;) {
                 total += balances[j];
 
                 unchecked {
@@ -562,7 +561,7 @@ contract HotWalletProxy is
 
         uint256 total = 0;
         uint256 length = coldWallets.length;
-        for (uint256 i = 0; i < length; ) {
+        for (uint256 i = 0; i < length;) {
             address coldWallet = coldWallets[i];
 
             total += erc1155Contract.balanceOf(coldWallet, tokenId);

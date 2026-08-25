@@ -87,7 +87,7 @@ contract MerkleRoot is ERC721F, Payable {
         );
 
         unchecked {
-            for (uint256 i; i < numberOfTokens; ) {
+            for (uint256 i; i < numberOfTokens;) {
                 _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
                 i++;
             }
@@ -115,7 +115,7 @@ contract MerkleRoot is ERC721F, Payable {
         _preSaleMinted[msg.sender] = true;
 
         unchecked {
-            for (uint256 i; i < numberOfTokens; ) {
+            for (uint256 i; i < numberOfTokens;) {
                 _safeMint(msg.sender, supply + i);
                 i++;
             }

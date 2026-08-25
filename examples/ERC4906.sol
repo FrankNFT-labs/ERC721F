@@ -39,7 +39,7 @@ contract ERC4906 is ERC721F, ERC721URIStorage {
             "Purchase would exceed max supply of Tokens"
         );
         unchecked {
-            for (uint256 i; i < numberOfTokens; ) {
+            for (uint256 i; i < numberOfTokens;) {
                 uint256 nextTokenId = supply + i;
                 _mint(msg.sender, nextTokenId); // no need to use safeMint as we don't allow contracts.
                 super._setTokenURI(nextTokenId, _tokenURI);
@@ -99,7 +99,7 @@ contract ERC4906 is ERC721F, ERC721URIStorage {
         string memory _tokenURI
     ) internal virtual {
         unchecked {
-            for (uint256 i = _fromTokenId; i <= _toTokenId; ) {
+            for (uint256 i = _fromTokenId; i <= _toTokenId;) {
                 if (_exists(i)) {
                     require(
                         ownerOf(i) == msg.sender,

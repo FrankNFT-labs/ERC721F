@@ -4,8 +4,14 @@ pragma solidity ^0.8.20 <0.9.0;
 import {IDiamondLoupe} from "@rocketh/diamond/solc_0_8/interfaces/IDiamondLoupe.sol";
 import {IERC173} from "@rocketh/diamond/solc_0_8/interfaces/IERC173.sol";
 import {IERC165} from "@openzeppelin/contracts/interfaces/IERC165.sol";
-import {IERC721, IERC721Metadata} from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
-import {UsingDiamondOwner, IDiamondCut} from "@rocketh/diamond/solc_0_8/UsingDiamondOwner.sol";
+import {
+    IERC721,
+    IERC721Metadata
+} from "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
+import {
+    UsingDiamondOwner,
+    IDiamondCut
+} from "@rocketh/diamond/solc_0_8/UsingDiamondOwner.sol";
 import {ERC721FStorage} from "./ERC721F/ERC721FStorage.sol";
 import {WithStorage} from "./WithStorage.sol";
 
@@ -18,8 +24,8 @@ contract InitFacet is UsingDiamondOwner, WithStorage {
 
         f()._name = "FreeMint";
         f()._symbol = "FM";
-        f()
-            ._baseTokenURI = "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/";
+        f()._baseTokenURI =
+            "ipfs://QmVy7VQUFtTQawBsp4tbJPp9MgbTKS4L7WSDpZEdZUzsiD/";
 
         s().MAX_TOKENS = 10000;
         s().MAX_PURCHASE = 31;

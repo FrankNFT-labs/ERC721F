@@ -14,8 +14,9 @@ abstract contract AllowListWithAmount is Ownable {
 
     error InsufficientAllowListTokens();
 
-    modifier onlyAllowListWithSufficientAvailableTokens(uint256 numberOfTokens)
-    {
+    modifier onlyAllowListWithSufficientAvailableTokens(
+        uint256 numberOfTokens
+    ) {
         if (numberOfTokens > allowList[msg.sender]) {
             revert InsufficientAllowListTokens();
         }
@@ -30,7 +31,7 @@ abstract contract AllowListWithAmount is Ownable {
         uint256 totalTokens
     ) external onlyOwner {
         uint256 length = _addresses.length;
-        for (uint256 i; i < length; ) {
+        for (uint256 i; i < length;) {
             // The internal variant skips the redundant onlyOwner check that
             // the public allowAddress would re-run on every iteration.
             _allowAddress(_addresses[i], totalTokens);

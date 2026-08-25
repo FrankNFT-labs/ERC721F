@@ -145,10 +145,9 @@ library AddressUtils {
         bytes memory ss = bytes(s);
         if (ss.length % 2 != 0) revert HexStringHasOddLength();
         bytes memory r = new bytes(ss.length / 2);
-        for (uint256 i = 0; i < ss.length / 2; ) {
+        for (uint256 i = 0; i < ss.length / 2;) {
             r[i] = bytes1(
-                fromHexChar(uint8(ss[2 * i])) *
-                    16 +
+                fromHexChar(uint8(ss[2 * i])) * 16 +
                     fromHexChar(uint8(ss[2 * i + 1]))
             );
             unchecked {

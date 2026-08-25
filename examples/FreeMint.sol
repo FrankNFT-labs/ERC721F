@@ -65,7 +65,7 @@ contract FreeMint is ERC721F, ERC2981 {
             "Purchase would exceed max supply of Tokens"
         );
         unchecked {
-            for (uint256 i; i < numberOfTokens; ) {
+            for (uint256 i; i < numberOfTokens;) {
                 _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
                 i++;
             }

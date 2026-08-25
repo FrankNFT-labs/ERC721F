@@ -87,8 +87,8 @@ contract OnChainOptimized is IERC4883, ERC721F {
         unchecked {
             while (numberOfTokens != 0) {
                 uint256 tokenId = supply + 1;
-                uint256 algorithmId = lastSelected +
-                    createRandomNumber(tokenId);
+                uint256 algorithmId =
+                    lastSelected + createRandomNumber(tokenId);
                 _mint(msg.sender, tokenId);
                 idToAlgorithmId[tokenId] = algorithmId;
                 lastSelected = algorithmId;
@@ -148,16 +148,17 @@ contract OnChainOptimized is IERC4883, ERC721F {
      */
     function createRandomNumber(uint256 tokenId) public view returns (uint256) {
         unchecked {
-            uint256 random = uint256(
-                keccak256(
-                    abi.encodePacked(
-                        block.timestamp,
-                        block.prevrandao,
-                        tokenId,
-                        msg.sender
+            uint256 random =
+                uint256(
+                    keccak256(
+                        abi.encodePacked(
+                            block.timestamp,
+                            block.prevrandao,
+                            tokenId,
+                            msg.sender
+                        )
                     )
-                )
-            ) % 32;
+                ) % 32;
             return random;
         }
     }
@@ -341,8 +342,8 @@ contract OnChainOptimized is IERC4883, ERC721F {
             '<circle cy="580" cx="330" r="60" stroke="none"/><circle cy="580" cx="330" r="40" fill="#fff" stroke="none"/>',
             '<rect y="530" x="280" width="100" height="120" stroke-width="8"/><rect y="530" x="290" width="80" height="100" stroke-width="8" fill="#fff"/>'
         ];
-        string
-            memory lowerPartPurse = '<rect y="580" x="240" width="180" height="120" stroke-width="8" ';
+        string memory lowerPartPurse =
+            '<rect y="580" x="240" width="180" height="120" stroke-width="8" ';
         string[4] memory designPurse = [
             'fill="#f73149"/><rect y="600" x="260" width="140" height="80" stroke-width="8" fill="#f58822"/><rect y="620" x="280" width="100" height="40" stroke-width="8" fill="#f5c43d"/>',
             'fill="#9F87FB"/><rect y="650" x="310" width="30" height="30" stroke-width="8" fill="#e06cf5"/><rect y="590" x="350" width="30" height="30" stroke-width="8" fill="#e06cf5"/><rect y="640" x="380" width="30" height="30" stroke-width="8" fill="#e06cf5"/><rect y="610" x="260" width="30" height="30" stroke-width="8" fill="#e06cf5"/>',

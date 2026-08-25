@@ -59,7 +59,7 @@ abstract contract ERC721FWalletOfOwnerStorage is ERC721F {
         // instead of on every element access.
         uint256[] storage wallet = _walletOfOwner[owner];
         uint256 length = wallet.length;
-        for (uint256 i; i < length; ) {
+        for (uint256 i; i < length;) {
             if (wallet[i] == tokenId) {
                 wallet[i] = wallet[length - 1];
                 wallet.pop();
