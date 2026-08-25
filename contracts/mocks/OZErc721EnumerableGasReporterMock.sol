@@ -53,7 +53,7 @@ contract OZErc721EnumerableGasReporterMock is ERC721Enumerable {
     /// @notice Transfers the first token ten times
     function transferTenAsc(address to) public {
         unchecked {
-            for (uint256 i = 0; i < 10; ) {
+            for (uint256 i = 0; i < 10;) {
                 transferFrom(
                     msg.sender,
                     to,
@@ -67,7 +67,7 @@ contract OZErc721EnumerableGasReporterMock is ERC721Enumerable {
     /// @notice Transfers the last token ten times
     function transferTenDesc(address to) public {
         unchecked {
-            for (uint256 i = 0; i < 10; ) {
+            for (uint256 i = 0; i < 10;) {
                 uint256 last = balanceOf(msg.sender) - 1;
                 transferFrom(
                     msg.sender,
@@ -82,7 +82,7 @@ contract OZErc721EnumerableGasReporterMock is ERC721Enumerable {
     /// @notice Transfers the first token fifty times
     function transferFiftyAsc(address to) public {
         unchecked {
-            for (uint256 i = 0; i < 50; ) {
+            for (uint256 i = 0; i < 50;) {
                 transferFrom(
                     msg.sender,
                     to,
@@ -96,7 +96,7 @@ contract OZErc721EnumerableGasReporterMock is ERC721Enumerable {
     /// @notice Transfers the last token fifty times
     function transferFiftyDesc(address to) public {
         unchecked {
-            for (uint256 i = 0; i < 50; ) {
+            for (uint256 i = 0; i < 50;) {
                 uint256 last = balanceOf(msg.sender) - 1;
                 transferFrom(
                     msg.sender,
@@ -115,7 +115,7 @@ contract OZErc721EnumerableGasReporterMock is ERC721Enumerable {
     function _mintBatch(address to, uint256 count) internal {
         uint256 startId = _nextTokenId;
         unchecked {
-            for (uint256 i = 0; i < count; ) {
+            for (uint256 i = 0; i < count;) {
                 _mint(to, startId + i);
                 i++;
             }

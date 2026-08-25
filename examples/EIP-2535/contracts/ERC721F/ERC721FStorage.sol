@@ -31,8 +31,9 @@ library ERC721FStorage {
         string _baseTokenURI;
     }
 
-    bytes32 internal constant STORAGE_SLOT =
-        keccak256("ERC721F.contracts.storage.ERC721F");
+    bytes32 internal constant STORAGE_SLOT = keccak256(
+        "ERC721F.contracts.storage.ERC721F"
+    );
 
     function layout() internal pure returns (Layout storage l) {
         bytes32 slot = STORAGE_SLOT;

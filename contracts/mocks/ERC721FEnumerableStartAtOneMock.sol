@@ -16,7 +16,7 @@ contract ERC721FEnumerableStartAtOneMock is ERC721FEnumerable {
     function mint(uint256 numberOfTokens) public {
         uint256 supply = _totalMinted();
         uint256 startTokenId = _startTokenId();
-        for (uint256 i; i < numberOfTokens; ) {
+        for (uint256 i; i < numberOfTokens;) {
             _mint(msg.sender, startTokenId + supply + i);
             unchecked {
                 i++;

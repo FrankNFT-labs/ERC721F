@@ -60,7 +60,7 @@ contract OnChain is ERC721FOnChain {
         );
 
         unchecked {
-            for (uint256 i; i < numberOfTokens; ) {
+            for (uint256 i; i < numberOfTokens;) {
                 _mint(msg.sender, supply + i); // no need to use safeMint as we don't allow contracts.
                 i++;
             }
@@ -92,14 +92,14 @@ contract OnChain is ERC721FOnChain {
         parts[0] = SVG_HEAD;
         parts[1] = name();
         parts[2] = '</tspan><tspan font-size="65" x="50%" dy="20%">';
-        parts[3] = id % 100 == 0 && id != 0
-            ? pokemon[9]
-            : pokemon[id % (pokemon.length - 1)];
+        parts[3] =
+            id % 100 == 0 && id != 0
+                ? pokemon[9]
+                : pokemon[id % (pokemon.length - 1)];
         parts[4] = '</tspan><tspan font-size="20" x="50%" dy="15%">';
         parts[5] = getDescription();
-        parts[
-            6
-        ] = '</tspan></text><path fill="transparent" stroke="gold" stroke-width="2" d="M338.971 322.5 300 345l-38.971-22.5v-45L300 255l38.971 22.5z"/><text font-size="15" fill="#fff" font-weight="bold" font-family="Cursive" x="300" y="300" class="centered-text">';
+        parts[6] =
+            '</tspan></text><path fill="transparent" stroke="gold" stroke-width="2" d="M338.971 322.5 300 345l-38.971-22.5v-45L300 255l38.971 22.5z"/><text font-size="15" fill="#fff" font-weight="bold" font-family="Cursive" x="300" y="300" class="centered-text">';
         parts[7] = Strings.toString(id);
         parts[8] = SVG_FOOTER;
 

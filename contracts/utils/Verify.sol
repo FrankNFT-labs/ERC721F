@@ -41,10 +41,10 @@ contract Verify {
         return
             msg.sender == tokenOwner ||
             msg.sender ==
-            WarmInterface(WARM_WALLET_CONTRACT).ownerOf(
-                tokenContract,
-                tokenId
-            ) ||
+                WarmInterface(WARM_WALLET_CONTRACT).ownerOf(
+                    tokenContract,
+                    tokenId
+                ) ||
             DelegateCashInterface(DELEGATE_CASH_CONTRACT).checkDelegateForToken(
                 msg.sender,
                 tokenOwner,

@@ -286,7 +286,7 @@ contract DelegationRegistry is IDelegationRegistry, ERC165 {
         info = new IDelegationRegistry.DelegationInfo[](
             potentialDelegationHashesLength
         );
-        for (uint256 i = 0; i < potentialDelegationHashesLength; ) {
+        for (uint256 i = 0; i < potentialDelegationHashesLength;) {
             bytes32 delegateHash = potentialDelegationHashes.at(i);
             IDelegationRegistry.DelegationInfo
                 memory delegationInfo_ = delegationInfo[delegateHash];
@@ -401,7 +401,7 @@ contract DelegationRegistry is IDelegationRegistry, ERC165 {
         uint256 potentialDelegatesLength = delegationHashes_.length();
         uint256 delegatesCount = 0;
         delegates = new address[](potentialDelegatesLength);
-        for (uint256 i = 0; i < potentialDelegatesLength; ) {
+        for (uint256 i = 0; i < potentialDelegatesLength;) {
             bytes32 delegationHash = delegationHashes_.at(i);
             DelegationInfo storage delegationInfo_ = delegationInfo[
                 delegationHash
@@ -491,7 +491,7 @@ contract DelegationRegistry is IDelegationRegistry, ERC165 {
         contractDelegations = new IDelegationRegistry.ContractDelegation[](
             potentialLength
         );
-        for (uint256 i = 0; i < potentialLength; ) {
+        for (uint256 i = 0; i < potentialLength;) {
             bytes32 delegationHash = delegationHashes_.at(i);
             DelegationInfo storage delegationInfo_ = delegationInfo[
                 delegationHash
@@ -549,7 +549,7 @@ contract DelegationRegistry is IDelegationRegistry, ERC165 {
         tokenDelegations = new IDelegationRegistry.TokenDelegation[](
             potentialLength
         );
-        for (uint256 i = 0; i < potentialLength; ) {
+        for (uint256 i = 0; i < potentialLength;) {
             bytes32 delegationHash = delegationHashes_.at(i);
             DelegationInfo storage delegationInfo_ = delegationInfo[
                 delegationHash

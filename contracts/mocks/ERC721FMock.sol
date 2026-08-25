@@ -20,7 +20,7 @@ contract ERC721FMock is ERC721F {
      */
     function mint(uint256 numberOfTokens) public {
         uint256 supply = _totalMinted();
-        for (uint256 i; i < numberOfTokens; ) {
+        for (uint256 i; i < numberOfTokens;) {
             _mint(msg.sender, supply + i);
             unchecked {
                 i++;

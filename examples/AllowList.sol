@@ -70,7 +70,7 @@ contract AllowListExample is ERC721FCOMMON, AllowList {
         );
 
         unchecked {
-            for (uint256 i; i < numberOfTokens; ) {
+            for (uint256 i; i < numberOfTokens;) {
                 _mint(msg.sender, supply + i);
                 i++;
             }
@@ -93,7 +93,7 @@ contract AllowListExample is ERC721FCOMMON, AllowList {
         );
 
         unchecked {
-            for (uint256 i; i < numberOfTokens; ) {
+            for (uint256 i; i < numberOfTokens;) {
                 _safeMint(msg.sender, supply + i);
                 i++;
             }
