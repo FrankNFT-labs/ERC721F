@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20 <0.9.0;
 
-import "../../../../lib/forge-std/src/Test.sol";
-import "../../../../contracts/mocks/AllowListWithAmountMock.sol";
+import "../../../lib/forge-std/src/Test.sol";
+import "../../../contracts/mocks/AllowListWithAmountMock.sol";
 
 /**
  * @title AllowListWithAmountTest
