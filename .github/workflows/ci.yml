@@ -46,6 +46,10 @@ jobs:
 
             - name: Install Foundry
               uses: foundry-rs/foundry-toolchain@v1
+              with:
+                  # Pinned: `stable` upgrades under us (1.8.0 broke main with
+                  # zero repo changes). Bump deliberately, after a local run.
+                  version: v1.8.0
 
             - name: Build contracts
               run: forge build
