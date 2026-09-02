@@ -9,9 +9,9 @@
         "test": "hardhat test"
     },
     "dependencies": {
-        "@rocketh/deploy": "^0.19.17",
-        "@rocketh/diamond": "^0.19.19",
-        "@rocketh/node": "^0.19.21",
+        "@rocketh/deploy": "^0.19.18",
+        "@rocketh/diamond": "^0.19.20",
+        "@rocketh/node": "^0.19.22",
         "@rocketh/read-execute": "^0.19.4",
         "hardhat-deploy": "^2.0.24",
         "rocketh": "^0.19.8",
