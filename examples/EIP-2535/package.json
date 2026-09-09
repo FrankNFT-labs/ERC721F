@@ -15,7 +15,7 @@
         "@rocketh/read-execute": "^0.19.4",
         "hardhat-deploy": "^2.0.24",
         "rocketh": "^0.19.8",
-        "viem": "2.55.19"
+        "viem": "2.56.3"
     },
     "devDependencies": {
         "@nomicfoundation/hardhat-toolbox-mocha-ethers": "^3.0.7",
