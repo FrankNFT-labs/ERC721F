@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20 <0.9.0;
+// BytesBuilder uses `mcopy`, so this file needs solc 0.8.24 / Cancun.
+pragma solidity ^0.8.24 <0.9.0;
 
 import "@franknft.eth/erc721-f/contracts/interfaces/IERC4883.sol";
 import "@franknft.eth/erc721-f/contracts/token/ERC721/ERC721F.sol";
+import "@franknft.eth/erc721-f/contracts/utils/BytesBuilder.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 
@@ -181,25 +183,35 @@ contract OnChainOptimized is IERC4883, ERC721F {
         ];
 
         uint256 algorithmId = idToAlgorithmId[tokenId];
-        string memory output = string(
-            abi.encodePacked(
-                frame[0],
-                getBackground(getBackgroundId(algorithmId)),
-                frame[1],
-                frame[2],
-                getGlasses(getGlassesId(algorithmId))
-            )
+        // Converting `string memory` to `bytes memory` is a free cast, so these
+        // reuse the allocations `frame` and the trait getters already made.
+        bytes memory background = bytes(
+            getBackground(getBackgroundId(algorithmId))
         );
-        output = string(
-            abi.encodePacked(
-                output,
-                frame[3],
-                getBracelet(getBraceletId(algorithmId)),
-                getPurse(getPurseId(algorithmId)),
-                frame[4]
-            )
-        );
-        return string(output);
+        bytes memory glasses = bytes(getGlasses(getGlassesId(algorithmId)));
+        bytes memory bracelet = bytes(getBracelet(getBraceletId(algorithmId)));
+        bytes memory purse = bytes(getPurse(getPurseId(algorithmId)));
+
+        // Accumulated rather than written as one expression: the legacy codegen
+        // runs out of stack slots on a nine-term sum alongside these locals.
+        uint256 cap = background.length + glasses.length;
+        cap += bracelet.length + purse.length;
+        for (uint256 i; i < 5; ++i) {
+            cap += bytes(frame[i]).length;
+        }
+
+        (bytes memory out, uint256 ptr) = BytesBuilder.start(cap);
+        ptr = BytesBuilder.w(ptr, bytes(frame[0]));
+        ptr = BytesBuilder.w(ptr, background);
+        ptr = BytesBuilder.w(ptr, bytes(frame[1]));
+        ptr = BytesBuilder.w(ptr, bytes(frame[2]));
+        ptr = BytesBuilder.w(ptr, glasses);
+        ptr = BytesBuilder.w(ptr, bytes(frame[3]));
+        ptr = BytesBuilder.w(ptr, bracelet);
+        ptr = BytesBuilder.w(ptr, purse);
+        ptr = BytesBuilder.w(ptr, bytes(frame[4]));
+        BytesBuilder.finish(out, ptr);
+        return string(out);
     }
 
     /**
@@ -216,25 +228,30 @@ contract OnChainOptimized is IERC4883, ERC721F {
         string memory tr4 = '"},{"trait_type": "Purse","value": "';
         string memory tr5 = '"}]';
         uint256 algorithmId = idToAlgorithmId[tokenId];
-        string memory o = string(
-            abi.encodePacked(
-                tr1,
-                Strings.toString(getBackgroundId(algorithmId)),
-                tr2,
-                Strings.toString(getBraceletId(algorithmId)),
-                tr3,
-                Strings.toString(getGlassesId(algorithmId))
-            )
-        );
-        return
-            string(
-                abi.encodePacked(
-                    o,
-                    tr4,
-                    Strings.toString(getPurseId(algorithmId)),
-                    tr5
-                )
-            );
+
+        // The four ids are bounded well below 10 (background id % 6, bracelet
+        // 0-1, glasses and purse 0-3), so one digit each; 8 leaves slack and
+        // finish() reverts rather than overrunning if that ever stops holding.
+        uint256 cap =
+            8 +
+                bytes(tr1).length +
+                bytes(tr2).length +
+                bytes(tr3).length +
+                bytes(tr4).length +
+                bytes(tr5).length;
+
+        (bytes memory out, uint256 ptr) = BytesBuilder.start(cap);
+        ptr = BytesBuilder.w(ptr, bytes(tr1));
+        ptr = BytesBuilder.wNum(ptr, getBackgroundId(algorithmId));
+        ptr = BytesBuilder.w(ptr, bytes(tr2));
+        ptr = BytesBuilder.wNum(ptr, getBraceletId(algorithmId));
+        ptr = BytesBuilder.w(ptr, bytes(tr3));
+        ptr = BytesBuilder.wNum(ptr, getGlassesId(algorithmId));
+        ptr = BytesBuilder.w(ptr, bytes(tr4));
+        ptr = BytesBuilder.wNum(ptr, getPurseId(algorithmId));
+        ptr = BytesBuilder.w(ptr, bytes(tr5));
+        BytesBuilder.finish(out, ptr);
+        return string(out);
     }
 
     /**
@@ -381,25 +398,24 @@ contract OnChainOptimized is IERC4883, ERC721F {
             '"/><circle cy="427" cx="610" stroke-width="4" r="45" fill="#fff"/>'
         ];
 
-        string memory output;
-        output = string(
-            abi.encodePacked(
-                bigGlasses[0],
-                glassesColors[glassesId % 2],
-                bigGlasses[1]
-            )
-        );
+        bytes memory colorTwo = bytes(glassesColors[glassesId % 2]);
+        bytes memory colorFour = bytes(glassesColors[glassesId % 4]);
 
-        return
-            string(
-                abi.encodePacked(
-                    output,
-                    glassesColors[glassesId % 4],
-                    bigGlasses[2],
-                    glassesColors[glassesId % 4],
-                    bigGlasses[3]
-                )
-            );
+        uint256 cap = colorTwo.length + (colorFour.length * 2);
+        for (uint256 i; i < 4; ++i) {
+            cap += bytes(bigGlasses[i]).length;
+        }
+
+        (bytes memory out, uint256 ptr) = BytesBuilder.start(cap);
+        ptr = BytesBuilder.w(ptr, bytes(bigGlasses[0]));
+        ptr = BytesBuilder.w(ptr, colorTwo);
+        ptr = BytesBuilder.w(ptr, bytes(bigGlasses[1]));
+        ptr = BytesBuilder.w(ptr, colorFour);
+        ptr = BytesBuilder.w(ptr, bytes(bigGlasses[2]));
+        ptr = BytesBuilder.w(ptr, colorFour);
+        ptr = BytesBuilder.w(ptr, bytes(bigGlasses[3]));
+        BytesBuilder.finish(out, ptr);
+        return string(out);
     }
 
     /**
