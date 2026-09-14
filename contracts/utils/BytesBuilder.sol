@@ -10,7 +10,7 @@ pragma solidity ^0.8.24 <0.9.0;
  * against ~112k for all three of `abi.encodePacked`, `bytes.concat` and
  * `string.concat`, crossing over at two fragments.
  *
- * The bigger everyday win is a different one. `wNum` and `wHex6` format
+ * The bigger everyday win is a different one. `appendNumber` and `appendHexColor` format
  * directly into the buffer, so a value never becomes an intermediate
  * allocation that is then copied again. One `<rect>` with four numbers and a
  * colour costs 5.2k here against 10.5k for a single `string.concat` over the
@@ -23,7 +23,7 @@ pragma solidity ^0.8.24 <0.9.0;
  * so overrunning corrupts whatever was allocated next. `finish` reverts
  * with `BufferOverflow` when the pointer ends up outside the allocation,
  * which turns that corruption into a failed transaction instead of a
- * silently wrong result. Note that `wNum` can emit up to 78 bytes.
+ * silently wrong result. Note that `appendNumber` can emit up to 78 bytes.
  * @author @FrankNFT.eth
  */
 library BytesBuilder {
@@ -67,19 +67,26 @@ library BytesBuilder {
         }
     }
 
-    function w(uint256 ptr, bytes memory s) internal pure returns (uint256) {
+    /// @dev Appends `data` verbatim and returns the advanced write pointer.
+    function append(
+        uint256 ptr,
+        bytes memory data
+    ) internal pure returns (uint256) {
         assembly ("memory-safe") {
-            let len := mload(s)
-            mcopy(ptr, add(s, 0x20), len)
-            ptr := add(ptr, len)
+            let length := mload(data)
+            mcopy(ptr, add(data, 0x20), length)
+            ptr := add(ptr, length)
         }
         return ptr;
     }
 
-    /// @dev writes a single byte
-    function w1(uint256 ptr, uint8 b) internal pure returns (uint256) {
+    /// @dev Appends a single raw byte.
+    function appendByte(
+        uint256 ptr,
+        uint8 value
+    ) internal pure returns (uint256) {
         assembly ("memory-safe") {
-            mstore8(ptr, b)
+            mstore8(ptr, value)
         }
         return ptr + 1;
     }
@@ -88,21 +95,24 @@ library BytesBuilder {
     ///      backwards from the end so no scratch buffer or reversal is needed.
     ///      Writes up to 78 bytes (type(uint256).max), so size `cap` for the
     ///      largest value a call site can actually produce.
-    function wNum(uint256 ptr, uint256 n) internal pure returns (uint256 end) {
+    function appendNumber(
+        uint256 ptr,
+        uint256 value
+    ) internal pure returns (uint256 end) {
         assembly ("memory-safe") {
-            let len := 1
-            let m := n
-            for {} gt(m, 9) {} {
-                m := div(m, 10)
-                len := add(len, 1)
+            let digits := 1
+            let remaining := value
+            for {} gt(remaining, 9) {} {
+                remaining := div(remaining, 10)
+                digits := add(digits, 1)
             }
-            end := add(ptr, len)
-            let p := end
+            end := add(ptr, digits)
+            let cursor := end
             for {} 1 {} {
-                p := sub(p, 1)
-                mstore8(p, add(48, mod(n, 10)))
-                n := div(n, 10)
-                if iszero(n) {
+                cursor := sub(cursor, 1)
+                mstore8(cursor, add(48, mod(value, 10)))
+                value := div(value, 10)
+                if iszero(value) {
                     break
                 }
             }
@@ -116,24 +126,27 @@ library BytesBuilder {
     ///      with an explicit cast the caller writes and a reviewer can see.
     ///      Measured at +2 gas against the unchecked `uint256` version, which
     ///      matters because colours are written once per element in a render
-    ///      loop. Matches `w1` taking a `uint8`. Note that an *external*
+    ///      loop. Matches `appendByte` taking a `uint8`. Note that an *external*
     ///      function exposing a `uint24` does pay ABI range validation on the
     ///      argument (~80 gas); that is the ABI boundary, not this library.
     ///
     ///      Inline assembly may see dirty bits above a narrow type's encoding,
     ///      but every nibble here is read as `and(shr(k * 4, rgb), 0xf)` for
     ///      k in 0..5, so only bits 0-23 survive and anything above is masked.
-    function wHex6(uint256 ptr, uint24 rgb) internal pure returns (uint256) {
+    function appendHexColor(
+        uint256 ptr,
+        uint24 rgb
+    ) internal pure returns (uint256) {
         assembly ("memory-safe") {
             let
-                table := 0x3031323334353637383961626364656600000000000000000000000000000000 // "0123456789abcdef"
+                hexDigits := 0x3031323334353637383961626364656600000000000000000000000000000000 // "0123456789abcdef"
             for {
                 let i := 0
             } lt(i, 6) {
                 i := add(i, 1)
             } {
-                let nib := and(shr(mul(sub(5, i), 4), rgb), 0xf)
-                mstore8(add(ptr, i), byte(nib, table))
+                let nibble := and(shr(mul(sub(5, i), 4), rgb), 0xf)
+                mstore8(add(ptr, i), byte(nibble, hexDigits))
             }
         }
         return ptr + 6;

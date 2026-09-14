@@ -201,15 +201,15 @@ contract OnChainOptimized is IERC4883, ERC721F {
         }
 
         (bytes memory out, uint256 ptr) = BytesBuilder.start(cap);
-        ptr = BytesBuilder.w(ptr, bytes(frame[0]));
-        ptr = BytesBuilder.w(ptr, background);
-        ptr = BytesBuilder.w(ptr, bytes(frame[1]));
-        ptr = BytesBuilder.w(ptr, bytes(frame[2]));
-        ptr = BytesBuilder.w(ptr, glasses);
-        ptr = BytesBuilder.w(ptr, bytes(frame[3]));
-        ptr = BytesBuilder.w(ptr, bracelet);
-        ptr = BytesBuilder.w(ptr, purse);
-        ptr = BytesBuilder.w(ptr, bytes(frame[4]));
+        ptr = BytesBuilder.append(ptr, bytes(frame[0]));
+        ptr = BytesBuilder.append(ptr, background);
+        ptr = BytesBuilder.append(ptr, bytes(frame[1]));
+        ptr = BytesBuilder.append(ptr, bytes(frame[2]));
+        ptr = BytesBuilder.append(ptr, glasses);
+        ptr = BytesBuilder.append(ptr, bytes(frame[3]));
+        ptr = BytesBuilder.append(ptr, bracelet);
+        ptr = BytesBuilder.append(ptr, purse);
+        ptr = BytesBuilder.append(ptr, bytes(frame[4]));
         BytesBuilder.finish(out, ptr);
         return string(out);
     }
@@ -241,15 +241,15 @@ contract OnChainOptimized is IERC4883, ERC721F {
                 bytes(tr5).length;
 
         (bytes memory out, uint256 ptr) = BytesBuilder.start(cap);
-        ptr = BytesBuilder.w(ptr, bytes(tr1));
-        ptr = BytesBuilder.wNum(ptr, getBackgroundId(algorithmId));
-        ptr = BytesBuilder.w(ptr, bytes(tr2));
-        ptr = BytesBuilder.wNum(ptr, getBraceletId(algorithmId));
-        ptr = BytesBuilder.w(ptr, bytes(tr3));
-        ptr = BytesBuilder.wNum(ptr, getGlassesId(algorithmId));
-        ptr = BytesBuilder.w(ptr, bytes(tr4));
-        ptr = BytesBuilder.wNum(ptr, getPurseId(algorithmId));
-        ptr = BytesBuilder.w(ptr, bytes(tr5));
+        ptr = BytesBuilder.append(ptr, bytes(tr1));
+        ptr = BytesBuilder.appendNumber(ptr, getBackgroundId(algorithmId));
+        ptr = BytesBuilder.append(ptr, bytes(tr2));
+        ptr = BytesBuilder.appendNumber(ptr, getBraceletId(algorithmId));
+        ptr = BytesBuilder.append(ptr, bytes(tr3));
+        ptr = BytesBuilder.appendNumber(ptr, getGlassesId(algorithmId));
+        ptr = BytesBuilder.append(ptr, bytes(tr4));
+        ptr = BytesBuilder.appendNumber(ptr, getPurseId(algorithmId));
+        ptr = BytesBuilder.append(ptr, bytes(tr5));
         BytesBuilder.finish(out, ptr);
         return string(out);
     }
@@ -407,13 +407,13 @@ contract OnChainOptimized is IERC4883, ERC721F {
         }
 
         (bytes memory out, uint256 ptr) = BytesBuilder.start(cap);
-        ptr = BytesBuilder.w(ptr, bytes(bigGlasses[0]));
-        ptr = BytesBuilder.w(ptr, colorTwo);
-        ptr = BytesBuilder.w(ptr, bytes(bigGlasses[1]));
-        ptr = BytesBuilder.w(ptr, colorFour);
-        ptr = BytesBuilder.w(ptr, bytes(bigGlasses[2]));
-        ptr = BytesBuilder.w(ptr, colorFour);
-        ptr = BytesBuilder.w(ptr, bytes(bigGlasses[3]));
+        ptr = BytesBuilder.append(ptr, bytes(bigGlasses[0]));
+        ptr = BytesBuilder.append(ptr, colorTwo);
+        ptr = BytesBuilder.append(ptr, bytes(bigGlasses[1]));
+        ptr = BytesBuilder.append(ptr, colorFour);
+        ptr = BytesBuilder.append(ptr, bytes(bigGlasses[2]));
+        ptr = BytesBuilder.append(ptr, colorFour);
+        ptr = BytesBuilder.append(ptr, bytes(bigGlasses[3]));
         BytesBuilder.finish(out, ptr);
         return string(out);
     }

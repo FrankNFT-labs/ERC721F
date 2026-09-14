@@ -49,23 +49,23 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
         uint256 cap = 177 + nameBytes.length + descriptionBytes.length;
         cap += image.length + separator.length + traitBytes.length;
         (bytes memory out, uint256 ptr) = BytesBuilder.start(cap);
-        ptr = BytesBuilder.w(
+        ptr = BytesBuilder.append(
             ptr,
             bytes('data:application/json;utf-8,{"name": "')
         );
-        ptr = BytesBuilder.w(ptr, nameBytes);
-        ptr = BytesBuilder.w(ptr, bytes(" #"));
-        ptr = BytesBuilder.wNum(ptr, tokenId);
-        ptr = BytesBuilder.w(ptr, bytes('", "description": "'));
-        ptr = BytesBuilder.w(ptr, descriptionBytes);
-        ptr = BytesBuilder.w(
+        ptr = BytesBuilder.append(ptr, nameBytes);
+        ptr = BytesBuilder.append(ptr, bytes(" #"));
+        ptr = BytesBuilder.appendNumber(ptr, tokenId);
+        ptr = BytesBuilder.append(ptr, bytes('", "description": "'));
+        ptr = BytesBuilder.append(ptr, descriptionBytes);
+        ptr = BytesBuilder.append(
             ptr,
             bytes('", "image": "data:image/svg+xml;base64,')
         );
-        ptr = BytesBuilder.w(ptr, image);
-        ptr = BytesBuilder.w(ptr, separator);
-        ptr = BytesBuilder.w(ptr, traitBytes);
-        ptr = BytesBuilder.w1(ptr, 0x7d);
+        ptr = BytesBuilder.append(ptr, image);
+        ptr = BytesBuilder.append(ptr, separator);
+        ptr = BytesBuilder.append(ptr, traitBytes);
+        ptr = BytesBuilder.appendByte(ptr, 0x7d);
         BytesBuilder.finish(out, ptr);
         return string(out);
     }

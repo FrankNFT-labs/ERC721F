@@ -54,7 +54,7 @@ contract BytesBuilderMock {
         uint256 ptr;
         (out, ptr) = BytesBuilder.start(cap);
         for (uint256 i; i < pieces.length;) {
-            ptr = BytesBuilder.w(ptr, pieces[i]);
+            ptr = BytesBuilder.append(ptr, pieces[i]);
             unchecked {
                 ++i;
             }
@@ -63,19 +63,19 @@ contract BytesBuilderMock {
     }
 
     /**
-     * @dev Appends every value in order through w1().
+     * @dev Appends every value in order through appendByte().
      * @param cap capacity to allocate
      * @param values raw byte values to append
      * @return out the finished buffer
      */
-    function buildBytes1(
+    function buildByteValues(
         uint256 cap,
         uint8[] calldata values
     ) external pure returns (bytes memory out) {
         uint256 ptr;
         (out, ptr) = BytesBuilder.start(cap);
         for (uint256 i; i < values.length;) {
-            ptr = BytesBuilder.w1(ptr, values[i]);
+            ptr = BytesBuilder.appendByte(ptr, values[i]);
             unchecked {
                 ++i;
             }
@@ -84,7 +84,7 @@ contract BytesBuilderMock {
     }
 
     /**
-     * @dev Appends every value in order through wNum().
+     * @dev Appends every value in order through appendNumber().
      * @param cap capacity to allocate
      * @param values decimal values to append, each below 10000
      * @return out the finished buffer
@@ -96,7 +96,7 @@ contract BytesBuilderMock {
         uint256 ptr;
         (out, ptr) = BytesBuilder.start(cap);
         for (uint256 i; i < values.length;) {
-            ptr = BytesBuilder.wNum(ptr, values[i]);
+            ptr = BytesBuilder.appendNumber(ptr, values[i]);
             unchecked {
                 ++i;
             }
@@ -105,7 +105,7 @@ contract BytesBuilderMock {
     }
 
     /**
-     * @dev Appends every value in order through wHex6().
+     * @dev Appends every value in order through appendHexColor().
      * @param cap capacity to allocate
      * @param values 24-bit RGB values to append
      * @return out the finished buffer
@@ -117,7 +117,7 @@ contract BytesBuilderMock {
         uint256 ptr;
         (out, ptr) = BytesBuilder.start(cap);
         for (uint256 i; i < values.length;) {
-            ptr = BytesBuilder.wHex6(ptr, values[i]);
+            ptr = BytesBuilder.appendHexColor(ptr, values[i]);
             unchecked {
                 ++i;
             }
@@ -142,18 +142,18 @@ contract BytesBuilderMock {
     ) external pure returns (bytes memory out) {
         uint256 ptr;
         (out, ptr) = BytesBuilder.start(96);
-        ptr = BytesBuilder.w(ptr, bytes('<rect x="'));
-        ptr = BytesBuilder.wNum(ptr, x);
-        ptr = BytesBuilder.w(ptr, bytes('" y="'));
-        ptr = BytesBuilder.wNum(ptr, y);
-        ptr = BytesBuilder.w(ptr, bytes('" width="'));
-        ptr = BytesBuilder.wNum(ptr, size);
-        ptr = BytesBuilder.w(ptr, bytes('" height="'));
-        ptr = BytesBuilder.wNum(ptr, size);
-        ptr = BytesBuilder.w(ptr, bytes('" fill="#'));
-        ptr = BytesBuilder.wHex6(ptr, rgb);
-        ptr = BytesBuilder.w1(ptr, 0x22); // closing double quote
-        ptr = BytesBuilder.w(ptr, bytes("/>"));
+        ptr = BytesBuilder.append(ptr, bytes('<rect x="'));
+        ptr = BytesBuilder.appendNumber(ptr, x);
+        ptr = BytesBuilder.append(ptr, bytes('" y="'));
+        ptr = BytesBuilder.appendNumber(ptr, y);
+        ptr = BytesBuilder.append(ptr, bytes('" width="'));
+        ptr = BytesBuilder.appendNumber(ptr, size);
+        ptr = BytesBuilder.append(ptr, bytes('" height="'));
+        ptr = BytesBuilder.appendNumber(ptr, size);
+        ptr = BytesBuilder.append(ptr, bytes('" fill="#'));
+        ptr = BytesBuilder.appendHexColor(ptr, rgb);
+        ptr = BytesBuilder.appendByte(ptr, 0x22); // closing double quote
+        ptr = BytesBuilder.append(ptr, bytes("/>"));
         BytesBuilder.finish(out, ptr);
     }
 
@@ -176,7 +176,7 @@ contract BytesBuilderMock {
         uint256 ptr;
         (out, ptr) = BytesBuilder.start(cap);
         neighbour = bytes.concat(sentinelValue);
-        ptr = BytesBuilder.w(ptr, piece);
+        ptr = BytesBuilder.append(ptr, piece);
         BytesBuilder.finish(out, ptr);
     }
 

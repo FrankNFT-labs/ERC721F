@@ -90,7 +90,7 @@ contract OnChain is ERC721FOnChain {
         uint256 id
     ) public view override returns (string memory) {
         require(_exists(id), "Non-Existing token");
-        // Eight parts, not nine: the id slot is gone because wNum renders it
+        // Eight parts, not nine: the id slot is gone because appendNumber renders it
         // straight into the buffer instead of allocating a string for it.
         string[8] memory parts;
         parts[0] = SVG_HEAD;
@@ -113,10 +113,10 @@ contract OnChain is ERC721FOnChain {
 
         (bytes memory out, uint256 ptr) = BytesBuilder.start(cap);
         for (uint256 i; i < 7; ++i) {
-            ptr = BytesBuilder.w(ptr, bytes(parts[i]));
+            ptr = BytesBuilder.append(ptr, bytes(parts[i]));
         }
-        ptr = BytesBuilder.wNum(ptr, id);
-        ptr = BytesBuilder.w(ptr, bytes(parts[7]));
+        ptr = BytesBuilder.appendNumber(ptr, id);
+        ptr = BytesBuilder.append(ptr, bytes(parts[7]));
         BytesBuilder.finish(out, ptr);
         return string(out);
     }
@@ -131,7 +131,7 @@ contract OnChain is ERC721FOnChain {
         // The original built two trait strings and then concatenated them with
         // brackets, so every literal was copied twice. Written straight into one
         // buffer the literals collapse into a head and a tail around the id,
-        // and wNum renders the id in place instead of allocating a string.
+        // and appendNumber renders the id in place instead of allocating a string.
         bytes memory head = bytes(
             '[{\n"trait_type": "TypeName",\n"value": "testValue"\n}\n'
             ',{\n"trait_type": "Id",\n"value": "'
@@ -141,9 +141,9 @@ contract OnChain is ERC721FOnChain {
         (bytes memory out, uint256 ptr) = BytesBuilder.start(
             head.length + 78 + tail.length
         );
-        ptr = BytesBuilder.w(ptr, head);
-        ptr = BytesBuilder.wNum(ptr, id);
-        ptr = BytesBuilder.w(ptr, tail);
+        ptr = BytesBuilder.append(ptr, head);
+        ptr = BytesBuilder.appendNumber(ptr, id);
+        ptr = BytesBuilder.append(ptr, tail);
         BytesBuilder.finish(out, ptr);
         return string(out);
     }

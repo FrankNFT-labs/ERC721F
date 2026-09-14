@@ -15,20 +15,22 @@ import "../../../contracts/mocks/BytesBuilderMock.sol";
  * passing.
  *
  * Coverage map:
- *  - start   : zero capacity, non-zero capacity, fuzzed capacity
- *  - finish  : nothing written, partial fill, exact fill
- *  - w       : empty, sub-word, exact word, word+1, repeated, fuzzed
- *  - w1      : 0x00, printable, 0xff, repeated, fuzzed
- *  - wNum    : 0, every power-of-ten boundary, interior zeros, uint256 max,
- *              fuzzed over the small-value range and over the full range
- *  - wHex6   : both nibble extremes, full alphabet, digit ordering, fuzzed
- *  - finish  : the capacity guard, from both sides of the boundary
+ *  - start          : zero capacity, non-zero capacity, fuzzed capacity
+ *  - finish         : nothing written, partial fill, exact fill, and the
+ *                     capacity guard from both sides of the boundary
+ *  - append         : empty, sub-word, exact word, word+1, repeated, fuzzed
+ *  - appendByte     : 0x00, printable, 0xff, repeated, fuzzed
+ *  - appendNumber   : 0, every power-of-ten boundary, interior zeros,
+ *                     uint256 max, fuzzed small-range and full-range
+ *  - appendHexColor : both nibble extremes, full alphabet, digit ordering,
+ *                     fuzzed over the whole uint24 domain
  *
- * Neither helper has an unenforced precondition left. wNum is asserted across
- * all of uint256, and wHex6 takes a uint24, so its fuzz test covers the whole
- * of its parameter type rather than a subset of a wider one: no input exists
- * that these tests do not speak for. Capacity is the one thing still left to
- * the caller, and finish() reverts when a caller gets it wrong.
+ * Neither helper has an unenforced precondition left. appendNumber is
+ * asserted across all of uint256, and appendHexColor takes a uint24, so its
+ * fuzz test covers the whole of its parameter type rather than a subset of a
+ * wider one: no input exists that these tests do not speak for. Capacity is
+ * the one thing still left to the caller, and finish() reverts when a caller
+ * gets it wrong.
  */
 contract BytesBuilderTest is Test {
     BytesBuilderMock internal builder;
@@ -90,7 +92,7 @@ contract BytesBuilderTest is Test {
 
     // ─── w ───────────────────────────────────────────────────────────────────
 
-    function test_w_emptyInputLeavesPointerUnmoved() public {
+    function test_append_emptyInputLeavesPointerUnmoved() public {
         bytes[] memory pieces = new bytes[](3);
         pieces[0] = bytes("");
         pieces[1] = bytes("x");
@@ -100,7 +102,7 @@ contract BytesBuilderTest is Test {
         assertEq(out, bytes("x"));
     }
 
-    function test_w_singleByte() public {
+    function test_append_singleByte() public {
         bytes[] memory pieces = new bytes[](1);
         pieces[0] = bytes("Z");
         assertEq(builder.buildBytes(16, pieces), bytes("Z"));
@@ -108,7 +110,7 @@ contract BytesBuilderTest is Test {
 
     /// @dev 31 / 32 / 33 bracket the mcopy word boundary: a partial word, an
     /// exact word, and a word plus a trailing partial word.
-    function test_w_wordBoundaryLengths() public {
+    function test_append_wordBoundaryLengths() public {
         uint256[3] memory lengths = [uint256(31), 32, 33];
         for (uint256 i; i < lengths.length; ++i) {
             bytes memory piece = _pattern(lengths[i]);
@@ -120,7 +122,7 @@ contract BytesBuilderTest is Test {
         }
     }
 
-    function test_w_appendsInOrder() public {
+    function test_append_appendsInOrder() public {
         bytes[] memory pieces = new bytes[](4);
         pieces[0] = bytes("<svg ");
         pieces[1] = bytes("width=");
@@ -129,7 +131,7 @@ contract BytesBuilderTest is Test {
         assertEq(builder.buildBytes(64, pieces), bytes('<svg width="100">'));
     }
 
-    function test_w_doesNotDisturbNeighbouringAllocation() public {
+    function test_append_doesNotDisturbNeighbouringAllocation() public {
         bytes memory piece = _pattern(40);
         bytes memory sentinel = bytes("sentinel-must-survive");
         (bytes memory out, bytes memory neighbour) = builder.buildWithNeighbour(
@@ -141,7 +143,9 @@ contract BytesBuilderTest is Test {
         assertEq(neighbour, sentinel);
     }
 
-    function test_fuzz_w_roundTripsArbitraryBytes(bytes memory piece) public {
+    function test_fuzz_append_roundTripsArbitraryBytes(
+        bytes memory piece
+    ) public {
         vm.assume(piece.length <= 512);
         bytes[] memory pieces = new bytes[](1);
         pieces[0] = piece;
@@ -150,7 +154,7 @@ contract BytesBuilderTest is Test {
         assertEq(out, piece);
     }
 
-    function test_fuzz_w_concatenationMatchesNativeConcat(
+    function test_fuzz_append_concatenationMatchesNativeConcat(
         bytes memory first,
         bytes memory second
     ) public {
@@ -164,12 +168,12 @@ contract BytesBuilderTest is Test {
         );
     }
 
-    // ─── w1 ──────────────────────────────────────────────────────────────────
+    // ─── appendByte ──────────────────────────────────────────────────────────────────
 
     function test_w1_writesNulByteAndStillAdvances() public {
         uint8[] memory values = new uint8[](1);
         values[0] = 0x00;
-        bytes memory out = builder.buildBytes1(16, values);
+        bytes memory out = builder.buildByteValues(16, values);
         assertEq(out.length, 1);
         assertEq(out, hex"00");
     }
@@ -177,7 +181,7 @@ contract BytesBuilderTest is Test {
     function test_w1_writesMaxByte() public {
         uint8[] memory values = new uint8[](1);
         values[0] = 0xff;
-        assertEq(builder.buildBytes1(16, values), hex"ff");
+        assertEq(builder.buildByteValues(16, values), hex"ff");
     }
 
     function test_w1_writesSequenceInOrder() public {
@@ -186,24 +190,24 @@ contract BytesBuilderTest is Test {
         values[1] = 0x00;
         values[2] = 0xff;
         values[3] = 0x7a; // z
-        assertEq(builder.buildBytes1(16, values), hex"4100ff7a");
+        assertEq(builder.buildByteValues(16, values), hex"4100ff7a");
     }
 
     function test_fuzz_w1_writesExactlyOneByte(uint8 value) public {
         uint8[] memory values = new uint8[](1);
         values[0] = value;
-        bytes memory out = builder.buildBytes1(16, values);
+        bytes memory out = builder.buildByteValues(16, values);
         assertEq(out.length, 1);
         assertEq(uint8(out[0]), value);
     }
 
-    // ─── wNum ────────────────────────────────────────────────────────────────
+    // ─── appendNumber ────────────────────────────────────────────────────────────────
 
     function test_wNum_zero() public {
         assertEq(_num(0), bytes("0"));
     }
 
-    /// @dev One case either side of every branch threshold in wNum.
+    /// @dev One case either side of every branch threshold in appendNumber.
     function test_wNum_branchBoundaries() public {
         assertEq(_num(9), bytes("9")); // n < 10
         assertEq(_num(10), bytes("10")); // n >= 10
@@ -239,7 +243,7 @@ contract BytesBuilderTest is Test {
         assertEq(string(_num(n)), vm.toString(n));
     }
 
-    // ─── wNum: beyond four digits ────────────────────────────────────────────
+    // ─── appendNumber: beyond four digits ────────────────────────────────────────────
 
     function test_wNum_fiveDigitsAndAbove() public {
         assertEq(_num(10000), bytes("10000"));
@@ -273,7 +277,7 @@ contract BytesBuilderTest is Test {
         assertEq(string(_num(n)), vm.toString(n));
     }
 
-    // ─── wHex6 ───────────────────────────────────────────────────────────────
+    // ─── appendHexColor ───────────────────────────────────────────────────────────────
 
     function test_wHex6_nibbleExtremes() public {
         assertEq(_hex6(0x000000), bytes("000000"));
@@ -311,7 +315,7 @@ contract BytesBuilderTest is Test {
         assertEq(builder.buildHex6(32, values), bytes("112233445566"));
     }
 
-    /// @dev The parameter type is the domain, so this fuzzes every value wHex6
+    /// @dev The parameter type is the domain, so this fuzzes every value appendHexColor
     /// can be handed rather than a chosen slice of a wider type. Values above
     /// bit 23 used to render silently truncated; they are now a compile error
     /// at the call site, which no runtime test can express.
@@ -367,10 +371,10 @@ contract BytesBuilderTest is Test {
         vm.expectRevert(
             abi.encodeWithSelector(BytesBuilder.BufferOverflow.selector, 3, 2)
         );
-        builder.buildBytes1(2, values);
+        builder.buildByteValues(2, values);
     }
 
-    /// @dev The case the wNum rewrite made reachable: a capacity sized for the
+    /// @dev The case the appendNumber rewrite made reachable: a capacity sized for the
     /// old four-digit ceiling, handed a value that now renders 78 bytes wide.
     function test_RevertWhen_wNumOverrunsCapacitySizedForFourDigits() public {
         uint256[] memory values = new uint256[](1);
@@ -468,7 +472,7 @@ contract BytesBuilderTest is Test {
 
     // ─── helpers ─────────────────────────────────────────────────────────────
 
-    /// @dev Renders a single value through wNum. The capacity covers the 78
+    /// @dev Renders a single value through appendNumber. The capacity covers the 78
     /// digits of type(uint256).max so the helper works across the full domain.
     function _num(uint256 n) private view returns (bytes memory) {
         uint256[] memory values = new uint256[](1);
@@ -476,7 +480,7 @@ contract BytesBuilderTest is Test {
         return builder.buildNums(96, values);
     }
 
-    /// @dev Renders a single value through wHex6.
+    /// @dev Renders a single value through appendHexColor.
     function _hex6(uint24 rgb) private view returns (bytes memory) {
         uint24[] memory values = new uint24[](1);
         values[0] = rgb;
