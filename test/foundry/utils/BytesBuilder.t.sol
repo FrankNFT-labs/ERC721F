@@ -90,7 +90,7 @@ contract BytesBuilderTest is Test {
         assertEq(out, bytes("abcdefgh"));
     }
 
-    // ─── w ───────────────────────────────────────────────────────────────────
+    // ─── append ──────────────────────────────────────────────────────────────
 
     function test_append_emptyInputLeavesPointerUnmoved() public {
         bytes[] memory pieces = new bytes[](3);
@@ -168,9 +168,9 @@ contract BytesBuilderTest is Test {
         );
     }
 
-    // ─── appendByte ──────────────────────────────────────────────────────────────────
+    // ─── appendByte ──────────────────────────────────────────────────────────
 
-    function test_w1_writesNulByteAndStillAdvances() public {
+    function test_appendByte_writesNulByteAndStillAdvances() public {
         uint8[] memory values = new uint8[](1);
         values[0] = 0x00;
         bytes memory out = builder.buildByteValues(16, values);
@@ -178,13 +178,13 @@ contract BytesBuilderTest is Test {
         assertEq(out, hex"00");
     }
 
-    function test_w1_writesMaxByte() public {
+    function test_appendByte_writesMaxByte() public {
         uint8[] memory values = new uint8[](1);
         values[0] = 0xff;
         assertEq(builder.buildByteValues(16, values), hex"ff");
     }
 
-    function test_w1_writesSequenceInOrder() public {
+    function test_appendByte_writesSequenceInOrder() public {
         uint8[] memory values = new uint8[](4);
         values[0] = 0x41; // A
         values[1] = 0x00;
@@ -193,7 +193,7 @@ contract BytesBuilderTest is Test {
         assertEq(builder.buildByteValues(16, values), hex"4100ff7a");
     }
 
-    function test_fuzz_w1_writesExactlyOneByte(uint8 value) public {
+    function test_fuzz_appendByte_writesExactlyOneByte(uint8 value) public {
         uint8[] memory values = new uint8[](1);
         values[0] = value;
         bytes memory out = builder.buildByteValues(16, values);
@@ -201,14 +201,14 @@ contract BytesBuilderTest is Test {
         assertEq(uint8(out[0]), value);
     }
 
-    // ─── appendNumber ────────────────────────────────────────────────────────────────
+    // ─── appendNumber ────────────────────────────────────────────────────────
 
-    function test_wNum_zero() public {
+    function test_appendNumber_zero() public {
         assertEq(_num(0), bytes("0"));
     }
 
     /// @dev One case either side of every branch threshold in appendNumber.
-    function test_wNum_branchBoundaries() public {
+    function test_appendNumber_branchBoundaries() public {
         assertEq(_num(9), bytes("9")); // n < 10
         assertEq(_num(10), bytes("10")); // n >= 10
         assertEq(_num(99), bytes("99"));
@@ -220,7 +220,7 @@ contract BytesBuilderTest is Test {
 
     /// @dev Interior zeros are where a digit-extraction bug hides: each of these
     /// forces a `% 10` result of 0 in a position that is still emitted.
-    function test_wNum_interiorZeroDigits() public {
+    function test_appendNumber_interiorZeroDigits() public {
         assertEq(_num(101), bytes("101"));
         assertEq(_num(110), bytes("110"));
         assertEq(_num(1001), bytes("1001"));
@@ -229,7 +229,7 @@ contract BytesBuilderTest is Test {
         assertEq(_num(2005), bytes("2005"));
     }
 
-    function test_wNum_appendsWithoutSeparator() public {
+    function test_appendNumber_appendsWithoutSeparator() public {
         uint256[] memory values = new uint256[](3);
         values[0] = 1;
         values[1] = 23;
@@ -238,14 +238,14 @@ contract BytesBuilderTest is Test {
     }
 
     /// @dev Dense coverage of the small values this library actually renders.
-    function test_fuzz_wNum_matchesDecimalRendering(uint256 n) public {
+    function test_fuzz_appendNumber_matchesDecimalRendering(uint256 n) public {
         n = bound(n, 0, 9999);
         assertEq(string(_num(n)), vm.toString(n));
     }
 
-    // ─── appendNumber: beyond four digits ────────────────────────────────────────────
+    // ─── appendNumber: beyond four digits ────────────────────────────────────
 
-    function test_wNum_fiveDigitsAndAbove() public {
+    function test_appendNumber_fiveDigitsAndAbove() public {
         assertEq(_num(10000), bytes("10000"));
         assertEq(_num(65535), bytes("65535"));
         assertEq(_num(123456), bytes("123456"));
@@ -253,7 +253,7 @@ contract BytesBuilderTest is Test {
 
     /// @dev Each pair straddles a power-of-ten boundary, where a digit-count
     /// that is off by one shows up immediately.
-    function test_wNum_digitCountBoundaries() public {
+    function test_appendNumber_digitCountBoundaries() public {
         assertEq(_num(9999), bytes("9999"));
         assertEq(_num(10000), bytes("10000"));
         assertEq(_num(99999), bytes("99999"));
@@ -262,7 +262,7 @@ contract BytesBuilderTest is Test {
         assertEq(_num(1e18), bytes("1000000000000000000"));
     }
 
-    function test_wNum_uint256Max() public {
+    function test_appendNumber_uint256Max() public {
         bytes memory out = _num(type(uint256).max);
         assertEq(
             out,
@@ -273,20 +273,22 @@ contract BytesBuilderTest is Test {
         assertEq(out.length, 78);
     }
 
-    function test_fuzz_wNum_matchesDecimalRenderingFullRange(uint256 n) public {
+    function test_fuzz_appendNumber_matchesDecimalRenderingFullRange(
+        uint256 n
+    ) public {
         assertEq(string(_num(n)), vm.toString(n));
     }
 
-    // ─── appendHexColor ───────────────────────────────────────────────────────────────
+    // ─── appendHexColor ──────────────────────────────────────────────────────
 
-    function test_wHex6_nibbleExtremes() public {
+    function test_appendHexColor_nibbleExtremes() public {
         assertEq(_hex6(0x000000), bytes("000000"));
         assertEq(_hex6(0xffffff), bytes("ffffff"));
     }
 
     /// @dev Between them these three values emit all sixteen hex characters, so
     /// every entry of the lookup table is exercised.
-    function test_wHex6_coversFullAlphabet() public {
+    function test_appendHexColor_coversFullAlphabet() public {
         assertEq(_hex6(0x012345), bytes("012345"));
         assertEq(_hex6(0x6789ab), bytes("6789ab"));
         assertEq(_hex6(0xcdef01), bytes("cdef01"));
@@ -294,7 +296,7 @@ contract BytesBuilderTest is Test {
 
     /// @dev Pins the digit order: a single set nibble must land in its own
     /// column, most significant first.
-    function test_wHex6_emitsMostSignificantNibbleFirst() public {
+    function test_appendHexColor_emitsMostSignificantNibbleFirst() public {
         assertEq(_hex6(0x100000), bytes("100000"));
         assertEq(_hex6(0x010000), bytes("010000"));
         assertEq(_hex6(0x001000), bytes("001000"));
@@ -303,12 +305,12 @@ contract BytesBuilderTest is Test {
         assertEq(_hex6(0x000001), bytes("000001"));
     }
 
-    function test_wHex6_alwaysWritesSixCharacters() public {
+    function test_appendHexColor_alwaysWritesSixCharacters() public {
         assertEq(_hex6(0x000001).length, 6);
         assertEq(_hex6(0xabcdef).length, 6);
     }
 
-    function test_wHex6_appendsWithoutSeparator() public {
+    function test_appendHexColor_appendsWithoutSeparator() public {
         uint24[] memory values = new uint24[](2);
         values[0] = 0x112233;
         values[1] = 0x445566;
@@ -319,13 +321,15 @@ contract BytesBuilderTest is Test {
     /// can be handed rather than a chosen slice of a wider type. Values above
     /// bit 23 used to render silently truncated; they are now a compile error
     /// at the call site, which no runtime test can express.
-    function test_fuzz_wHex6_matchesReferenceRendering(uint24 rgb) public {
+    function test_fuzz_appendHexColor_matchesReferenceRendering(
+        uint24 rgb
+    ) public {
         assertEq(_hex6(rgb), bytes(_referenceHex6(rgb)));
     }
 
     /// @dev Pins the top of the domain explicitly: the widest uint24 is exactly
     /// the widest 24-bit colour, so the type and the format agree at the edge.
-    function test_wHex6_typeMaximumIsWhite() public {
+    function test_appendHexColor_typeMaximumIsWhite() public {
         assertEq(uint256(type(uint24).max), 0xffffff);
         assertEq(_hex6(type(uint24).max), bytes("ffffff"));
     }
