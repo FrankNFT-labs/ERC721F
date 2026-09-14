@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20 <0.9.0;
+pragma solidity ^0.8.24 <0.9.0;
 
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "../../../interfaces/IERC4883.sol";
+import "../../../utils/BytesBuilder.sol";
 import "../ERC721F.sol";
 
 /**
@@ -39,22 +40,34 @@ abstract contract ERC721FOnChain is IERC4883, ERC721F {
         if (!_exists(tokenId)) revert NonExistingToken();
         string memory svgData = renderTokenById(tokenId);
         string memory traits = getTraits(tokenId);
-        return
-            string(
-                abi.encodePacked(
-                    'data:application/json;utf-8,{"name": "',
-                    name(),
-                    " #",
-                    Strings.toString(tokenId),
-                    '", "description": "',
-                    getDescription(),
-                    '", "image": "data:image/svg+xml;base64,',
-                    Base64.encode(bytes(svgData)),
-                    bytes(traits).length == 0 ? '"' : '", "attributes": ',
-                    traits,
-                    "}"
-                )
-            );
+        bytes memory nameBytes = bytes(name());
+        bytes memory descriptionBytes = bytes(getDescription());
+        bytes memory image = bytes(Base64.encode(bytes(svgData)));
+        bytes memory traitBytes = bytes(traits);
+        bytes memory separator =
+            traitBytes.length == 0 ? bytes('"') : bytes('", "attributes": ');
+        uint256 cap = 177 + nameBytes.length + descriptionBytes.length;
+        cap += image.length + separator.length + traitBytes.length;
+        (bytes memory out, uint256 ptr) = BytesBuilder.start(cap);
+        ptr = BytesBuilder.append(
+            ptr,
+            bytes('data:application/json;utf-8,{"name": "')
+        );
+        ptr = BytesBuilder.append(ptr, nameBytes);
+        ptr = BytesBuilder.append(ptr, bytes(" #"));
+        ptr = BytesBuilder.appendNumber(ptr, tokenId);
+        ptr = BytesBuilder.append(ptr, bytes('", "description": "'));
+        ptr = BytesBuilder.append(ptr, descriptionBytes);
+        ptr = BytesBuilder.append(
+            ptr,
+            bytes('", "image": "data:image/svg+xml;base64,')
+        );
+        ptr = BytesBuilder.append(ptr, image);
+        ptr = BytesBuilder.append(ptr, separator);
+        ptr = BytesBuilder.append(ptr, traitBytes);
+        ptr = BytesBuilder.appendByte(ptr, 0x7d);
+        BytesBuilder.finish(out, ptr);
+        return string(out);
     }
 
     /**
