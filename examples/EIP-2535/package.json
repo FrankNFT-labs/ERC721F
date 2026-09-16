@@ -9,12 +9,12 @@
         "test": "hardhat test"
     },
     "dependencies": {
-        "@rocketh/deploy": "^0.19.17",
-        "@rocketh/diamond": "^0.19.19",
-        "@rocketh/node": "^0.19.21",
-        "@rocketh/read-execute": "^0.19.4",
+        "@rocketh/deploy": "^0.19.21",
+        "@rocketh/diamond": "^0.19.23",
+        "@rocketh/node": "^0.21.0",
+        "@rocketh/read-execute": "^0.20.2",
         "hardhat-deploy": "^2.0.24",
-        "rocketh": "^0.19.8",
+        "rocketh": "^0.21.0",
         "viem": "2.55.19"
     },
     "devDependencies": {
