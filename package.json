@@ -41,7 +41,7 @@
         "@chainlink/contracts": "^1.5.0",
         "@nomicfoundation/hardhat-toolbox-mocha-ethers": "^3.0.7",
         "chai": "^6.2.2",
-        "dotenv": "^17.3.1",
+        "dotenv": "^18.0.3",
         "ethers": "^6.17.0",
         "hardhat": "^3.9.1",
         "husky": "^9.1.7",
