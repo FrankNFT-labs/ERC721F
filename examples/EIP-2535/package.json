@@ -18,7 +18,7 @@
         "viem": "2.55.19"
     },
     "devDependencies": {
-        "@nomicfoundation/hardhat-toolbox-mocha-ethers": "^3.0.7",
+        "@nomicfoundation/hardhat-toolbox-mocha-ethers": "^4.0.0",
         "chai": "^6.2.2",
         "ethers": "^6.17.0",
         "hardhat": "^3.9.1",
