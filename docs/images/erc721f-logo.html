@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400&display=block"
+      rel="stylesheet"
+    />
+    <style>
+      /* Midnight Sovereign tokens (Portifolio/DESIGN.md) */
+      :root {
+        --primary: #d4a843;
+        --gradient-start: #1a2d6b;
+        --gradient-end: #08090e;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 100vw;
+        height: 100vh;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(
+          62.4deg,
+          var(--gradient-start),
+          var(--gradient-end) 50%
+        );
+      }
+      .logo {
+        /* Same as madebypunks .pixel-tag: Silkscreen 400, uppercase, 0.05em tracking.
+           Size is a multiple of 8 so the pixels stay crisp. */
+        font-family: "Silkscreen", monospace;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-size: 128px;
+        line-height: 1;
+        color: var(--primary);
+      }
+      /* 1280x640 GitHub social preview */
+      @media (min-width: 1200px) {
+        .logo {
+          font-size: 176px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="logo">ERC721F</div>
+  </body>
+</html>
