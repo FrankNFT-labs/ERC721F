@@ -56,7 +56,8 @@ function collectSolidityFiles(rootDirectory) {
 
         for (const entry of entries) {
             const entryPath = path.join(currentDirectory, entry.name);
-            if (entry.isDirectory()) {
+            // Packages npm nests in the EIP-2535 workspace are not examples
+            if (entry.isDirectory() && entry.name !== "node_modules") {
                 stack.push(entryPath);
             } else if (entry.isFile() && isSolidityFile(entryPath)) {
                 solidityFiles.push(entryPath);
