@@ -13,7 +13,7 @@
         "@rocketh/diamond": "^0.19.26",
         "@rocketh/node": "^0.21.4",
         "@rocketh/read-execute": "^0.21.1",
-        "hardhat-deploy": "^2.0.24",
+        "hardhat-deploy": "^2.0.30",
         "rocketh": "^0.23.1",
         "viem": "2.55.19"
     },
