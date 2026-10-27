@@ -23,6 +23,12 @@ updates:
               patterns:
                   - "rocketh"
                   - "@rocketh/*"
+          # The toolbox pins the mocha major through hardhat-mocha's peer
+          # range; bumping either one alone fails npm ci (ERESOLVE).
+          mocha:
+              patterns:
+                  - "mocha"
+                  - "@nomicfoundation/hardhat-toolbox-mocha-ethers"
 
     # Enable version updates for GitHub Actions
     - package-ecosystem: "github-actions"
